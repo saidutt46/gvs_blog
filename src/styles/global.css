@@ -14,7 +14,7 @@
 [data-theme="dark"] {
   --bg: #050505;
   --text: #fafafa;
-  --muted: #525252;
+  --muted: #737373;
   --border: #1a1a1a;
   --link: #fafafa;
   --tag-bg: #1a1a1a;
@@ -27,7 +27,7 @@
   :root:not([data-theme="light"]) {
     --bg: #050505;
     --text: #fafafa;
-    --muted: #525252;
+    --muted: #737373;
     --border: #1a1a1a;
     --link: #fafafa;
     --tag-bg: #1a1a1a;
@@ -159,13 +159,15 @@ nav .nav-links a.active {
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1;
-  transition: color 0.2s;
+  transition: color 0.2s, border-color 0.2s;
+  font-family: inherit;
 }
 
 .theme-toggle:hover {
   color: var(--text);
+  border-color: var(--muted);
 }
 
 /* Footer */
@@ -199,8 +201,9 @@ footer {
 
 .hero .social {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   margin-top: 20px;
+  flex-wrap: wrap;
 }
 
 .hero .social a {
@@ -494,6 +497,18 @@ button:focus-visible {
 
   .nav-short {
     display: inline;
+  }
+
+  .theme-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 50;
+    background: var(--bg);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 
   .hero {
