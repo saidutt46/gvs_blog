@@ -7,6 +7,7 @@
   --link: #222222;
   --tag-bg: #f0f0f0;
   --tag-text: #999999;
+  --code-bg: #f0f0f0;
 }
 
 /* Dark theme */
@@ -18,6 +19,7 @@
   --link: #fafafa;
   --tag-bg: #1a1a1a;
   --tag-text: #888888;
+  --code-bg: #161616;
 }
 
 /* System preference: dark */
@@ -30,6 +32,7 @@
     --link: #fafafa;
     --tag-bg: #1a1a1a;
     --tag-text: #888888;
+    --code-bg: #161616;
   }
 }
 
@@ -43,7 +46,7 @@
 }
 
 html {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   color: var(--text);
   background-color: var(--bg);
   line-height: 1.7;
@@ -302,6 +305,21 @@ footer {
   white-space: nowrap;
 }
 
+/* Back link */
+.back-link {
+  display: inline-block;
+  max-width: 640px;
+  margin: 24px auto 0;
+  padding: 0 24px;
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: var(--text);
+}
+
 /* Post/note content page */
 .post-content {
   max-width: 640px;
@@ -355,8 +373,12 @@ footer {
   margin-bottom: 1rem;
 }
 
+code, pre {
+  font-family: 'Geist Mono', monospace;
+}
+
 .post-content .post-body pre {
-  background: var(--tag-bg);
+  background: var(--code-bg);
   padding: 1rem;
   border-radius: 4px;
   overflow-x: auto;
@@ -365,7 +387,7 @@ footer {
 }
 
 .post-content .post-body code {
-  background: var(--tag-bg);
+  background: var(--code-bg);
   padding: 2px 6px;
   border-radius: 3px;
   font-size: 14px;
@@ -401,6 +423,37 @@ footer {
   margin-bottom: 24px;
 }
 
+/* Skip link (accessibility) */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  background: var(--text);
+  color: var(--bg);
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  z-index: 100;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 8px;
+}
+
+/* Nav text variants */
+.nav-short {
+  display: none;
+}
+
+/* Focus styles (accessibility) */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   nav {
@@ -413,6 +466,14 @@ footer {
 
   nav .nav-links a {
     font-size: 14px;
+  }
+
+  .nav-full {
+    display: none;
+  }
+
+  .nav-short {
+    display: inline;
   }
 
   .hero {

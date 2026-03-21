@@ -3,9 +3,12 @@ interface Props {
   title: string;
   date: Date;
   tags?: string[];
+  backLink: string;
+  backLabel: string;
 }
 
-const { title, date, tags } = Astro.props;
+const { title, date, tags, backLink, backLabel } = Astro.props;
+const base = import.meta.env.BASE_URL;
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString('en-US', {
@@ -17,6 +20,7 @@ function formatDate(date: Date): string {
 ---
 
 <div class="post-content">
+  <a class="back-link" href={`${base}${backLink}`}>&larr; {backLabel}</a>
   <div class="post-header">
     <h1>{title}</h1>
     <div class="post-meta">

@@ -16,7 +16,7 @@ const { Content } = await render(post);
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description} activeNav="blog">
-  <PostLayout title={post.data.title} date={post.data.date}>
+  <PostLayout title={post.data.title} date={post.data.date} backLink="blog/" backLabel="back to blog">
     <Content />
   </PostLayout>
 </BaseLayout>
