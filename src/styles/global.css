@@ -210,6 +210,13 @@ footer {
   padding: 4px 12px;
   border-radius: 4px;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero .social a svg {
+  flex-shrink: 0;
 }
 
 .hero .social a:hover {
