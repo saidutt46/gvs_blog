@@ -96,6 +96,19 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Inline links in body text should always be underlined */
+.bio a,
+.post-body a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--border);
+}
+
+.bio a:hover,
+.post-body a:hover {
+  text-decoration-color: var(--text);
+}
+
 /* Content container */
 .content {
   max-width: 640px;
