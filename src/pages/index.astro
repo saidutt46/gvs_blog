@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="gvs" description="Personal blog and notes" activeNav="about">
+  <div class="hero">
+    <h1>Hi, I'm Venkata Sai Dutt Ganduri</h1>
+    <p class="subtitle">Building things and writing about it</p>
+    <div class="bio">
+      <p>
+        Welcome to my corner of the internet. This is where I share my thoughts,
+        ideas, and things I'm learning. I write about technology, building software,
+        and whatever else is on my mind.
+      </p>
+      <p>
+        Check out my <a href={`${import.meta.env.BASE_URL}blog/`}>blog</a> for longer posts,
+        or my <a href={`${import.meta.env.BASE_URL}notes/`}>ideas & notes</a> for rough
+        thoughts and things I'm thinking about.
+      </p>
+    </div>
+    <div class="social">
+      <a href="https://github.com/saidutt46" target="_blank" rel="noopener">github</a>
+      <a href="https://x.com/saidutt_46" target="_blank" rel="noopener">x / twitter</a>
+      <a href="mailto:saidutt46@gmail.com">email</a>
+    </div>
+  </div>
+</BaseLayout>

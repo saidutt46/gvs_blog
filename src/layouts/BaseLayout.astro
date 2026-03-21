@@ -1,0 +1,88 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  activeNav?: 'about' | 'blog' | 'notes';
+}
+
+import '../styles/global.css';
+
+const { title = 'gvs', description = 'Personal blog and notes', activeNav } = Astro.props;
+const pageTitle = title === 'gvs' ? title : `${title} | gvs`;
+const base = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <title>{pageTitle}</title>
+
+    {/* Theme flash prevention — must run before paint */}
+    <script is:inline>
+      (function() {
+        try {
+          const stored = localStorage.getItem('theme');
+          if (stored) {
+            document.documentElement.setAttribute('data-theme', stored);
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <nav>
+      <a class="logo" href={`${base}`}>gvs</a>
+      <div class="nav-links">
+        <a href={`${base}`} class={activeNav === 'about' ? 'active' : ''}>about</a>
+        <a href={`${base}blog/`} class={activeNav === 'blog' ? 'active' : ''}>blog</a>
+        <a href={`${base}notes/`} class={activeNav === 'notes' ? 'active' : ''}>ideas & notes</a>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+          <span id="theme-icon">light</span>
+        </button>
+      </div>
+    </nav>
+
+    <slot />
+
+    <footer>&copy; {new Date().getFullYear()} Venkata Sai Dutt Ganduri. All rights reserved.</footer>
+
+    {/* Theme toggle logic */}
+    <script is:inline>
+      (function() {
+        const toggle = document.getElementById('theme-toggle');
+        const icon = document.getElementById('theme-icon');
+
+        function getTheme() {
+          try {
+            const stored = localStorage.getItem('theme');
+            if (stored) return stored;
+          } catch (e) {}
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        function updateIcon(theme) {
+          if (icon) icon.textContent = theme === 'dark' ? 'light' : 'dark';
+        }
+
+        updateIcon(getTheme());
+
+        if (toggle) {
+          toggle.addEventListener('click', function() {
+            const current = getTheme();
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            try { localStorage.setItem('theme', next); } catch (e) {}
+            updateIcon(next);
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostLayout from '../../components/PostLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('notes');
+  return notes.map((note) => ({
+    params: { slug: note.id },
+    props: { note },
+  }));
+}
+
+const { note } = Astro.props;
+const { Content } = await render(note);
+---
+
+<BaseLayout title={note.data.title} description={`Note: ${note.data.title}`} activeNav="notes">
+  <PostLayout title={note.data.title} date={note.data.date} tags={note.data.tags}>
+    <Content />
+  </PostLayout>
+</BaseLayout>

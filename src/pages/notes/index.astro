@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostList from '../../components/PostList.astro';
+import { getCollection } from 'astro:content';
+
+const notes = (await getCollection('notes'))
+  .filter((note) => !note.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title="Ideas & Notes" description="Rough thoughts, half-baked ideas, things I'm thinking about." activeNav="notes">
+  <div class="content">
+    <div class="section-header">
+      <h2 class="section-title">Ideas & Notes</h2>
+      <p class="section-desc">Rough thoughts, half-baked ideas, things I'm thinking about. Updated frequently.</p>
+    </div>
+
+    {notes.length > 0 ? (
+      <PostList items={notes} basePath="notes" showTags={true} />
+    ) : (
+      <p style="color: var(--muted); padding: 24px 0;">No notes yet. Check back soon.</p>
+    )}
+  </div>
+</BaseLayout>

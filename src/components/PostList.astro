@@ -1,0 +1,50 @@
+---
+interface PostItem {
+  id: string;
+  data: {
+    title: string;
+    date: Date;
+    tags?: string[];
+  };
+}
+
+interface Props {
+  items: PostItem[];
+  basePath: string;
+  showTags?: boolean;
+}
+
+const { items, basePath, showTags = false } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+function formatDate(date: Date, short = false): string {
+  return date.toLocaleDateString('en-US', {
+    year: short ? undefined : 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+---
+
+<ul class="post-list">
+  {items.map((item) => (
+    showTags ? (
+      <li class="note-item">
+        <div class="note-row">
+          <div class="note-left">
+            <a class="note-title" href={`${base}${basePath}/${item.id}/`}>{item.data.title}</a>
+            {item.data.tags?.map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+          <span class="note-date">{formatDate(item.data.date, true)}</span>
+        </div>
+      </li>
+    ) : (
+      <li class="post-item">
+        <a class="post-title" href={`${base}${basePath}/${item.id}/`}>{item.data.title}</a>
+        <span class="post-date">{formatDate(item.data.date)}</span>
+      </li>
+    )
+  ))}
+</ul>
