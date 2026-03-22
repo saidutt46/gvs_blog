@@ -1,1 +1,1 @@
-{"name":"gvs","short_name":"gvs","icons":[{"src":"/gvs_blog/android-chrome-192x192.png","sizes":"192x192","type":"image/png"},{"src":"/gvs_blog/android-chrome-512x512.png","sizes":"512x512","type":"image/png"}],"theme_color":"#050505","background_color":"#fafafa","display":"standalone"}
+{"name":"gvs","short_name":"gvs","icons":[{"src":"/android-chrome-192x192.png","sizes":"192x192","type":"image/png"},{"src":"/android-chrome-512x512.png","sizes":"512x512","type":"image/png"}],"theme_color":"#050505","background_color":"#fafafa","display":"standalone"}

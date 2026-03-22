@@ -4,8 +4,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://saidutt46.github.io',
-  base: '/gvs_blog/',
+  site: 'https://saiduttgv.com',
   output: 'static',
   integrations: [sitemap()],
 });
