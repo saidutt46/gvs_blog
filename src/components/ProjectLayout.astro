@@ -1,0 +1,50 @@
+---
+interface Props {
+  title: string;
+  date: Date;
+  status: 'active' | 'shipped' | 'archived';
+  tech: string[];
+  github?: string;
+  appStore?: string;
+  liveUrl?: string;
+  image?: string;
+}
+
+const { title, date, status, tech, github, appStore, liveUrl, image } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+---
+
+<div class="post-content">
+  <a class="back-link" href={`${base}projects/`}>&larr; back to projects</a>
+  <div class="post-header">
+    <h1>{title}</h1>
+    <div class="project-meta">
+      <span class={`project-card-status status-${status}`}>{status}</span>
+      <span class="post-meta-date">{formatDate(date)}</span>
+      <div class="project-meta-links">
+        {github && <a href={github} target="_blank" rel="noopener">GitHub</a>}
+        {appStore && <a href={appStore} target="_blank" rel="noopener">App Store</a>}
+        {liveUrl && <a href={liveUrl} target="_blank" rel="noopener">Live</a>}
+      </div>
+    </div>
+    <div class="project-tech-tags">
+      {tech.map((t) => <span class="tag">{t}</span>)}
+    </div>
+  </div>
+  {image && (
+    <div class="project-hero-image">
+      <img src={image} alt={title} loading="lazy" />
+    </div>
+  )}
+  <div class="post-body">
+    <slot />
+  </div>
+</div>

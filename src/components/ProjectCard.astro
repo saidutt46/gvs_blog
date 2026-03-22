@@ -1,0 +1,40 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  status: 'active' | 'shipped' | 'archived';
+  tech: string[];
+  slug: string;
+  github?: string;
+  appStore?: string;
+  liveUrl?: string;
+  image?: string;
+}
+
+const { title, description, status, tech, slug, github, appStore, liveUrl, image } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<div class="project-card">
+  {image && (
+    <div class="project-card-image">
+      <img src={image} alt={title} loading="lazy" />
+    </div>
+  )}
+  <div class="project-card-content">
+    <div class="project-card-header">
+      <a class="project-card-title" href={`${base}projects/${slug}/`}>{title}</a>
+      <span class={`project-card-status status-${status}`}>{status}</span>
+    </div>
+    <p class="project-card-desc">{description}</p>
+    <div class="project-card-tags">
+      {tech.map((t) => <span class="tag">{t}</span>)}
+    </div>
+    <div class="project-card-links">
+      {github && <a href={github} target="_blank" rel="noopener">GitHub</a>}
+      {appStore && <a href={appStore} target="_blank" rel="noopener">App Store</a>}
+      {liveUrl && <a href={liveUrl} target="_blank" rel="noopener">Live</a>}
+      <a href={`${base}projects/${slug}/`}>View project &rarr;</a>
+    </div>
+  </div>
+</div>

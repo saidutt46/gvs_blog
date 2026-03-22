@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+
+const allProjects = (await getCollection('projects'))
+  .filter((p) => !p.data.draft);
+
+// Sort: featured first, then by date descending
+const projects = allProjects.sort((a, b) => {
+  if (a.data.featured && !b.data.featured) return -1;
+  if (!a.data.featured && b.data.featured) return 1;
+  return b.data.date.valueOf() - a.data.date.valueOf();
+});
+
+// Group by year for timeline
+const projectsByYear = new Map<number, typeof projects>();
+for (const project of projects) {
+  const year = project.data.date.getFullYear();
+  if (!projectsByYear.has(year)) projectsByYear.set(year, []);
+  projectsByYear.get(year)!.push(project);
+}
+const years = [...projectsByYear.keys()].sort((a, b) => b - a);
+---
+
+<BaseLayout title="Projects" description="Things I've built. Open source tools, apps, and experiments." activeNav="projects">
+  <div class="content">
+    <div class="section-header">
+      <h2 class="section-title">Projects</h2>
+      <p class="section-desc">Things I've built. Open source tools, apps, and experiments.</p>
+    </div>
+
+    {projects.length > 0 ? (
+      <div class="project-timeline">
+        {years.map((year) => (
+          <div class="timeline-group">
+            <div class="timeline-year">{year}</div>
+            <div class="timeline-cards">
+              {projectsByYear.get(year)!.map((project) => (
+                <ProjectCard
+                  title={project.data.title}
+                  description={project.data.description}
+                  status={project.data.status}
+                  tech={project.data.tech}
+                  slug={project.id}
+                  github={project.data.github}
+                  appStore={project.data.appStore}
+                  liveUrl={project.data.liveUrl}
+                  image={project.data.image}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <p style="color: var(--muted); padding: 24px 0;">No projects yet. Check back soon.</p>
+    )}
+  </div>
+</BaseLayout>

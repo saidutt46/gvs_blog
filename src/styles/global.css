@@ -151,23 +151,33 @@ nav .nav-links a.active {
   color: var(--text);
 }
 
-/* Theme toggle */
-.theme-toggle {
+/* Theme toggle (icon-based) */
+.theme-toggle-icon {
   background: none;
-  border: 1px solid var(--border);
+  border: none;
   color: var(--muted);
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 14px;
-  line-height: 1;
-  transition: color 0.2s, border-color 0.2s;
-  font-family: inherit;
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
 }
 
-.theme-toggle:hover {
+.theme-toggle-icon:hover {
   color: var(--text);
-  border-color: var(--muted);
+}
+
+/* Show sun in dark mode, moon in light mode */
+.icon-sun { display: none; }
+.icon-moon { display: block; }
+
+[data-theme="dark"] .icon-sun { display: block; }
+[data-theme="dark"] .icon-moon { display: none; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .icon-sun { display: block; }
+  :root:not([data-theme="light"]) .icon-moon { display: none; }
 }
 
 /* Footer */
@@ -446,6 +456,263 @@ code, pre {
   margin-bottom: 24px;
 }
 
+/* Project cards */
+.project-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 16px;
+  transition: border-color 0.2s ease;
+}
+
+.project-card:hover {
+  border-color: var(--muted);
+}
+
+.project-card-image {
+  margin-bottom: 16px;
+}
+
+.project-card-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.project-card-content {}
+
+.project-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+
+.project-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.project-card-title:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--border);
+}
+
+.project-card-status {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.status-active {
+  background: var(--tag-bg);
+  color: var(--muted);
+}
+
+.status-shipped {
+  background: var(--tag-bg);
+  color: var(--muted);
+}
+
+.status-archived {
+  background: var(--tag-bg);
+  color: var(--muted);
+}
+
+.project-card-desc {
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.project-card-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.project-card-links {
+  display: flex;
+  gap: 16px;
+}
+
+.project-card-links a {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.project-card-links a:hover {
+  color: var(--text);
+}
+
+/* Project timeline */
+.project-timeline {}
+
+.timeline-group {
+  margin-bottom: 32px;
+}
+
+.timeline-year {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Project detail page extras */
+.project-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.post-meta-date {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.project-meta-links {
+  display: flex;
+  gap: 12px;
+}
+
+.project-meta-links a {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--border);
+}
+
+.project-meta-links a:hover {
+  text-decoration-color: var(--text);
+}
+
+.project-tech-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.project-hero-image {
+  margin-bottom: 24px;
+}
+
+.project-hero-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+/* Uses page */
+.uses-section {
+  margin-bottom: 32px;
+}
+
+.uses-section h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  letter-spacing: -0.3px;
+}
+
+.uses-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.uses-section li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.uses-section li:last-child {
+  border-bottom: none;
+}
+
+.uses-section li strong {
+  font-weight: 500;
+}
+
+/* Hamburger button */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hamburger-line {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--text);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.hamburger.open .hamburger-line:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.open .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open .hamburger-line:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Mobile nav overlay */
+.nav-mobile {
+  display: none;
+  flex-direction: column;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  gap: 12px;
+}
+
+.nav-mobile.open {
+  display: flex;
+}
+
+.nav-mobile a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 16px;
+  padding: 8px 0;
+}
+
+.nav-mobile a.active {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.nav-mobile a:hover {
+  color: var(--text);
+}
+
 /* Skip link (accessibility) */
 .skip-link {
   position: absolute;
@@ -464,7 +731,7 @@ code, pre {
   top: 8px;
 }
 
-/* Nav text variants */
+/* Nav text variants (legacy, kept for compat) */
 .nav-short {
   display: none;
 }
@@ -483,32 +750,12 @@ button:focus-visible {
     padding: 16px 20px;
   }
 
-  nav .nav-links {
-    gap: 16px;
+  .nav-desktop {
+    display: none !important;
   }
 
-  nav .nav-links a {
-    font-size: 14px;
-  }
-
-  .nav-full {
-    display: none;
-  }
-
-  .nav-short {
-    display: inline;
-  }
-
-  .theme-toggle {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 50;
-    background: var(--bg);
-    padding: 8px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  .hamburger {
+    display: flex;
   }
 
   .hero {

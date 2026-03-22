@@ -1,11 +1,15 @@
 ---
-title: "Oareo: Turning Spatial Captures into 3D Models on iOS"
+title: "Oareo"
+description: "iOS app that turns spatial captures into 3D models. Point your phone, capture, get a model."
 date: 2026-03-14
-description: "I released an iOS app that converts spatial captures into 3D models. 500 downloads in the first week."
+status: "shipped"
+tech: ["Swift", "iOS", "LiDAR", "3D", "ARKit"]
+appStore: "https://apps.apple.com/app/oareo"
+featured: true
 draft: false
 ---
 
-Last week I released [Oareo](https://apps.apple.com/app/oareo) on the App Store. It's an iOS app that lets you capture the world around you and turn it into 3D models.
+Oareo is an iOS app that lets you capture the world around you and turn it into 3D models.
 
 ## The idea
 
@@ -24,7 +28,3 @@ The goal was to make the process feel effortless. No manual alignment, no post-p
 Oareo hit 500 downloads in its first week on the App Store. For an indie app with zero marketing budget, that was encouraging. Most of the initial users came from developer communities and word of mouth.
 
 The feedback has been useful. People want better export formats, higher resolution captures, and sharing features. All of that is on the roadmap.
-
-## What's next
-
-I'm working on improving the capture quality and adding more export options. The spatial computing space is moving fast, and I want Oareo to be the simplest way to go from real world to 3D model.
