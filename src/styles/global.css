@@ -147,9 +147,13 @@ nav .nav-links a {
   padding: 8px 0;
 }
 
-nav .nav-links a:hover,
+nav .nav-links a:hover {
+  color: var(--text);
+}
+
 nav .nav-links a.active {
   color: var(--text);
+  font-weight: 500;
 }
 
 /* Theme toggle (icon-based) */
