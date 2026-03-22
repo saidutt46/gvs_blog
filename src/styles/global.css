@@ -557,6 +557,11 @@ code, pre {
   color: var(--text);
 }
 
+.project-card-links a:last-child {
+  font-weight: 500;
+  color: var(--text);
+}
+
 /* Project timeline */
 .project-timeline {}
 
