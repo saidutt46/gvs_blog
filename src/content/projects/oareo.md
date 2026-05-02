@@ -15,9 +15,20 @@ Oareo is a professional spatial capture app for iPhone and iPad Pro. Point the d
 
 ## What it actually does
 
-The pitch is simple: the iPhone Pro already has a LiDAR scanner and Apple's RoomPlan API is genuinely good. The hardware is in your pocket. Most apps wrap that hardware in something either too consumer (toy 3D scans) or too enterprise (a $5k surveying SDK with a learning curve). Oareo sits in the middle. It is a tool, not a toy.
+The pitch is simple: the iPhone Pro already has a LiDAR scanner and Apple's RoomPlan API is genuinely good. The hardware is in your pocket. Most apps wrap that hardware in something either too consumer (toy 3D scans) or too enterprise (a $5k surveying SDK with a learning curve). Oareo sits in the middle.
 
-You scan a room. You scan another. You link them into a multi-room structure. You export a floor plan as PDF, the geometry as USDZ or OBJ for AR work, the point cloud as PLY, or an STL if you want to 3D print the layout.
+> It is a tool, not a toy.
+
+You scan a room. You scan another. You link them into a multi-room structure. Then you export.
+
+| Format | What it's for |
+|---|---|
+| USDZ | Apple ecosystem, AR Quick Look |
+| OBJ | General 3D pipelines |
+| PLY | Vertex-colored point clouds |
+| STL | 3D printing |
+| PDF | Floor plans for paperwork |
+| PNG | Quick visual reference |
 
 ## What I care about with this product
 

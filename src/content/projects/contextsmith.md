@@ -13,7 +13,15 @@ contextsmith is a CLI that builds the context bundle you feed to a language mode
 
 ## The problem
 
-Working with an LLM on a real codebase is a packaging problem. Too little context and the model invents APIs. Too much and you blow the window or pay for tokens you didn't need. Doing this by hand, copying files, trimming, counting, is the worst part of the workflow.
+Working with an LLM on a real codebase is a packaging problem.
+
+| Too little context | Too much context |
+|---|---|
+| Model invents APIs | Blow the window |
+| Hallucinated function names | Pay for tokens you didn't need |
+| Miss the actual answer | Slow round-trips |
+
+Doing this by hand, copying files, trimming, counting, is the worst part of the workflow.
 
 ## What it does
 

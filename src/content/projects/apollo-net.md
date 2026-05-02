@@ -22,13 +22,19 @@ The **operator console** at `/ops` (and a planned `/network` and `/events`) is t
 
 The whole stack runs on a Minisforum UM790 Pro box (Ubuntu 24.04, codename gayaprime) sitting in the apartment.
 
-- **Snapshot builder.** Python stdlib only. Runs as a systemd user timer every 30 seconds. Writes a fresh `topology.json`.
-- **HUD static server.** systemd user unit on port 8765. Serves the legacy HTML HUD plus the current topology.
-- **Home Assistant.** Docker container with `network_mode: host` so mDNS and SSDP actually find devices. Pulls in Samsung SmartThings, LG webOS, Apple TV, Cync via HACS, thermostats, blinds, the PS5, and the Matter bridge.
-- **New TS HUD.** React 19, TypeScript strict, Tailwind v4. Runs on Vite during development. The eventual replacement for the legacy HUD.
+| Component | Runs as | Notes |
+|---|---|---|
+| Snapshot builder | systemd user timer | Python in a venv. Regenerates `topology.json` every 30 seconds. |
+| HUD static server | systemd user service | Localhost-only on port 8765. Serves the legacy HUD + current topology. |
+| Home Assistant | Docker container | `network_mode: host` for mDNS/SSDP. Aggregates SmartThings, webOS, Apple TV, Cync, thermostats, blinds, the PS5, the Matter bridge. |
+| New TS HUD | Vite dev server | React 19, TypeScript strict, Tailwind v4. The eventual replacement for the legacy HUD. |
 
 `loginctl enable-linger` is on, so the user units survive reboot. From my Mac I port-forward 8765, 8123, and 5173 over SSH and the whole thing feels local.
 
+For the systemd-user-unit-as-personal-infrastructure pattern this project sits on top of, see [Personal infrastructure with systemd user units](/blog/personal-infrastructure-systemd/).
+
 ## Why
 
-I run a moderately involved home network: BGW320 for fiber handoff, eero Pro 6 mesh, a managed switch, IoT segmented off, and forty-something devices. Off-the-shelf dashboards either hide the wrong things or surface them as text logs. I wanted a HUD. So I built one.
+I run a moderately involved home network: BGW320 for fiber handoff, eero Pro 6 mesh, a managed switch, IoT segmented off, and forty-something devices. Off-the-shelf dashboards either hide the wrong things or surface them as text logs.
+
+> I wanted a HUD. So I built one.

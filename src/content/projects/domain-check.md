@@ -19,12 +19,18 @@ It also ships as an MCP server, so an LLM can call it directly. That turned out 
 
 ## How it's distributed
 
-- `brew install saidutt46/tap/domain-check`
-- `cargo install domain-check`
-- `cargo install domain-check-mcp` for the MCP server
+| Audience | Install |
+|---|---|
+| macOS users | `brew install domain-check` |
+| Rust devs (CLI) | `cargo install domain-check` |
+| Rust devs (lib) | `domain-check-lib = "1.0"` in `Cargo.toml` |
+| AI agents | `cargo install domain-check-mcp` |
+| Anyone else | Pre-built binaries on [GitHub Releases](https://github.com/saidutt46/domain-check/releases) |
 
 ## Why Rust
 
 Two reasons. Network I/O at this scale wants async, and Tokio is the most boring, most reliable way to get that. And I wanted a real Rust project under my belt, something with a release pipeline, a tap, a published crate, and users who would file issues. Domain checking is a small enough problem to actually finish.
 
-The repo is past 250 stars now, which mostly tells me other people had the same itch.
+> The repo is past 260 stars now. Mostly tells me other people had the same itch.
+
+For the longer story (how it grew from a learning project to a tri-crate workspace, the IANA bootstrap that took TLD coverage from 32 to 1,200, and the MCP server angle), see [domain-check at 1.0: one engine, three faces](/blog/domain-check-three-faces/).

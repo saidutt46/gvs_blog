@@ -405,10 +405,66 @@ footer {
 }
 
 .post-content .post-body blockquote {
-  border-left: 3px solid var(--border);
-  padding-left: 1rem;
+  border-left: 3px solid var(--text);
+  padding: 0.25rem 0 0.25rem 1.25rem;
+  color: var(--text);
+  font-size: 18px;
+  font-style: italic;
+  margin: 1.5rem 0;
+}
+
+.post-content .post-body blockquote p {
+  margin: 0;
+}
+
+.post-content .post-body hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2.5rem 0;
+}
+
+/* Tables — readable in the column, break out wider on desktop */
+.post-content .post-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.post-content .post-body thead {
+  border-bottom: 1px solid var(--text);
+}
+
+.post-content .post-body th {
+  text-align: left;
+  font-weight: 500;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   color: var(--muted);
-  margin-bottom: 1rem;
+  padding: 8px 12px 8px 0;
+  vertical-align: bottom;
+}
+
+.post-content .post-body th:not(:last-child),
+.post-content .post-body td:not(:last-child) {
+  padding-right: 16px;
+}
+
+.post-content .post-body td {
+  padding: 10px 12px 10px 0;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.post-content .post-body tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.post-content .post-body td code {
+  font-size: 13px;
+  white-space: nowrap;
 }
 
 code, pre {
@@ -420,7 +476,7 @@ code, pre {
   padding: 1rem;
   border-radius: 4px;
   overflow-x: auto;
-  margin-bottom: 1rem;
+  margin: 1.25rem 0;
   font-size: 14px;
 }
 
@@ -442,6 +498,7 @@ code, pre {
   border-radius: 4px;
   margin: 1rem 0;
 }
+
 
 /* 404 */
 .not-found {

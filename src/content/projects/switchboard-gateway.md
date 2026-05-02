@@ -13,18 +13,29 @@ Switchboard is the API gateway you reach for when Kong feels like overkill and w
 
 ## What it does
 
-One process, sub-millisecond overhead, and the things every backend ends up needing:
+One process, sub-millisecond overhead, and the things every backend ends up needing.
 
-- **Authenticate** every request with API keys tied to a consumer record.
-- **Rate limit** per consumer, per route, per anything you care about.
-- **Cache** responses in Redis with whatever TTL the upstream deserves.
-- **Route** by host, path, or method to the right backend.
-- **Reconfigure** on the fly. No restarts, no dropped connections.
+| Capability | What it actually does |
+|---|---|
+| Authenticate | API keys tied to a consumer record. Every request, every time. |
+| Rate limit | Per consumer, per route, per anything else worth bucketing. |
+| Cache | Responses in Redis with whatever TTL the upstream deserves. |
+| Route | By host, path, or method to the right backend service. |
+| Reconfigure | Hot-reload, no restarts, no dropped connections. |
 
-The gateway is Go. The admin API is FastAPI. There's a small React admin UI for staring at consumers and routes without curling everything. State lives in PostgreSQL, cache and rate-limit counters in Redis, async events on Kafka.
+## Stack
+
+| Layer | Tech |
+|---|---|
+| Gateway | Go |
+| Admin API | Python + FastAPI |
+| Admin UI | React |
+| State | PostgreSQL |
+| Cache + counters | Redis |
+| Async events | Kafka |
 
 ## Why I'm building it
 
 I keep ending up in projects where someone has glued together nginx, a hand-rolled auth filter, and a Redis script for rate limiting. It works until it doesn't, and then nobody can debug it. I wanted to write the gateway I keep wishing existed: small enough to read, fast enough to forget about, and configurable without redeploying.
 
-The whole stack runs out of one `docker compose up`. That part matters more than it sounds.
+> The whole stack runs out of one `docker compose up`. That part matters more than it sounds.
