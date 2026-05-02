@@ -5,6 +5,7 @@
   --muted: #888888;
   --border: #e0e0e0;
   --link: #222222;
+  --accent: #AF87FF;
   --tag-bg: #f0f0f0;
   --tag-text: #999999;
   --code-bg: #f0f0f0;
@@ -17,6 +18,7 @@
   --muted: #737373;
   --border: #1a1a1a;
   --link: #fafafa;
+  --accent: #AF87FF;
   --tag-bg: #1a1a1a;
   --tag-text: #888888;
   --code-bg: #161616;
@@ -30,6 +32,7 @@
     --muted: #737373;
     --border: #1a1a1a;
     --link: #fafafa;
+    --accent: #AF87FF;
     --tag-bg: #1a1a1a;
     --tag-text: #888888;
     --code-bg: #161616;
@@ -96,17 +99,22 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Inline links in body text should always be underlined */
+/* Inline links in body text: text stays readable, accent draws the underline.
+   On hover, text shifts to accent for a clean color-pop. */
 .bio a,
 .post-body a {
+  color: var(--text);
   text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
   text-underline-offset: 3px;
-  text-decoration-color: var(--border);
+  transition: color 0.15s ease, text-decoration-thickness 0.15s ease;
 }
 
 .bio a:hover,
 .post-body a:hover {
-  text-decoration-color: var(--text);
+  color: var(--accent);
+  text-decoration-thickness: 3px;
 }
 
 /* Content container */
@@ -154,6 +162,10 @@ nav .nav-links a:hover {
 nav .nav-links a.active {
   color: var(--text);
   font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
 }
 
 /* Theme toggle (icon-based) */
@@ -405,7 +417,7 @@ footer {
 }
 
 .post-content .post-body blockquote {
-  border-left: 3px solid var(--text);
+  border-left: 3px solid var(--accent);
   padding: 0.25rem 0 0.25rem 1.25rem;
   color: var(--text);
   font-size: 18px;
