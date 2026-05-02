@@ -1,22 +1,22 @@
 ---
 title: "contextsmith"
-description: "A deterministic, token-aware context bundler for LLMs. Grep for LLMs. Fast, offline, no LLM calls."
+description: "A deterministic, token-aware context bundler for LLMs. Grep for the LLM era. Fast, offline, no model calls."
 date: 2026-02-01
 status: "active"
-tech: ["Rust", "CLI", "LLM", "Tokenization"]
+tech: ["Rust", "CLI", "Tokenization", "LLM"]
 github: "https://github.com/saidutt46/contextsmith"
 featured: false
 draft: false
 ---
 
-contextsmith is a CLI tool that bundles code context for LLMs. Think of it as grep, but designed specifically for feeding code to language models.
+contextsmith is a CLI that builds the context bundle you feed to a language model. Think of it as `grep` rewritten for the question "what should I paste into Claude."
 
 ## The problem
 
-When working with LLMs on codebases, you need to give them the right context. Too little and they hallucinate. Too much and you blow the token limit. Manually copying files is tedious and error-prone.
+Working with an LLM on a real codebase is a packaging problem. Too little context and the model invents APIs. Too much and you blow the window or pay for tokens you didn't need. Doing this by hand, copying files, trimming, counting, is the worst part of the workflow.
 
 ## What it does
 
-contextsmith is deterministic and token-aware. It bundles exactly the files and code sections you need, counts tokens accurately, and outputs a clean context bundle. No LLM calls required. Everything runs locally and offline.
+You point contextsmith at a repo with a query or a path glob. It selects files, trims them deterministically, counts tokens against the model you're targeting, and emits a clean bundle ready to paste or pipe. Same input, same output, every time. No network calls, no model in the loop, nothing to wait on.
 
-Built in Rust for speed. Handles large codebases without breaking a sweat.
+It is built in Rust because the only thing worse than packaging context by hand is waiting for a slow tool to do it for you. Large repos, many files, sub-second runs.

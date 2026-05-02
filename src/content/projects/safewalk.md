@@ -2,7 +2,7 @@
 title: "SafeWalk"
 description: "iOS app using LiDAR and real-time object detection to improve mobility and safety. Transforms your phone into a spatial awareness tool."
 date: 2025-11-01
-status: "shipped"
+status: "archived"
 tech: ["Swift", "SwiftUI", "LiDAR", "AVFoundation", "CoreML"]
 github: "https://github.com/saidutt46/SafeWalk"
 featured: false
