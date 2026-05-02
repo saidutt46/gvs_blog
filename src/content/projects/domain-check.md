@@ -1,28 +1,36 @@
 ---
 title: "domain-check"
-description: "A fast CLI tool for checking domain name availability. Supports bulk checking, multiple TLDs, and clean terminal output."
+description: "A fast Rust CLI for checking domain availability in bulk. Published on Homebrew, crates.io, and as an MCP server."
 date: 2025-06-01
 status: "active"
-tech: ["Rust", "CLI", "Tokio", "DNS", "WHOIS"]
+tech: ["Rust", "Tokio", "WHOIS", "RDAP", "MCP"]
 github: "https://github.com/saidutt46/domain-check"
 featured: true
 draft: false
 ---
 
-I built domain-check because I was tired of manually searching for domain names one at a time. I wanted something fast, something that worked from the terminal, and something that could check multiple domains in bulk.
+I built domain-check because I was tired of typing names into a registrar one at a time. I wanted something that lived in the terminal, ran a hundred lookups in parallel, and gave me an answer in under a second.
 
 ## What it does
 
-domain-check is a CLI tool that checks domain name availability. You give it a name (or a list of names), it tells you which ones are taken and which are available. It supports bulk checking, multiple TLDs, and outputs results in a clean, readable format.
+You feed it a name or a list of names, optionally with a set of TLDs, and it tells you which ones are available. It speaks RDAP where it can and falls back to WHOIS where it has to. The output is clean enough to pipe into other tools.
+
+It also ships as an MCP server, so an LLM can call it directly. That turned out to be the more interesting use case. You can ask Claude "find me a three-word .com that contains the word 'forge'" and have it actually verify availability instead of hallucinating names that were registered in 2014.
+
+## How it's distributed
+
+| Audience | Install |
+|---|---|
+| macOS users | `brew install domain-check` |
+| Rust devs (CLI) | `cargo install domain-check` |
+| Rust devs (lib) | `domain-check-lib = "1.0"` in `Cargo.toml` |
+| AI agents | `cargo install domain-check-mcp` |
+| Anyone else | Pre-built binaries on [GitHub Releases](https://github.com/saidutt46/domain-check/releases) |
 
 ## Why Rust
 
-I chose Rust for two reasons: speed and the learning experience. Domain checking involves a lot of network I/O. Rust's async runtime (tokio) handles concurrent requests efficiently, and the compiled binary is fast and portable.
+Two reasons. Network I/O at this scale wants async, and Tokio is the most boring, most reliable way to get that. And I wanted a real Rust project under my belt, something with a release pipeline, a tap, a published crate, and users who would file issues. Domain checking is a small enough problem to actually finish.
 
-The other reason was that I wanted to get better at Rust. Building a real tool that solves a real problem is the best way to learn a language.
+> The repo is past 260 stars now. Mostly tells me other people had the same itch.
 
-## What I learned
-
-Building a CLI tool is a great first project in any language. The scope is naturally constrained. You have clear inputs, clear outputs, and no UI to worry about. It forces you to think about error handling, argument parsing, and user experience in the terminal.
-
-The project now has over 250 stars on GitHub, which tells me other developers had the same itch I did.
+For the longer story (how it grew from a learning project to a tri-crate workspace, the IANA bootstrap that took TLD coverage from 32 to 1,200, and the MCP server angle), see [domain-check at 1.0: one engine, three faces](/blog/domain-check-three-faces/).

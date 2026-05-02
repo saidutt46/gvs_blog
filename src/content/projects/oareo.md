@@ -1,30 +1,43 @@
 ---
 title: "Oareo"
-description: "iOS app that turns spatial captures into 3D models. Point your phone, capture, get a model."
+description: "Professional LiDAR scanning for iOS. Turn an iPhone into a precision surveying tool. No accounts, no cloud, real metric accuracy."
 date: 2026-03-14
 status: "shipped"
-tech: ["Swift", "iOS", "LiDAR", "3D", "ARKit"]
-appStore: "https://apps.apple.com/app/oareo"
+tech: ["Swift", "SwiftUI", "Core Data", "RoomPlan", "ARKit", "LiDAR"]
+appStore: "https://apps.apple.com/us/app/oareo/id6757112907"
+liveUrl: "https://oareo.com"
+github: "https://github.com/saidutt46/oareo-client"
 featured: true
 draft: false
 ---
 
-Oareo is an iOS app that lets you capture the world around you and turn it into 3D models.
+Oareo is a professional spatial capture app for iPhone and iPad Pro. Point the device at a room, walk through it, and get a measured floor plan and a 3D model you can export.
 
-## The idea
+## What it actually does
 
-Modern iPhones have LiDAR sensors and powerful cameras. The hardware for spatial capture is already in your pocket. But the software to do something useful with it is either too complex or too limited. Going from "point your phone at a thing" to "here's a 3D model you can share" shouldn't be hard.
+The pitch is simple: the iPhone Pro already has a LiDAR scanner and Apple's RoomPlan API is genuinely good. The hardware is in your pocket. Most apps wrap that hardware in something either too consumer (toy 3D scans) or too enterprise (a $5k surveying SDK with a learning curve). Oareo sits in the middle.
 
-Oareo bridges that gap. Point your phone, capture, and get a 3D model. Simple.
+> It is a tool, not a toy.
 
-## How it works
+You scan a room. You scan another. You link them into a multi-room structure. Then you export.
 
-The app uses the iPhone's spatial capture capabilities to scan objects and environments. It processes the capture data on-device and generates 3D models that you can view, rotate, and export.
+| Format | What it's for |
+|---|---|
+| USDZ | Apple ecosystem, AR Quick Look |
+| OBJ | General 3D pipelines |
+| PLY | Vertex-colored point clouds |
+| STL | 3D printing |
+| PDF | Floor plans for paperwork |
+| PNG | Quick visual reference |
 
-The goal was to make the process feel effortless. No manual alignment, no post-processing on a desktop, no technical knowledge required. You just capture and get a result.
+## What I care about with this product
 
-## First week
+**Geometry first.** No AI hallucinations of walls that aren't there. Every measurement is grounded in real LiDAR depth data. The numbers have to be defensible.
 
-Oareo hit 500 downloads in its first week on the App Store. For an indie app with zero marketing budget, that was encouraging. Most of the initial users came from developer communities and word of mouth.
+**Local first.** No accounts. No cloud uploads. No analytics on the spaces you scan. Your apartment, your office, your client site, none of it leaves the device until you choose to share an export. This sounds like marketing copy until you actually try to find another scanning app that does this.
 
-The feedback has been useful. People want better export formats, higher resolution captures, and sharing features. All of that is on the roadmap.
+**Professional exports.** USDZ for the Apple ecosystem, OBJ for general 3D pipelines, PLY for point-cloud workflows, STL for printing, PDF and PNG for paperwork. The export list is the product surface for anyone who actually uses scans for work.
+
+## Stack
+
+The app is Swift and SwiftUI with Core Data for persistence, RoomPlan and ARKit for capture, and a custom export pipeline for the formats above. The marketing site at [oareo.com](https://oareo.com) is a separate SvelteKit project (Svelte 5, Tailwind v4, Three.js for the hero scene). The repo linked below is the marketing client. The app source itself is private.

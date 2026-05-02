@@ -2,62 +2,84 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Uses" description="Tools, hardware, and software I use." activeNav="uses">
+<BaseLayout title="Uses" description="Hardware and software I actually reach for. Updated when things change." activeNav="uses">
   <div class="content">
     <div class="section-header">
       <h2 class="section-title">Uses</h2>
-      <p class="section-desc">Tools, hardware, and software I use for building things. Updated as things change.</p>
+      <p class="section-desc">The tools I actually reach for. Updated when things change, not on a schedule.</p>
+    </div>
+
+    <div class="uses-section">
+      <h3>Machines</h3>
+      <ul>
+        <li><strong>MacBook Pro M4 Pro</strong> (14-core, 24GB, 500GB) running macOS 26. Primary dev machine. Codename: skynet.</li>
+        <li><strong>Minisforum UM790 Pro</strong> running Ubuntu 24.04 LTS. Linux dev box, ML playground, and home for the apartment&apos;s network HUD. Sits in the closet, never sleeps. Codename: gayaprime.</li>
+        <li><strong>iPhone 17 Pro</strong> for iOS testing and LiDAR capture for Oareo.</li>
+        <li><strong>iPad Pro 13&quot;</strong> (M4) for reading, sketching, and the occasional second screen.</li>
+      </ul>
     </div>
 
     <div class="uses-section">
       <h3>Editor and Terminal</h3>
       <ul>
-        <li><strong>VS Code</strong> for most development</li>
-        <li><strong>Xcode</strong> for iOS and Swift projects</li>
-        <li><strong>Visual Studio</strong> (17/19/22/26) at work for C# and C++</li>
-        <li><strong>Ghostty</strong> as my primary terminal</li>
-        <li><strong>Mac Terminal</strong> as a secondary</li>
-        <li><strong>Custom zsh</strong> profile with lots of aliases and scripts</li>
-        <li><strong>PowerShell 7</strong> + Windows Terminal + WSL Debian at work</li>
+        <li><strong>Claude Code</strong> in Ghostty for most of my day. The CLI is the loop now, the editor is the diff viewer.</li>
+        <li><strong>VS Code</strong> for everything that isn&apos;t Swift.</li>
+        <li><strong>Xcode</strong> for iOS work. There is no real alternative and I&apos;ve made peace with that.</li>
+        <li><strong>Ghostty</strong> as the terminal, with zsh, starship, zoxide, and fzf.</li>
+        <li><strong>Obsidian</strong> for the second brain. Vault at <code>~/Vault</code>, synced via Obsidian Sync.</li>
       </ul>
     </div>
 
     <div class="uses-section">
       <h3>Languages</h3>
       <ul>
-        <li><strong>Python</strong> for scripting, ML, and quick prototyping</li>
-        <li><strong>C#</strong> at work and personal projects</li>
-        <li><strong>Rust</strong> for CLI tools and systems programming</li>
-        <li><strong>TypeScript / JavaScript</strong> for web</li>
-        <li><strong>Go</strong> for backend services</li>
-        <li><strong>Swift</strong> for iOS apps</li>
-        <li><strong>C++ / SQL / VBScript</strong> at work</li>
+        <li><strong>Rust</strong> for CLI tools and anything that needs to be fast and small. domain-check and contextsmith are both Rust.</li>
+        <li><strong>Swift</strong> for iOS. SwiftUI by default, UIKit when SwiftUI gives up.</li>
+        <li><strong>Go</strong> for backend services. Switchboard Gateway lives here.</li>
+        <li><strong>TypeScript</strong> for everything web. Astro for this site, SvelteKit for oareo.com, Next.js for Periodiq.</li>
+        <li><strong>Python</strong> for ML, scripting, and gluing things together on the Linux box.</li>
       </ul>
     </div>
 
     <div class="uses-section">
-      <h3>Hardware</h3>
+      <h3>Infra</h3>
       <ul>
-        <li><strong>MacBook Pro M4</strong> for personal development</li>
-        <li><strong>Minisforum UM890 Pro</strong> (64GB) running Windows 11 and Kali Linux</li>
-        <li><strong>LG 4K monitors</strong></li>
-        <li><strong>NuPhy keyboard</strong></li>
-        <li><strong>Logitech MX Master 3</strong></li>
-        <li><strong>iPhone 15 Pro</strong> for iOS testing and spatial capture</li>
-        <li><strong>iPad Pro 13"</strong> (latest gen)</li>
-        <li><strong>AirPods Pro</strong> and <strong>Sony WH-1000XM4</strong></li>
+        <li><strong>Docker</strong> for everything that touches a database or a service. PostgreSQL, Redis, Kafka, Open WebUI, Home Assistant, all in containers on gayaprime.</li>
+        <li><strong>GitHub</strong> for code, releases, CI, and the occasional issue tracker.</li>
+        <li><strong>Vercel</strong> for production web deploys. GitHub Pages for this site.</li>
+        <li><strong>Homebrew</strong> on the Mac, <code>apt</code> + <code>cargo install</code> + Docker on the Linux box. No global pip, ever.</li>
       </ul>
     </div>
 
     <div class="uses-section">
-      <h3>Apps and Services</h3>
+      <h3>AI</h3>
       <ul>
-        <li><strong>Safari</strong> as my default browser, with Brave and Chrome as backups</li>
-        <li><strong>Claude</strong>, <strong>ChatGPT</strong>, and <strong>Gemini</strong> for AI assistance</li>
-        <li><strong>GitHub Copilot</strong> with Claude/Codex at work</li>
-        <li><strong>OneNote</strong>, <strong>Notion</strong>, and <strong>Apple Notes</strong> for notes</li>
-        <li><strong>GitHub</strong> for code and hosting</li>
-        <li><strong>Claude Code</strong> for AI-assisted development</li>
+        <li><strong>Claude</strong> as the daily driver. Claude Code in the terminal, the desktop app for everything else.</li>
+        <li><strong>ChatGPT</strong> and <strong>Perplexity</strong> for second opinions and search.</li>
+        <li><strong>Ollama</strong> on gayaprime running <code>llama3.2</code> behind Open WebUI. Local model when I want one.</li>
+      </ul>
+    </div>
+
+    <div class="uses-section">
+      <h3>Hardware around the desk</h3>
+      <ul>
+        <li><strong>LG 4K monitors</strong>.</li>
+        <li><strong>NuPhy</strong> mechanical keyboard.</li>
+        <li><strong>Logitech MX Master 3</strong>.</li>
+        <li><strong>AirPods Pro</strong> and <strong>Sony WH-1000XM4</strong> depending on whether I want to be reachable.</li>
+      </ul>
+    </div>
+
+    <div class="uses-section">
+      <h3>At work</h3>
+      <p style="color: var(--muted); font-size: 14px;">
+        Full-stack developer at <a href="https://www.centralsquare.com" target="_blank" rel="noopener">CentralSquare Technologies</a>, building public administration, public safety, and justice software.
+      </p>
+      <ul>
+        <li><strong>Visual Studio</strong> (17 / 19 / 22) for C# and C++.</li>
+        <li><strong>PowerShell 7</strong> + Windows Terminal + WSL Debian.</li>
+        <li><strong>GitHub Copilot</strong> with Claude and Codex backends.</li>
+        <li>C#, C++, SQL, and the occasional VBScript that refuses to die.</li>
       </ul>
     </div>
   </div>
