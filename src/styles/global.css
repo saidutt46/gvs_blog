@@ -253,6 +253,15 @@ footer {
   color: var(--text);
 }
 
+/* Home page sections below the hero */
+.home-sections {
+  margin-bottom: 60px;
+}
+
+.home-sections .section-header:first-child {
+  margin-top: 0;
+}
+
 /* Section header */
 .section-header {
   margin-top: 60px;

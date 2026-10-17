@@ -123,3 +123,5 @@
 | 2026-03-21 | 640px max content width            | Optimal reading line length (65-75 characters)              |
 | 2026-03-21 | Back links on post pages           | Added during /plan-design-review for better navigation      |
 | 2026-03-21 | Skip-to-content + ARIA landmarks   | Accessibility baseline added during design review           |
+| 2026-10-17 | Home page: "Selected work" + "Writing" lists | Reuse `post-list` rows so visitors see the work without leaving the about page |
+| 2026-10-17 | Notes hidden from nav | Section is empty; route kept so it can come back with real notes |

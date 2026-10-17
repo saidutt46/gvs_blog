@@ -1,21 +1,37 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PostList from '../components/PostList.astro';
+import { getCollection } from 'astro:content';
 import { Github, Linkedin, Mail } from 'lucide-astro';
 const base = import.meta.env.BASE_URL;
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const work = [
+  { slug: 'domain-check', title: 'domain-check', meta: 'Rust CLI, library, MCP server' },
+  { slug: 'oareo', title: 'Oareo', meta: 'LiDAR scanning, App Store' },
+  { slug: 'meontor', title: 'Meontor', meta: 'iOS, on-device AI' },
+  { slug: 'doorframe', title: 'Doorframe', meta: 'iOS, LiDAR + Vision' },
+  { slug: 'channelos', title: 'ChannelOS', meta: 'FastAPI, local LLM agent' },
+];
 ---
 
-<BaseLayout title="gvs" description="Software developer, tinkerer, and writer." activeNav="about">
+<BaseLayout title="gvs" description="Software engineer. I build products end to end, from backend services to iOS apps." activeNav="about">
   <div class="hero">
     <h1>Hi, I'm Venkata Sai Dutt Ganduri</h1>
-    <p class="subtitle">Software developer. Tinkerer. Curious about how things work.</p>
+    <p class="subtitle">Software engineer. I build products end to end, from backend services to iOS apps.</p>
     <div class="bio">
       <p>
-        I'm a full-stack developer at <a href="https://www.centralsquare.com" target="_blank" rel="noopener">CentralSquare Technologies</a>,
+        I've been writing software professionally for nine years. Today I'm a full-stack engineer at
+        <a href="https://www.centralsquare.com" target="_blank" rel="noopener">CentralSquare Technologies</a>,
         where I build public administration, public safety, and justice software.
       </p>
       <p>
-        Outside of work, I build tools and apps. Rust CLIs, iOS apps, developer utilities.
-        Check out my <a href={`${base}projects/`}>projects</a> for the full list.
+        Outside of work I ship my own things: a Rust CLI and MCP server in homebrew-core, a LiDAR
+        scanning app on the App Store, and iOS apps that run their AI on the device instead of a server.
+        The <a href={`${base}projects/`}>projects</a> page has all of it.
       </p>
       <p>
         I like understanding how things work: electrons, engines, programs, the natural world.
@@ -37,5 +53,28 @@ const base = import.meta.env.BASE_URL;
         <Mail size={16} /> email
       </a>
     </div>
+  </div>
+
+  <div class="content home-sections">
+    <div class="section-header">
+      <h2 class="section-title">Selected work</h2>
+    </div>
+    <ul class="post-list">
+      {work.map((w) => (
+        <li class="post-item">
+          <a class="post-title" href={`${base}projects/${w.slug}/`}>{w.title}</a>
+          <span class="post-date">{w.meta}</span>
+        </li>
+      ))}
+    </ul>
+
+    {posts.length > 0 && (
+      <>
+        <div class="section-header">
+          <h2 class="section-title">Writing</h2>
+        </div>
+        <PostList items={posts} basePath="blog" />
+      </>
+    )}
   </div>
 </BaseLayout>
