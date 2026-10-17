@@ -5,6 +5,8 @@ description: "Where domain-check is two years on. From a Rust learning project t
 draft: false
 ---
 
+*Update, October 2026: domain-check is at 1.2 now, past 300 stars and 21 forks, and the formula lives in homebrew-core instead of my own tap. 1.1 added RFC 10023 for-sale detection, and 1.2 hardened WHOIS. The [project page](/projects/domain-check/) has the details.*
+
 A while back I wrote a [Medium post](https://medium.com/@saidutt46/domain-check-transforming-curiosity-into-a-thriving-rust-project-7fbd7344311b) about the early days of [domain-check](https://github.com/saidutt46/domain-check). The story at the time was small: a learning project that grew up a little, picked up 40 stars on a good Reddit thread, and split itself into a CLI plus a library because someone politely asked.
 
 That was a while ago. We are at **260 stars and 14 forks** now, version **1.0.2**, and the project looks materially different. It is still domain availability checking. It is no longer one binary doing one thing.

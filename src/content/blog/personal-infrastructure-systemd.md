@@ -5,6 +5,8 @@ description: "How Apollo-Net runs on the small Linux box in my closet. A walkthr
 draft: false
 ---
 
+*Update, October 2026: two things have changed since I wrote this. I moved from per-port SSH forwarding to Tailscale, which now carries everything, including my phone reaching services on this box. And Apollo-Net itself is paused. The systemd pattern is unchanged, and it is still how I would run a small personal service.*
+
 There is a Minisforum UM790 Pro sitting in my closet. It runs Ubuntu 24.04, it never sleeps, and it hosts a small pile of services I rely on every day. One of them is [Apollo-Net](/projects/apollo-net), the operator HUD I built for my apartment's network. This post is about how Apollo-Net actually runs on that box, because the answer involves a piece of systemd that I think more people should know about.
 
 The TL;DR: **systemd user units plus `loginctl enable-linger` are the right primitive for personal infrastructure.** No root, no Docker per service, no cron tricks, no homemade init script that breaks at the worst moment. Real services that survive reboot, log to journalctl, and read like the systemd units a sysadmin would write.

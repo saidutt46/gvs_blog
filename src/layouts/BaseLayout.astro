@@ -56,7 +56,6 @@ const base = import.meta.env.BASE_URL;
       <div class="nav-links nav-desktop">
         <a href={`${base}`} class={activeNav === 'about' ? 'active' : ''}>about</a>
         <a href={`${base}blog/`} class={activeNav === 'blog' ? 'active' : ''}>blog</a>
-        <a href={`${base}notes/`} class={activeNav === 'notes' ? 'active' : ''}>notes</a>
         <a href={`${base}projects/`} class={activeNav === 'projects' ? 'active' : ''}>projects</a>
         <a href={`${base}uses/`} class={activeNav === 'uses' ? 'active' : ''}>uses</a>
         <button class="theme-toggle-icon" id="theme-toggle-desktop" aria-label="Toggle theme">
@@ -77,7 +76,6 @@ const base = import.meta.env.BASE_URL;
     <div class="nav-mobile" id="nav-mobile" aria-hidden="true">
       <a href={`${base}`} class={activeNav === 'about' ? 'active' : ''}>about</a>
       <a href={`${base}blog/`} class={activeNav === 'blog' ? 'active' : ''}>blog</a>
-      <a href={`${base}notes/`} class={activeNav === 'notes' ? 'active' : ''}>notes</a>
       <a href={`${base}projects/`} class={activeNav === 'projects' ? 'active' : ''}>projects</a>
       <a href={`${base}uses/`} class={activeNav === 'uses' ? 'active' : ''}>uses</a>
       <button class="theme-toggle-icon" id="theme-toggle-mobile" aria-label="Toggle theme">
