@@ -26,7 +26,7 @@ The whole stack runs on a Minisforum UM790 Pro box (Ubuntu 24.04, codename gayap
 |---|---|---|
 | Snapshot builder | systemd user timer | Python in a venv. Regenerates `topology.json` every 30 seconds. |
 | HUD static server | systemd user service | Localhost-only on port 8765. Serves the legacy HUD + current topology. |
-| Home Assistant | Docker container | `network_mode: host` for mDNS/SSDP. Aggregates SmartThings, webOS, Apple TV, Cync, thermostats, blinds, the PS5, the Matter bridge. |
+| Home Assistant | Docker container | `network_mode: host` for mDNS/SSDP. Aggregates the apartment's smart-home integrations. |
 | New TS HUD | Vite dev server | React 19, TypeScript strict, Tailwind v4. The eventual replacement for the legacy HUD. |
 
 `loginctl enable-linger` is on, so the user units survive reboot. From my Mac I port-forward 8765, 8123, and 5173 over SSH and the whole thing feels local.
@@ -35,6 +35,6 @@ For the systemd-user-unit-as-personal-infrastructure pattern this project sits o
 
 ## Why
 
-I run a moderately involved home network: BGW320 for fiber handoff, eero Pro 6 mesh, a managed switch, IoT segmented off, and forty-something devices. Off-the-shelf dashboards either hide the wrong things or surface them as text logs.
+I run a moderately involved home network: fiber, a mesh, a managed switch, IoT segmented off, and forty-something devices. Off-the-shelf dashboards either hide the wrong things or surface them as text logs.
 
 > I wanted a HUD. So I built one.

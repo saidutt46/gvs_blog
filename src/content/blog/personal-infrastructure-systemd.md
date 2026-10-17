@@ -131,15 +131,15 @@ The rule I follow: if the upstream project ships a Docker image and expects you 
 The UM790 is in the closet, my MacBook is on the desk. Every Apollo-Net service binds to `127.0.0.1` so nothing is exposed to the network. To use them from the Mac, I forward the relevant ports over SSH. In `~/.ssh/config`:
 
 ```sshconfig
-Host um790
-  HostName 192.168.1.42
-  User saidutt
+Host linuxbox
+  HostName <box-hostname-or-ip>
+  User <you>
   LocalForward 5173 127.0.0.1:5173
   LocalForward 8123 127.0.0.1:8123
   LocalForward 8765 127.0.0.1:8765
 ```
 
-Run `ssh um790` once and leave the connection open. Now `http://127.0.0.1:8765` on the Mac is the HUD running on the Linux box. `http://127.0.0.1:8123` is Home Assistant. `http://127.0.0.1:5173` is the new TS HUD's Vite dev server when I am working on it.
+Run `ssh linuxbox` once and leave the connection open. Now `http://127.0.0.1:8765` on the Mac is the HUD running on the Linux box. `http://127.0.0.1:8123` is Home Assistant. `http://127.0.0.1:5173` is the new TS HUD's Vite dev server when I am working on it.
 
 This is the part that surprised me with how well it works. The services are not exposed to the network. There is no reverse proxy, no Tailscale, no VPN. SSH is doing all the work, the same SSH I already use to log into the box. The only state on the Mac is the SSH config entry.
 

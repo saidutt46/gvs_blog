@@ -2,7 +2,7 @@
 title: "Markdown Template: Blog Post Guide"
 date: 2026-03-21
 description: "A reference post showing all markdown elements supported on this blog."
-draft: false
+draft: true
 ---
 
 This post demonstrates every markdown element you can use when writing blog posts. Use this as a reference for formatting.
@@ -106,7 +106,7 @@ Every blog post needs this frontmatter at the top:
 title: "Your Post Title"
 date: 2026-03-21
 description: "A short description for SEO and link previews."
-draft: false
+draft: true
 ---
 ```
 
