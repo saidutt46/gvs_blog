@@ -1,6 +1,6 @@
 ---
 title: "Photogram"
-description: "Turn a folder of photos into a 3D model from the terminal, using Apple's Object Capture. A reusable Swift engine plus a scriptable CLI."
+description: "A command-line tool that turns a folder of photos into a 3D model with Apple's Object Capture. A reusable Swift engine with a CLI on top."
 date: 2026-05-26
 status: "active"
 tech: ["Swift", "SwiftPM", "RealityKit", "Object Capture", "CLI"]
@@ -9,24 +9,24 @@ featured: false
 draft: false
 ---
 
-Apple ships a very good photogrammetry engine in RealityKit, `PhotogrammetrySession`, and almost no way to use it without writing an app. Photogram is the missing command line.
+RealityKit includes a photogrammetry engine, `PhotogrammetrySession`. It makes good 3D models from photos, but Apple gives you no command-line tool for it. To use it, you have to write an app. I wrote Photogram so I can run it from the terminal.
 
 ```bash
 photogram convert ./shoe-photos shoe.usdz --mode object --detail full
 ```
 
-## What it does
+## Commands
 
 | Command | What it does |
 |---|---|
-| `convert <input> [output]` | Reconstruct a USDZ or OBJ model from a folder of images. The default command. |
-| `info <input>` | Image count, format breakdown, and whether the folder is usable, before you commit to a two-minute run. |
-| `doctor` | Whether this Mac supports Object Capture, plus the engine's limits. |
+| `convert <input> [output]` | Makes a USDZ or OBJ model from a folder of images. This is the default command. |
+| `info <input>` | Shows the image count and formats, and tells you if the folder is usable. Run it before a two-minute conversion. |
+| `doctor` | Tells you if this Mac supports Object Capture, and shows the engine limits. |
 
-Every command takes `--json`, so it scripts cleanly. `--mode object` masks and crops to a single item; `--mode area` keeps the full extent for a room or scene. The rest of the flags map one-to-one onto the session's own configuration: detail level, sample ordering, and feature sensitivity for smooth or low-texture objects.
+All commands accept `--json`, so you can use them in scripts. `--mode object` masks and crops the images to one item. `--mode area` keeps the full scene, for a room. The other flags map directly to the session's settings: detail level, sample ordering, and feature sensitivity for smooth objects with little texture.
 
-## How it's built
+## How I built it
 
-Two targets in one Swift package. `PhotogrammetryKit` is the engine: it wraps the session, streams progress, and maps errors into something a human can act on. The `photogram` CLI is a thin layer on top. I split them on purpose so a SwiftUI drag-and-drop app can share the same engine later.
+The Swift package has two targets. `PhotogrammetryKit` is the engine. It wraps the session, sends progress as an async stream of events, and turns errors into messages that a person can act on. The `photogram` CLI is a thin layer on the engine. I kept them separate so that a SwiftUI app can use the same engine later.
 
-It needs macOS 15+ on Apple silicon. `make install` builds a release binary with a man page. Version 0.1.0 is on GitHub.
+Photogram needs macOS 15 or later on Apple silicon. `make install` builds a release binary and installs a man page. Version 0.1.0 is on GitHub.

@@ -1,56 +1,52 @@
 ---
 title: "Personal infrastructure with systemd user units"
 date: 2026-05-02
-description: "How Apollo-Net runs on the small Linux box in my closet. A walkthrough of using systemd user units, linger, and SSH port-forwarding to build personal services that survive reboot, don't need root, and feel local from another machine."
+description: "How Apollo-Net runs on the small Linux box in my closet, with systemd user units, linger, and SSH port forwarding. The services survive a reboot, need no root, and feel local from another machine."
 draft: false
 ---
 
-*Update, October 2026: two things have changed since I wrote this. I moved from per-port SSH forwarding to Tailscale, which now carries everything, including my phone reaching services on this box. And Apollo-Net itself is paused. The systemd pattern is unchanged, and it is still how I would run a small personal service.*
+*Update, October 2026: two things have changed since I wrote this. I now reach this box over Tailscale instead of the home LAN, including from my phone. The services in this post still bind to localhost, so the SSH forwarding below works the same way over that connection. Also, Apollo-Net is paused. The systemd pattern has not changed, and I would still use it to run a small personal service.*
 
-There is a Minisforum UM790 Pro sitting in my closet. It runs Ubuntu 24.04, it never sleeps, and it hosts a small pile of services I rely on every day. One of them is [Apollo-Net](/projects/apollo-net), the operator HUD I built for my apartment's network. This post is about how Apollo-Net actually runs on that box, because the answer involves a piece of systemd that I think more people should know about.
+A Minisforum UM790 Pro sits in my closet. It runs Ubuntu 24.04 and never sleeps. It hosts a small group of services that I use every day. One of them is [Apollo-Net](/projects/apollo-net), the operator HUD I built for my apartment's network. This post explains how Apollo-Net runs on that box. The answer uses a part of systemd that I think more people should know about.
 
-The TL;DR: **systemd user units plus `loginctl enable-linger` are the right primitive for personal infrastructure.** No root, no Docker per service, no cron tricks, no homemade init script that breaks at the worst moment. Real services that survive reboot, log to journalctl, and read like the systemd units a sysadmin would write.
+In summary: systemd user units with `loginctl enable-linger` are the right base for personal infrastructure. They do not need root, and they replace cron jobs and custom init scripts. The services survive reboot and log to journalctl. The unit files are the same kind that a sysadmin would write.
 
 ## The setup
 
-Apollo-Net has three moving parts on the box:
+Apollo-Net has three parts on the box:
 
-1. A **snapshot builder**. A small Python script (in its own venv) that walks the home network, talks to Home Assistant, and builds a `topology.json` describing every device, every room, and every capability. Runs on a timer.
-2. A **HUD static server**. Serves the legacy HTML interface and the current `topology.json` over HTTP on port 8765, bound to localhost only. Just `python3 -m http.server` with the right `--directory`.
-3. **Home Assistant**. This one runs in Docker because HA wants `network_mode: host` for mDNS and SSDP discovery and I am not going to fight that on the host.
+1. A snapshot builder. This is a small Python script in its own venv. It scans the home network, talks to Home Assistant, and builds a `topology.json` file. The file describes every device, every room, and every capability. A timer runs the script.
+2. A HUD static server. It serves the legacy HTML interface and the current `topology.json` over HTTP on port 8765. It binds to localhost only. It is `python3 -m http.server` with the correct `--directory`.
+3. Home Assistant. It runs in Docker, because HA needs `network_mode: host` for mDNS and SSDP discovery. I do not want to work against that on the host.
 
-The first two are the interesting ones for this post. They are the parts I wanted running as long-lived background services on this box, restarted automatically if they crash, surviving reboots, and not requiring me to remember to start them manually.
+This post is about the first two parts. I wanted them to run as long-lived background services on the box. They had to restart automatically after a crash, survive reboots, and start without my help.
 
-## What I did not want to do
-
-A few options I considered and rejected:
+## Options I rejected
 
 | Option | Why not |
 |---|---|
-| `crontab @reboot` | No restart-on-failure, no journaled logs, no clean stop. Cron is a scheduler, not a service manager. |
-| A Docker container per service | Wrapping a small Python script in a Dockerfile adds more operational surface than the script itself contains. The host venv is enough isolation. |
-| System-wide systemd units in `/etc/systemd/system/` | Means root for every tweak. Wrong friction for a personal project. |
-| A shell script with `nohup` and a PID file | No. |
+| `crontab @reboot` | No restart on failure, no journaled logs, and no clean stop. Cron is a scheduler. It is not a service manager. |
+| A Docker container per service | A Dockerfile for a small Python script adds more operational work than the script itself. The host venv gives enough isolation. |
+| System-wide systemd units in `/etc/systemd/system/` | Every change needs root. That is too much friction for a personal project. |
+| A shell script with `nohup` and a PID file | I did not want to maintain this. |
 
-## What systemd user units actually are
+## What systemd user units are
 
-systemd has two parallel daemons: the system one (PID 1, manages everything in `/etc/systemd/system/`), and a per-user one that runs alongside it and manages units in `~/.config/systemd/user/`. The user instance has the same interface as the system one. You write the same kind of unit files. You use the same `systemctl` and `journalctl` commands, just with `--user` added.
+systemd runs two kinds of instances. The system instance is PID 1, and it manages the units in `/etc/systemd/system/`. A per-user instance runs next to it and manages the units in `~/.config/systemd/user/`. The user instance has the same interface as the system instance. You write the same type of unit files. You use the same `systemctl` and `journalctl` commands, with `--user` added.
 
-The catch: by default, the user systemd instance only runs while you are actively logged in. The moment you log out, your user services die. This is fine for desktop session services. It is not fine for "the snapshot builder needs to run forever even if I am not SSH'd in."
+By default, the user instance runs only while you are logged in. When you log out, your user services stop. This is acceptable for desktop session services. It does not work for a snapshot builder that must run when I am not connected over SSH.
 
-## The trick: enable-linger
+## Keep user services running with enable-linger
 
 ```bash
 sudo loginctl enable-linger $USER
 ```
 
-That command tells systemd to start your user instance at boot and keep it running regardless of whether you have an active session. From that point on, your user services are real services. They start at boot. They survive logout. They survive reboot. They get restart policies. They log to journalctl.
+This command tells systemd to start your user instance at boot. The instance then keeps running, whether or not you have an active session. After this, your user services behave like real services. They start at boot and continue after logout and reboot. They have restart policies, and they log to journalctl.
 
-> Without `enable-linger`, user units are toys. With it, they are infrastructure.
+## The snapshot timer
 
-## What the snapshot timer actually looks like
-
-These are the real unit files running on the box right now.
+These are the real unit files on the box.
 
 `~/.config/systemd/user/apollo-net-snapshot.service`:
 
@@ -83,14 +79,14 @@ Unit=apollo-net-snapshot.service
 WantedBy=timers.target
 ```
 
-That is the entire snapshot subsystem. A oneshot service that runs the venv's Python on `build_snapshot.py`, a timer that fires it every 30 seconds with 1 second of accuracy slack, and `Nice=5` to keep it polite about CPU. The first run is delayed 10 seconds after boot to let the network come up. To enable:
+These two files are the full snapshot subsystem. A oneshot service runs `build_snapshot.py` with the venv's Python. A timer starts the service every 30 seconds, with 1 second of accuracy slack. `Nice=5` gives the job a lower CPU priority. The first run waits 10 seconds after boot, so the network can come up first. To enable the timer:
 
 ```bash
 systemctl --user daemon-reload
 systemctl --user enable --now apollo-net-snapshot.timer
 ```
 
-To inspect:
+To inspect it:
 
 ```bash
 systemctl --user list-timers apollo-net-snapshot.timer
@@ -98,7 +94,7 @@ journalctl --user -u apollo-net-snapshot -f
 systemctl --user start apollo-net-snapshot.service   # force a snapshot off-cadence
 ```
 
-The HUD server is similarly compact:
+The HUD server unit is also short:
 
 ```ini
 [Unit]
@@ -118,19 +114,19 @@ Nice=5
 WantedBy=default.target
 ```
 
-`Type=simple` because this is a long-running process that doesn't background itself. `Restart=on-failure` with a 3-second backoff means a crashed HUD comes back without me noticing. `--bind 127.0.0.1` is the important flag: the HUD is not exposed to the network, only to localhost on the box itself. Anything reaching it from another machine has to come through SSH.
+I use `Type=simple` because the process runs for a long time and does not move itself to the background. `Restart=on-failure` with a 3-second delay restarts a crashed HUD before I notice. The most important flag is `--bind 127.0.0.1`. It keeps the HUD off the network, so only localhost on the box can reach it. Another machine must connect through SSH.
 
-## Where Docker still wins
+## Where Docker is the better choice
 
-Home Assistant runs in Docker because it has to. HA needs `network_mode: host` for mDNS and SSDP, it has its own plugin system, it manages its own state, and the Docker image is the supported install path. There is no upside to fighting that.
+Home Assistant runs in Docker because it must. HA needs `network_mode: host` for mDNS and SSDP. It has its own plugin system, and it manages its own state. The Docker image is the supported install method, so I see no reason to work against it.
 
-The compose file is a few lines. The container has Docker's restart policy. Apollo-Net does not care whether HA is local-process or container, it just talks to it on `localhost:8123`.
+The compose file is a few lines, and Docker's restart policy manages the container. Apollo-Net does not care if HA is a local process or a container. It connects to HA on `localhost:8123`.
 
-The rule I follow: if the upstream project ships a Docker image and expects you to use it, use it. If you wrote the script yourself and it has zero dependencies, run it as a user unit. The line is not "containers good, processes bad" or the reverse. The line is "use the operational model the upstream wants."
+I follow this rule. If the upstream project ships a Docker image and expects you to use it, use it. If you wrote a small script yourself and it runs from its own venv, run it as a user unit. In both cases, use the operational model that the upstream project expects.
 
-## Making it feel local from the Mac
+## Access from the Mac
 
-The UM790 is in the closet, my MacBook is on the desk. Every Apollo-Net service binds to `127.0.0.1` so nothing is exposed to the network. To use them from the Mac, I forward the relevant ports over SSH. In `~/.ssh/config`:
+The UM790 is in the closet, and my MacBook is on the desk. Every Apollo-Net service binds to `127.0.0.1`, so the network cannot reach them. To use them from the Mac, I forward the ports over SSH. In `~/.ssh/config`:
 
 ```sshconfig
 Host linuxbox
@@ -141,24 +137,22 @@ Host linuxbox
   LocalForward 8765 127.0.0.1:8765
 ```
 
-Run `ssh linuxbox` once and leave the connection open. Now `http://127.0.0.1:8765` on the Mac is the HUD running on the Linux box. `http://127.0.0.1:8123` is Home Assistant. `http://127.0.0.1:5173` is the new TS HUD's Vite dev server when I am working on it.
+I run `ssh linuxbox` once and keep the connection open. Then `http://127.0.0.1:8765` on the Mac opens the HUD on the Linux box. `http://127.0.0.1:8123` opens Home Assistant. `http://127.0.0.1:5173` opens the Vite dev server for the new TS HUD, when I work on it.
 
-This is the part that surprised me with how well it works. The services are not exposed to the network. There is no reverse proxy, no Tailscale, no VPN. SSH is doing all the work, the same SSH I already use to log into the box. The only state on the Mac is the SSH config entry.
+This setup works better than I expected. The services stay off the network. I do not use a reverse proxy, Tailscale, or a VPN. SSH does all the work, and it is the same SSH that I use to log in to the box. The only state on the Mac is the SSH config entry.
 
 ---
 
-## The pattern, generalized
+## The general pattern
 
-The pattern is more useful than the specific case. If you have a personal Linux machine and want to run small services on it without the operational tax of full system administration, the path is:
+The general pattern is more useful than this one case. You may have a personal Linux machine and want to run small services on it without full system administration. These are the steps:
 
-1. Write the service in whatever language is easiest. Stdlib if you can.
-2. Write a unit file in `~/.config/systemd/user/`. Service or service-plus-timer.
-3. Run `sudo loginctl enable-linger $USER` once.
-4. `systemctl --user enable --now <unit>`.
-5. Forward the port over SSH from wherever you actually use it.
+1. Write the service in the language that is easiest for you. Use the standard library if you can.
+2. Write a unit file in `~/.config/systemd/user/`. Use a service, or a service and a timer.
+3. Run `sudo loginctl enable-linger $USER` one time.
+4. Run `systemctl --user enable --now <unit>`.
+5. Forward the port over SSH from the machine where you use the service.
 
-That is it. You get real services, real logs, real restart policies, and real survival across reboots, all without touching `/etc` or `sudo` again.
+You get services with logs and restart policies, and they survive reboots. After step 3, you do not need to touch `/etc` or use `sudo` again.
 
-I have been running Apollo-Net this way for weeks now. The snapshot timer has fired tens of thousands of times. The HUD has not gone down except when I redeployed it on purpose. The journal has all the logs I need to debug anything that goes wrong. It is the calmest piece of infrastructure I own.
-
-If you have a small Linux box doing nothing in a closet, this is what to do with it.
+While I worked on Apollo-Net, I ran it this way for weeks. The snapshot timer fired tens of thousands of times. The HUD went down only when I redeployed it on purpose. The journal had all the logs I needed to debug a problem.

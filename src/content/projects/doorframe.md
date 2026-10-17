@@ -1,6 +1,6 @@
 ---
 title: "Doorframe"
-description: "The pencil marks on the door frame, without the pencil. A private family height tracker for iPhone that measures with LiDAR, hands-free."
+description: "A private family height tracker for iPhone. It measures a person with LiDAR and captures the height without a tap."
 date: 2026-10-04
 status: "active"
 tech: ["Swift", "SwiftUI", "SwiftData", "ARKit", "RealityKit", "Vision", "Swift Charts"]
@@ -9,19 +9,19 @@ featured: false
 draft: false
 ---
 
-Doorframe replaces the pencil marks on the door frame. Point a LiDAR iPhone at someone standing on the floor, a 3D measuring pole appears beside them, and when they hold roughly still it captures by itself and asks who it was.
+Many families mark their children's height in pencil on a door frame. Doorframe keeps the same record on an iPhone. You point a LiDAR iPhone at a person who stands on the floor. A 3D measuring pole appears next to them. When they are still enough, the app captures the height and asks who the person is.
 
-## What it does
+## Features
 
-- **Zero-tap measuring.** Floor detection from LiDAR, body pose and person segmentation from Vision, and a forgiving auto-capture that waits for the person to be still enough rather than perfectly still.
-- **Other ways in.** A still photo that keeps its depth data, or a number typed in from a check-up.
-- **The family Doorframe.** An illustrated door frame with everyone's marks on it, a card per person, and moments like "grew 2 cm since July".
-- **Kids' growth.** WHO and CDC percentile charts, growth pace, and a predicted adult height, shown only for kids who are still growing.
+- **Live measurement.** LiDAR finds the floor. Vision finds the person's body pose and outline. The capture starts when the person is still enough, so they do not have to be perfectly still.
+- **Other inputs.** You can use a still photo that keeps its depth data, or type a number from a doctor's visit.
+- **The family Doorframe.** An illustrated door frame shows a mark for each person. Each person also has a card, with notes such as "grew 2 cm since July".
+- **Growth for children.** Children get WHO and CDC percentile charts, their growth pace, and a predicted adult height. The app shows these only for children who are still growing.
 
-## How it's built
+## How I built it
 
-Swift 6, SwiftUI with Liquid Glass, SwiftData, ARKit and RealityKit for the live measurement, Vision for finding the person, and Swift Charts for growth. The logic lives in a local Swift package, `DoorframeKit`, split into Core, Measure, and Design, with zero third-party dependencies.
+Doorframe uses Swift 6, SwiftUI with Liquid Glass, and SwiftData. ARKit and RealityKit do the live measurement. Vision finds the person, and Swift Charts draws the growth charts. The logic is in a local Swift package, `DoorframeKit`, with three modules: Core, Measure, and Design. The app has no third-party dependencies.
 
-There is no account, no server, and no tracking. Nothing leaves the phone unless you share it. For an app that stores children's heights, that was the first decision, not a feature.
+The app has no account, no server, and no tracking. Data leaves the phone only when you share it. The app stores children's heights, so I made this decision before any other.
 
-Doorframe is on TestFlight, heading to the App Store as "Doorframe: Height Tracker". The site at [doorframefamily.com](https://doorframefamily.com) is its home and support page.
+Doorframe is on TestFlight. It will be on the App Store as "Doorframe: Height Tracker". Its website is [doorframefamily.com](https://doorframefamily.com).

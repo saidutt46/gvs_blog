@@ -1,6 +1,6 @@
 ---
 title: "contextsmith"
-description: "A deterministic, token-aware context bundler for LLMs. Grep for the LLM era. Fast, offline, no model calls."
+description: "A deterministic, token-aware CLI in Rust that bundles code context for LLMs, offline and with no model calls."
 date: 2026-02-01
 status: "active"
 tech: ["Rust", "CLI", "Tokenization", "LLM"]
@@ -9,22 +9,22 @@ featured: false
 draft: false
 ---
 
-contextsmith is a CLI that builds the context bundle you feed to a language model. Think of it as `grep` rewritten for the question "what should I paste into Claude."
+contextsmith is a CLI that builds the context bundle you give to a language model. It works like `grep`, but its question is "which code should I paste into Claude?"
 
 ## The problem
 
-Working with an LLM on a real codebase is a packaging problem.
+When you use an LLM on a real codebase, you must decide how much context to give it.
 
 | Too little context | Too much context |
 |---|---|
-| Model invents APIs | Blow the window |
-| Hallucinated function names | Pay for tokens you didn't need |
-| Miss the actual answer | Slow round-trips |
+| The model invents APIs | You go over the context window |
+| It hallucinates function names | You pay for tokens you did not need |
+| It misses the answer | Round-trips are slow |
 
-Doing this by hand, copying files, trimming, counting, is the worst part of the workflow.
+You can copy files, trim them, and count tokens by hand. I find that the worst part of the workflow.
 
 ## What it does
 
-You point contextsmith at a repo with a query or a path glob. It selects files, trims them deterministically, counts tokens against the model you're targeting, and emits a clean bundle ready to paste or pipe. Same input, same output, every time. No network calls, no model in the loop, nothing to wait on.
+You run contextsmith on a repo with a query or a path glob. It selects files and trims them deterministically. It counts tokens for the model you target. Then it writes a clean bundle that you can paste or pipe. The same input always gives the same output. It makes no network calls and uses no model, so you do not wait on anything.
 
-It is built in Rust because the only thing worse than packaging context by hand is waiting for a slow tool to do it for you. Large repos, many files, sub-second runs.
+I wrote it in Rust because a context tool must be fast. It handles large repos with many files in less than a second.

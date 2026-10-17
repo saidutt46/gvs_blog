@@ -1,6 +1,6 @@
 ---
 title: "Orbium"
-description: "Live satellite traffic overhead, propagated on-device by my own zero-dependency SGP4 engine, and projected onto your ceiling with LiDAR and Metal."
+description: "Shows live satellite traffic overhead. My own SGP4 engine calculates every orbit on the device, and LiDAR and Metal project it onto your ceiling."
 date: 2026-06-14
 status: "active"
 tech: ["Swift", "SwiftUI", "ARKit", "Metal", "SGP4", "LiDAR"]
@@ -8,18 +8,20 @@ featured: false
 draft: true
 ---
 
-Orbium shows the human-made sky. Point an iPhone up and you see Starlink, the ISS, GPS, weather and comms satellites moving overhead in real time. Then lock it to your ceiling and the room becomes a live orbital display.
+Orbium shows the satellites above you in real time: Starlink, the ISS, GPS, and weather and communication satellites. You can view them on a sky map, over the camera, or projected onto your ceiling.
 
-## Three views
+## Views
 
-- **Sky map.** A flat sky chart from the horizon ring to the zenith, readable at a glance.
-- **Outdoor AR.** Satellite markers over the live camera as you pan the real sky.
-- **Ceiling projection.** On a LiDAR iPhone, detect the ceiling from the scene mesh, lock the plane, and project the live orbital view onto it, with each satellite tracing where it came from and where it is heading. Phones without LiDAR get a manual-placement fallback.
+- **Sky map.** A flat chart of the sky, from the horizon to the zenith.
+- **Outdoor AR.** Satellite markers on the live camera view as you move the phone across the sky.
+- **Ceiling projection.** On a LiDAR iPhone, the app finds the ceiling in the scene mesh and locks to that plane. It then projects the live satellites onto the ceiling, with a trace of each satellite's past and future path. On phones without LiDAR, you place the view manually.
 
-## The engine
+## The orbit engine
 
-The orbital math is its own Swift package, **OrbitEngine**, with zero third-party dependencies: TLE and GP parsing, SGP4/SDP4 propagation, coordinate transforms, observer look angles (azimuth, elevation, range), sun position and visibility scoring, and pass prediction. It is checked against the official SGP4 verification vectors.
+The orbit math is a separate Swift package, OrbitEngine, with no third-party dependencies. It parses TLE and GP data and propagates orbits with SGP4 and SDP4. It also converts coordinates, calculates look angles (azimuth, elevation, and range), finds the sun's position, scores visibility, and predicts passes. I test it against the official SGP4 verification vectors.
 
-It builds headless, as a macOS CLI plus tests, so the math was proven correct before any UI existed. The app downloads element sets from [CelesTrak](https://celestrak.org), caches them on-device within CelesTrak's two-hour update cadence, and propagates every satellite locally. There are no per-second network calls.
+The engine builds without a UI, as a macOS CLI with tests. This let me prove the math before I wrote any app code.
 
-Rendering is Metal with hand-written passes for the camera feed and the orbital overlay, under a SwiftUI shell with Liquid Glass. The source is private while it's in development.
+The app downloads element sets from [CelesTrak](https://celestrak.org) and caches them on the device. It obeys CelesTrak's two-hour update interval. It propagates every satellite locally, so it does not call the network every second.
+
+Metal draws the camera feed and the satellite overlay in custom render passes. The app shell is SwiftUI with Liquid Glass. The source is private while I develop it.

@@ -1,6 +1,6 @@
 ---
 title: "ChannelOS"
-description: "A local-first life log with an LLM insight agent. Append-only events in Postgres, a nightly agent on a 26B open model, and nothing leaves hardware I own."
+description: "A self-hosted life log with a nightly LLM insight agent. The events, the database, and the model all run on hardware I own."
 date: 2026-06-14
 status: "active"
 tech: ["Python", "FastAPI", "PostgreSQL", "Redis", "ARQ", "Ollama", "Gemma", "Swift"]
@@ -8,35 +8,35 @@ featured: false
 draft: false
 ---
 
-ChannelOS logs what I do during the day and turns it into a daily and weekly read-out. The logging is one tap from my phone. The read-out is written by a local model running on my own Linux box. Neither the data nor the model leaves hardware I control.
+ChannelOS records what I do during the day. Each night, a local language model reads the day and writes a short summary. I log from my phone with one tap. The data and the model stay on my own Linux box.
 
-## The shape of it
+## Parts
 
-| Piece | What it is |
+| Part | What it does |
 |---|---|
-| Capture | Point-in-time events, start/stop activity spans, and Apple Health samples. All append-only. |
-| Catalog | 120+ activities in 16 categories, stored as data. A new button is a row, not a deploy. |
-| Ranking | The quick-log screen ranks buttons by recency-weighted time of day, so the likely next thing is on top. |
-| Insight agent | A nightly job renders the day as text and asks the model for a structured `DailyInsight`: summary, highlights, anomalies, habit notes, a score. Weekly rollups too. |
-| Client | A SwiftUI iOS app with an offline queue. Ingest is idempotent, so retries after a dropped connection don't double-log. |
+| Capture | Records point-in-time events, start and stop activity spans, and Apple Health samples. The log is append-only. |
+| Catalog | Holds 120+ activities in 16 categories. The catalog is data, so a new activity is a new row and needs no deploy. |
+| Ranking | Sorts the quick-log buttons by recency, weighted by time of day. The activity I am most likely to log next is at the top. |
+| Insight agent | Runs each night. It renders the day as text and asks the model for a `DailyInsight`: a summary, highlights, anomalies, habit notes, and a score. A weekly job does the same for the week. |
+| Client | A SwiftUI app for iOS with an offline queue. Ingest is idempotent, so a retry after a dropped connection does not log an event twice. |
 
-The backend is FastAPI on async SQLAlchemy 2.0, Postgres 16 with Alembic migrations, and ARQ on Redis for the cron and on-demand jobs. It all runs in Docker Compose on the box and is reachable only over my tailnet, behind bearer-token auth.
+The API is FastAPI on async SQLAlchemy 2.0. The data is in Postgres 16, with Alembic for migrations. ARQ on Redis runs the scheduled and on-demand jobs. Everything runs in Docker Compose. The API is reachable only on my private network, and every endpoint except the health check needs a bearer token.
 
-## The decision worth explaining
+## How the insight agent gets structured output
 
-The obvious way to get structured output from a model is to hand it a JSON schema and ask for the answer in one call. The research on this is fairly consistent that constraining the format while the model is still reasoning costs you reasoning quality. And `gemma4:26b`'s function calling was flaky enough that I did not want an agent framework in the path.
+The simple approach is one call: give the model a JSON schema and ask for the answer in that shape. Research on this topic shows that a strict output format during reasoning can make the reasoning worse. Also, function calling on `gemma4:26b` was not reliable enough for me to put an agent framework in the path.
 
-So the insight runs in two calls:
+So the agent makes two calls:
 
-1. **Reason in free text.** The model gets the rendered day and writes whatever it wants about it.
-2. **Extract to a flat schema.** A second call turns that text into a `DailyInsight`, using Ollama's native structured-output `format` on this step only.
+1. The model reads the rendered day and writes about it in free text.
+2. A second call converts that text into a flat `DailyInsight`. Only this call uses Ollama's structured-output `format` option.
 
-For a job with no tools and one output shape, a direct async client was simpler and more reliable than a framework. On a synthetic test day, both calls together took about 131 seconds on the box's integrated GPU, which is fine for something that runs once a night.
+The job has no tools and one output shape, so a direct async client is enough. On a synthetic test day, the two calls took about 131 seconds in total on the box's integrated GPU. The job runs once a night, so that time is acceptable.
 
-Every agent run is written to an audit table with its inputs and outputs, so when an insight looks wrong I can see exactly what the model was given.
+The agent writes each run to an audit table with its input and output. When an insight looks wrong, I can see exactly what the model received.
 
-## Where it went
+## What came next
 
-ChannelOS was the stepping stone. Once the logging loop and the insight agent proved themselves, I rebuilt the idea for the phone as [Meontor](/projects/meontor/), with the model running on-device through Apple Intelligence instead of on a box I have to keep online. Meontor is the one meant for everyone.
+ChannelOS was the first version of an idea. After the logging and the insight agent worked well for me, I built the idea again for the phone as [Meontor](/projects/meontor/). Meontor runs its model on the device with Apple Intelligence, so it needs no server. Meontor is the version for other people.
 
-ChannelOS stays mine. It is a personal system I keep using and developing, next with a provider-agnostic agent layer and an agent that can act on notes and jobs rather than only summarize. It will not be released, and the source is private.
+I still use ChannelOS and I continue to develop it. The next steps are a provider-agnostic agent layer and an agent that can act on notes and jobs. ChannelOS is a personal project. I will not release it, and the source is private.
