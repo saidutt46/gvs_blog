@@ -12,8 +12,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <div class="uses-section">
       <h3>Machines</h3>
       <ul>
-        <li><strong>MacBook Pro M4 Pro</strong> (14-core, 24GB, 500GB) running macOS 26. Primary dev machine. Codename: skynet.</li>
-        <li><strong>Minisforum UM790 Pro</strong> running Ubuntu 24.04 LTS. Linux dev box, ML playground, and home for the apartment&apos;s network HUD. Sits in the closet, never sleeps. Codename: gayaprime.</li>
+        <li><strong>MacBook Pro M4 Pro</strong> (14-core, 24GB, 500GB) running macOS 27. Primary dev machine. Codename: skynet.</li>
+        <li><strong>Minisforum UM790 Pro</strong> running Ubuntu 24.04 LTS. Linux dev box and local model server. Runs my self-hosted services and the open-weight models behind them. Never sleeps. Codename: gayaprime.</li>
         <li><strong>iPhone 17 Pro</strong> for iOS testing and LiDAR capture for Oareo.</li>
         <li><strong>iPad Pro 13&quot;</strong> (M4) for reading, sketching, and the occasional second screen.</li>
       </ul>
@@ -34,17 +34,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <h3>Languages</h3>
       <ul>
         <li><strong>Rust</strong> for CLI tools and anything that needs to be fast and small. domain-check and contextsmith are both Rust.</li>
-        <li><strong>Swift</strong> for iOS. SwiftUI by default, UIKit when SwiftUI gives up.</li>
+        <li><strong>Swift</strong> for iOS and macOS. SwiftUI by default, UIKit when SwiftUI gives up. Meontor, Doorframe, and Photogram are all Swift 6.</li>
         <li><strong>Go</strong> for backend services. Switchboard Gateway lives here.</li>
-        <li><strong>TypeScript</strong> for everything web. Astro for this site, SvelteKit for oareo.com, Next.js for Periodiq.</li>
-        <li><strong>Python</strong> for ML, scripting, and gluing things together on the Linux box.</li>
+        <li><strong>TypeScript</strong> for everything web. Astro for this site, SvelteKit for the app sites, Next.js for Periodiq.</li>
+        <li><strong>Python</strong> for backends and ML. FastAPI for ChannelOS and Loot, plus scripting and glue on the Linux box.</li>
       </ul>
     </div>
 
     <div class="uses-section">
       <h3>Infra</h3>
       <ul>
-        <li><strong>Docker</strong> for everything that touches a database or a service. PostgreSQL, Redis, Kafka, Open WebUI, Home Assistant, all in containers on gayaprime.</li>
+        <li><strong>Docker Compose</strong> for everything that touches a database or a service. PostgreSQL, Redis, Kafka, and Open WebUI, all in containers on gayaprime.</li>
+        <li><strong>Tailscale</strong> to reach the Linux box from my laptop and phone. Nothing on it is exposed to the internet.</li>
         <li><strong>GitHub</strong> for code, releases, CI, and the occasional issue tracker.</li>
         <li><strong>Vercel</strong> for production web deploys. GitHub Pages for this site.</li>
         <li><strong>Homebrew</strong> on the Mac, <code>apt</code> + <code>cargo install</code> + Docker on the Linux box. No global pip, ever.</li>
@@ -56,7 +57,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <ul>
         <li><strong>Claude</strong> as the daily driver. Claude Code in the terminal, the desktop app for everything else.</li>
         <li><strong>ChatGPT</strong> and <strong>Perplexity</strong> for second opinions and search.</li>
-        <li><strong>Ollama</strong> on gayaprime running <code>llama3.2</code> behind Open WebUI. Local model when I want one.</li>
+        <li><strong>Ollama</strong> on gayaprime. <code>gemma4:26b</code> by default, a 26B mixture-of-experts model that runs on the integrated GPU, plus Qwen2.5-VL for vision work. Open WebUI on top for chatting with it.</li>
+        <li><strong>Apple FoundationModels</strong> for on-device generation in my iOS apps.</li>
       </ul>
     </div>
 
