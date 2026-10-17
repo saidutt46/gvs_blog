@@ -198,6 +198,14 @@ nav .nav-links a.active {
 }
 
 /* Footer */
+footer a {
+  color: var(--muted);
+}
+
+footer a:hover {
+  color: var(--text);
+}
+
 footer {
   text-align: center;
   padding: 24px;
@@ -260,6 +268,15 @@ footer {
 
 .home-sections .section-header:first-child {
   margin-top: 0;
+}
+
+.home-sections .section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.home-sections .section-header {
+  margin-bottom: 8px;
 }
 
 /* Section header */
@@ -595,21 +612,27 @@ code, pre {
   flex-shrink: 0;
 }
 
-.status-active {
+/* Status pill: neutral pill, a small dot carries the meaning */
+.project-card-status {
   background: var(--tag-bg);
   color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.status-shipped {
-  background: var(--tag-bg);
-  color: var(--muted);
+.project-card-status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--status-dot, var(--muted));
 }
 
-.status-paused,
-.status-archived {
-  background: var(--tag-bg);
-  color: var(--muted);
-}
+.status-shipped { --status-dot: #3fb950; }
+.status-active { --status-dot: var(--accent); }
+.status-paused { --status-dot: #d4a72c; }
+.status-archived { --status-dot: var(--muted); }
 
 .project-card-desc {
   font-size: 15px;

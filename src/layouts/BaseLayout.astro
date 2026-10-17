@@ -94,7 +94,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       <slot />
     </main>
 
-    <footer>&copy; {new Date().getFullYear()} Venkata Sai Dutt Ganduri. All rights reserved.</footer>
+    <footer>&copy; {new Date().getFullYear()} Venkata Sai Dutt Ganduri · <a href={`${base}rss.xml`}>rss</a></footer>
 
     {/* Theme toggle + hamburger logic */}
     <script is:inline>
