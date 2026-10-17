@@ -6,7 +6,6 @@ status: "shipped"
 tech: ["Swift", "SwiftUI", "Core Data", "RoomPlan", "ARKit", "LiDAR"]
 appStore: "https://apps.apple.com/us/app/oareo/id6757112907"
 liveUrl: "https://oareo.com"
-github: "https://github.com/saidutt46/oareo-client"
 featured: true
 draft: false
 ---
@@ -40,4 +39,4 @@ You scan a room. You scan another. You link them into a multi-room structure. Th
 
 ## Stack
 
-The app is Swift and SwiftUI with Core Data for persistence, RoomPlan and ARKit for capture, and a custom export pipeline for the formats above. The marketing site at [oareo.com](https://oareo.com) is a separate SvelteKit project (Svelte 5, Tailwind v4, Three.js for the hero scene). The repo linked below is the marketing client. The app source itself is private.
+The app is Swift and SwiftUI with Core Data for persistence, RoomPlan and ARKit for capture, and a custom export pipeline for the formats above. The marketing site at [oareo.com](https://oareo.com) is a separate SvelteKit project (Svelte 5, Tailwind v4, Three.js for the hero scene). Both the app and the site are closed source.

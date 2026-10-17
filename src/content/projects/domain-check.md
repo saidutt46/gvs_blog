@@ -21,9 +21,9 @@ It also ships as an MCP server, so an LLM can call it directly. That turned out 
 
 | Audience | Install |
 |---|---|
-| macOS users | `brew install domain-check` |
+| macOS users | `brew install domain-check` (homebrew-core) |
 | Rust devs (CLI) | `cargo install domain-check` |
-| Rust devs (lib) | `domain-check-lib = "1.0"` in `Cargo.toml` |
+| Rust devs (lib) | `domain-check-lib = "1.2"` in `Cargo.toml` |
 | AI agents | `cargo install domain-check-mcp` |
 | Anyone else | Pre-built binaries on [GitHub Releases](https://github.com/saidutt46/domain-check/releases) |
 
@@ -31,6 +31,14 @@ It also ships as an MCP server, so an LLM can call it directly. That turned out 
 
 Two reasons. Network I/O at this scale wants async, and Tokio is the most boring, most reliable way to get that. And I wanted a real Rust project under my belt, something with a release pipeline, a tap, a published crate, and users who would file issues. Domain checking is a small enough problem to actually finish.
 
-> The repo is past 260 stars now. Mostly tells me other people had the same itch.
+> The repo is past 300 stars now. Mostly tells me other people had the same itch.
+
+## Since 1.0
+
+The formula moved from my own tap into homebrew-core, so `brew install domain-check` works with no tap and new releases get bumped automatically.
+
+1.1 added RFC 10023 for-sale detection. For a taken domain, it looks up the `_for-sale` DNS record and reports whether the owner says it is for sale. The MCP server exposes this too, with an explicit disclaimer, because an agent should not treat a DNS record as a price quote.
+
+1.2 was mostly about being honest when lookups fail. I wrote a built-in WHOIS client with a field-based reply parser that survives registry disclaimers, capped queries at two at a time per WHOIS server so the big registries stop throttling batch runs, and kept the reason a lookup failed instead of collapsing it into a bare UNKNOWN.
 
 For the longer story (how it grew from a learning project to a tri-crate workspace, the IANA bootstrap that took TLD coverage from 32 to 1,200, and the MCP server angle), see [domain-check at 1.0: one engine, three faces](/blog/domain-check-three-faces/).

@@ -4,7 +4,7 @@ description: "A high-performance API gateway in Go. Auth, rate limiting, caching
 date: 2025-11-14
 status: "active"
 tech: ["Go", "PostgreSQL", "Redis", "Kafka", "Docker", "FastAPI"]
-github: "https://github.com/saidutt46/switchboard-gateway"
+github: "https://github.com/saidutt46/Switchboard-Gateway"
 featured: false
 draft: false
 ---

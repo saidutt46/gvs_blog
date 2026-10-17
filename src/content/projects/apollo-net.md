@@ -2,7 +2,7 @@
 title: "Apollo-Net"
 description: "Operator HUD for my home network. Aggregates Home Assistant, builds a live topology, and runs as the command plane for the apartment."
 date: 2026-04-18
-status: "active"
+status: "paused"
 tech: ["React", "TypeScript", "Tailwind", "Python", "Home Assistant", "Docker"]
 featured: false
 draft: false

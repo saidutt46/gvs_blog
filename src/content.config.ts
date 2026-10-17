@@ -27,7 +27,7 @@ const projects = defineCollection({
     title: z.string(),
     description: z.string(),
     date: z.coerce.date(),
-    status: z.enum(['active', 'shipped', 'archived']).default('active'),
+    status: z.enum(['active', 'shipped', 'paused', 'archived']).default('active'),
     tech: z.array(z.string()).default([]),
     github: z.string().optional(),
     appStore: z.string().optional(),

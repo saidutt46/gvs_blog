@@ -596,6 +596,7 @@ code, pre {
   color: var(--muted);
 }
 
+.status-paused,
 .status-archived {
   background: var(--tag-bg);
   color: var(--muted);
