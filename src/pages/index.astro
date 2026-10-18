@@ -10,32 +10,34 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .slice(0, 3);
 
 const work = [
-  { slug: 'domain-check', title: 'domain-check', meta: 'Rust CLI, library, MCP server' },
-  { slug: 'oareo', title: 'Oareo', meta: 'LiDAR scanning, App Store' },
-  { slug: 'meontor', title: 'Meontor', meta: 'iOS, on-device AI' },
-  { slug: 'doorframe', title: 'Doorframe', meta: 'iOS, LiDAR + Vision' },
-  { slug: 'channelos', title: 'ChannelOS', meta: 'FastAPI, local LLM agent' },
+  { slug: 'oareo', title: 'Oareo', meta: 'Measure a room with your phone' },
+  { slug: 'periodiq', title: 'Periodiq', meta: 'The periodic table, in 3D' },
+  { slug: 'domain-check', title: 'domain-check', meta: 'Find a free domain name, fast' },
+  { slug: 'meontor', title: 'Meontor', meta: 'A daily log that reflects back' },
+  { slug: 'doorframe', title: 'Doorframe', meta: 'Height marks, without the pencil' },
 ];
 ---
 
-<BaseLayout title="gvs" description="Software engineer. I build products end to end, from backend services to iOS apps." activeNav="about">
+<BaseLayout title="gvs" description="Software engineer, curious about how things work. Projects, writing, and the tools I use." activeNav="about">
   <div class="hero">
     <h1>Hi, I'm Venkata Sai Dutt Ganduri</h1>
-    <p class="subtitle">Software engineer. I build products end to end, from backend services to iOS apps.</p>
+    <p class="subtitle">Software engineer. Curious about how things work.</p>
     <div class="bio">
       <p>
-        I've been writing software professionally for nine years. Today I'm a full-stack engineer at
+        I have been building software for nine years. At
         <a href="https://www.centralsquare.com" target="_blank" rel="noopener">CentralSquare Technologies</a>,
-        where I build public administration, public safety, and justice software.
+        I work across the full stack on software that local governments, public safety agencies,
+        and courts use every day. It is work where a quiet, reliable system matters more than a clever one.
       </p>
       <p>
-        Outside of work I ship my own things: a Rust CLI and MCP server in homebrew-core, a LiDAR
-        scanning app on the App Store, and iOS apps that run their AI on the device instead of a server.
-        The <a href={`${base}projects/`}>projects</a> page has all of it.
+        On my own time, I build things to understand them. I wanted to see an f orbital from every
+        side, so I wrote the math to draw one. I wanted to know if a phone could measure a room well
+        enough to trust, so I made an app that does it. Some of these became tools that other people
+        now use. All of them are on the <a href={`${base}projects/`}>projects</a> page.
       </p>
       <p>
-        I like understanding how things work: electrons, engines, programs, the natural world.
-        I spend time with bonsai plants and look up at the sky more than most people.
+        Away from the screen, I like machines with moving parts: engines, electronics, anything I can
+        take apart in my head. I keep bonsai, and I look up at the night sky more than most people do.
       </p>
     </div>
     <div class="social">
