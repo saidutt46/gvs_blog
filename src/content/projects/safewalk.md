@@ -1,6 +1,6 @@
 ---
 title: "SafeWalk"
-description: "iOS app using LiDAR and real-time object detection to improve mobility and safety. Transforms your phone into a spatial awareness tool."
+description: "An iOS app that uses LiDAR and real-time object detection to help with mobility and safety."
 date: 2025-11-01
 status: "archived"
 tech: ["Swift", "SwiftUI", "LiDAR", "AVFoundation", "CoreML"]
@@ -9,12 +9,12 @@ featured: false
 draft: false
 ---
 
-SafeWalk is an iOS app designed to improve mobility and safety by using LiDAR technology and real-time object detection.
+SafeWalk is an iOS app that uses LiDAR and real-time object detection to help with mobility and safety.
 
 ## What it does
 
-The app transforms your iOS device into a tool for spatial awareness and obstacle avoidance. It uses the LiDAR sensor to map the environment and CoreML for real-time object detection, providing feedback about obstacles and surroundings.
+The app helps you know what is around you and avoid obstacles. It uses the LiDAR sensor to map the environment. It uses CoreML to detect objects in real time. Then it gives you feedback about obstacles and your surroundings.
 
 ## Built with
 
-SwiftUI for the interface, AVFoundation for camera and sensor access, and CoreML for on-device machine learning. Everything runs locally on the device with no cloud dependency.
+I used SwiftUI for the interface and AVFoundation for camera and sensor access. CoreML runs the machine learning on the device. All processing is local, and the app does not need the cloud.

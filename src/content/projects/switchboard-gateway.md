@@ -1,27 +1,27 @@
 ---
 title: "Switchboard Gateway"
-description: "A high-performance API gateway in Go. Auth, rate limiting, caching, routing, and hot-reload config, all with sub-millisecond overhead."
+description: "An API gateway in Go that handles auth, rate limiting, caching, routing, and hot-reload config, with under 2 ms of gateway overhead in my load tests."
 date: 2025-11-14
 status: "active"
 tech: ["Go", "PostgreSQL", "Redis", "Kafka", "Docker", "FastAPI"]
-github: "https://github.com/saidutt46/switchboard-gateway"
+github: "https://github.com/saidutt46/Switchboard-Gateway"
 featured: false
 draft: false
 ---
 
-Switchboard is the API gateway you reach for when Kong feels like overkill and writing your own middleware feels like a trap. It sits between clients and your services, handles the boring stuff, and stays out of the way.
+Switchboard is an API gateway. It is for cases where Kong is too large and custom middleware is too much code to maintain. It runs between clients and your services and handles the common backend tasks.
 
 ## What it does
 
-One process, sub-millisecond overhead, and the things every backend ends up needing.
+It runs as one process. In my load tests, it sustained 5,075 requests per second with a p50 latency of 4.44 ms, and the gateway itself added under 2 ms. It does the tasks that most backends need.
 
-| Capability | What it actually does |
+| Capability | What it does |
 |---|---|
-| Authenticate | API keys tied to a consumer record. Every request, every time. |
-| Rate limit | Per consumer, per route, per anything else worth bucketing. |
-| Cache | Responses in Redis with whatever TTL the upstream deserves. |
-| Route | By host, path, or method to the right backend service. |
-| Reconfigure | Hot-reload, no restarts, no dropped connections. |
+| Authenticate | Checks API keys that are linked to a consumer record, on every request. |
+| Rate limit | Per consumer, per route, or per any other useful bucket. |
+| Cache | Stores responses in Redis, with a TTL that fits each upstream. |
+| Route | Sends requests by host, path, or method to the correct backend service. |
+| Reconfigure | Hot-reloads config, with no restarts and no dropped connections. |
 
 ## Stack
 
@@ -36,6 +36,6 @@ One process, sub-millisecond overhead, and the things every backend ends up need
 
 ## Why I'm building it
 
-I keep ending up in projects where someone has glued together nginx, a hand-rolled auth filter, and a Redis script for rate limiting. It works until it doesn't, and then nobody can debug it. I wanted to write the gateway I keep wishing existed: small enough to read, fast enough to forget about, and configurable without redeploying.
+I often work on projects where someone has combined nginx, a custom auth filter, and a Redis script for rate limiting. This setup works until it fails, and then nobody can debug it. I want a gateway that is small enough to read and fast enough that you do not notice it. You must also be able to change its config without a redeploy.
 
-> The whole stack runs out of one `docker compose up`. That part matters more than it sounds.
+The full stack starts with one `docker compose up`. I think that is important.

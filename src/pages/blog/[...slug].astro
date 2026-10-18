@@ -2,9 +2,10 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostLayout from '../../components/PostLayout.astro';
 import { getCollection, render } from 'astro:content';
+import { readingMinutes } from '../../lib/format';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
@@ -15,8 +16,8 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description} activeNav="blog">
-  <PostLayout title={post.data.title} date={post.data.date} backLink="blog/" backLabel="back to blog">
+<BaseLayout title={post.data.title} description={post.data.description} activeNav="blog" publishedDate={post.data.date}>
+  <PostLayout title={post.data.title} date={post.data.date} backLink="blog/" backLabel="back to blog" readingMinutes={readingMinutes(post.body ?? '')}>
     <Content />
   </PostLayout>
 </BaseLayout>

@@ -2,7 +2,7 @@
 title: "Note Template: Quick Reference"
 date: 2026-03-21
 tags: ["template", "reference"]
-draft: false
+draft: true
 ---
 
 This is a template note showing how notes work. Notes are shorter and rougher than blog posts. Use them for quick thoughts, ideas, and things you're thinking about.
@@ -24,7 +24,7 @@ This is a template note showing how notes work. Notes are shorter and rougher th
 title: "Your Note Title"
 date: 2026-03-21
 tags: ["ai", "code", "idea"]
-draft: false
+draft: true
 ---
 ```
 

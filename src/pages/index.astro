@@ -1,25 +1,45 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PostList from '../components/PostList.astro';
+import { getCollection } from 'astro:content';
 import { Github, Linkedin, Mail } from 'lucide-astro';
 const base = import.meta.env.BASE_URL;
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const work = [
+  { slug: 'domain-check', title: 'domain-check', meta: 'Domain search for people and AI agents' },
+  { slug: 'meontor', title: 'Meontor', meta: 'A daily log with on-device AI' },
+  { slug: 'channelos', title: 'ChannelOS', meta: 'A private AI agent on my own hardware' },
+  { slug: 'oareo', title: 'Oareo', meta: 'Measure a room with your phone' },
+  { slug: 'doorframe', title: 'Doorframe', meta: 'Height marks, without the pencil' },
+];
 ---
 
-<BaseLayout title="gvs" description="Software developer, tinkerer, and writer." activeNav="about">
+<BaseLayout title="gvs" description="Software engineer, curious about how things work. Projects, writing, and the tools I use." activeNav="about">
   <div class="hero">
     <h1>Hi, I'm Venkata Sai Dutt Ganduri</h1>
-    <p class="subtitle">Software developer. Tinkerer. Curious about how things work.</p>
+    <p class="subtitle">Software engineer. Curious about how things work.</p>
     <div class="bio">
       <p>
-        I'm a full-stack developer at <a href="https://www.centralsquare.com" target="_blank" rel="noopener">CentralSquare Technologies</a>,
-        where I build public administration, public safety, and justice software.
+        I have been building software for nine years. I am a full-stack engineer at
+        <a href="https://www.centralsquare.com" target="_blank" rel="noopener">CentralSquare Technologies</a>,
+        where we build public sector software, from dispatch and records to permitting and payroll,
+        used by more than 8,000 agencies across North America.
       </p>
       <p>
-        Outside of work, I build tools and apps. Rust CLIs, iOS apps, developer utilities.
-        Check out my <a href={`${base}projects/`}>projects</a> for the full list.
+        Outside of work, I like to own an idea from the first sketch to the thing people install.
+        domain-check began as a small learning project. It is now a library, a command-line tool, and
+        a server that AI agents call directly, with more than 300 stars on GitHub. More recently, I have
+        been putting language models into real products: an agent that runs every night on my own
+        hardware, and an iPhone app that runs its model entirely on the device. The
+        <a href={`${base}projects/`}>projects</a> page has the rest.
       </p>
       <p>
-        I like understanding how things work: electrons, engines, programs, the natural world.
-        I spend time with bonsai plants and look up at the sky more than most people.
+        Away from the screen, I like machines with moving parts: engines, electronics, anything I can
+        take apart in my head. I keep bonsai, and I look up at the night sky more than most people do.
       </p>
     </div>
     <div class="social">
@@ -37,5 +57,28 @@ const base = import.meta.env.BASE_URL;
         <Mail size={16} /> email
       </a>
     </div>
+  </div>
+
+  <div class="content home-sections">
+    <div class="section-header">
+      <h2 class="section-title">Selected work</h2>
+    </div>
+    <ul class="post-list">
+      {work.map((w) => (
+        <li class="post-item">
+          <a class="post-title" href={`${base}projects/${w.slug}/`}>{w.title}</a>
+          <span class="post-date">{w.meta}</span>
+        </li>
+      ))}
+    </ul>
+
+    {posts.length > 0 && (
+      <>
+        <div class="section-header">
+          <h2 class="section-title">Writing</h2>
+        </div>
+        <PostList items={posts} basePath="blog" />
+      </>
+    )}
   </div>
 </BaseLayout>

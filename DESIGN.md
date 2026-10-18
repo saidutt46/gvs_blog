@@ -38,7 +38,7 @@
 | Code            | 14px    | 400    | 1.6         | normal         |
 
 ## Color
-- **Approach:** Restrained — no accent color. Text and background do all the work.
+- **Approach:** Restrained. Text and background do most of the work. One accent, `#AF87FF`, is used only for link underlines, the active nav item, blockquote rules, and the active-status dot.
 - **Dark mode strategy:** t3.gg-inspired near-black. Reduce muted text brightness slightly for dark surfaces.
 
 ### Light Theme (default)
@@ -49,6 +49,7 @@
 | `--muted`    | `#888888` | Subtitles, dates, meta    |
 | `--border`   | `#e0e0e0` | Dividers, borders         |
 | `--link`     | `#222222` | Links (underline on hover)|
+| `--accent`   | `#AF87FF` | Link underline, active nav, blockquote rule |
 | `--tag-bg`   | `#f0f0f0` | Tag pill background       |
 | `--tag-text` | `#999999` | Tag pill text             |
 | `--code-bg`  | `#f0f0f0` | Code block background     |
@@ -61,6 +62,7 @@
 | `--muted`    | `#525252` |
 | `--border`   | `#1a1a1a` |
 | `--link`     | `#fafafa` |
+| `--accent`   | `#AF87FF` |
 | `--tag-bg`   | `#1a1a1a` |
 | `--tag-text` | `#888888` |
 | `--code-bg`  | `#161616` |
@@ -123,3 +125,9 @@
 | 2026-03-21 | 640px max content width            | Optimal reading line length (65-75 characters)              |
 | 2026-03-21 | Back links on post pages           | Added during /plan-design-review for better navigation      |
 | 2026-03-21 | Skip-to-content + ARIA landmarks   | Accessibility baseline added during design review           |
+| 2026-10-17 | Home page: "Selected work" + "Writing" lists | Reuse `post-list` rows so visitors see the work without leaving the about page |
+| 2026-10-17 | Notes hidden from nav | Section is empty; route kept so it can come back with real notes |
+| 2026-10-17 | Status dot on project pills | shipped green, active accent, paused amber, archived muted; the four states looked identical before |
+| 2026-10-17 | Project cards show 4 tech tags | Less noise in the list; full list stays on the project page |
+| 2026-10-17 | Reading time on posts, RSS in footer | Small reader conveniences, no new visual weight |
+| 2026-10-17 | Record the `#AF87FF` accent | Added in commit 028aa96; this doc still said no accent |
