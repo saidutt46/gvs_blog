@@ -10,10 +10,10 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .slice(0, 3);
 
 const work = [
+  { slug: 'domain-check', title: 'domain-check', meta: 'Domain search for people and AI agents' },
+  { slug: 'meontor', title: 'Meontor', meta: 'A daily log with on-device AI' },
+  { slug: 'channelos', title: 'ChannelOS', meta: 'A private AI agent on my own hardware' },
   { slug: 'oareo', title: 'Oareo', meta: 'Measure a room with your phone' },
-  { slug: 'periodiq', title: 'Periodiq', meta: 'The periodic table, in 3D' },
-  { slug: 'domain-check', title: 'domain-check', meta: 'Find a free domain name, fast' },
-  { slug: 'meontor', title: 'Meontor', meta: 'A daily log that reflects back' },
   { slug: 'doorframe', title: 'Doorframe', meta: 'Height marks, without the pencil' },
 ];
 ---
@@ -27,13 +27,16 @@ const work = [
         I have been building software for nine years. At
         <a href="https://www.centralsquare.com" target="_blank" rel="noopener">CentralSquare Technologies</a>,
         I work across the full stack on software that local governments, public safety agencies,
-        and courts use every day. It is work where a quiet, reliable system matters more than a clever one.
+        and courts depend on every day. When software like that fails, people notice, so I care about
+        the whole system: how it is designed, how it ships, and how it holds up for years.
       </p>
       <p>
-        On my own time, I build things to understand them. I wanted to see an f orbital from every
-        side, so I wrote the math to draw one. I wanted to know if a phone could measure a room well
-        enough to trust, so I made an app that does it. Some of these became tools that other people
-        now use. All of them are on the <a href={`${base}projects/`}>projects</a> page.
+        Outside of work, I like to own an idea from the first sketch to the thing people install.
+        domain-check began as a small learning project. It is now a library, a command-line tool, and
+        a server that AI agents call directly, with more than 300 stars on GitHub. More recently, I have
+        been putting language models into real products: an agent that runs every night on my own
+        hardware, and an iPhone app that runs its model entirely on the device. The
+        <a href={`${base}projects/`}>projects</a> page has the rest.
       </p>
       <p>
         Away from the screen, I like machines with moving parts: engines, electronics, anything I can
