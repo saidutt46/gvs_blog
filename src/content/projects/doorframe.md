@@ -5,6 +5,7 @@ date: 2026-10-04
 status: "active"
 tech: ["Swift", "SwiftUI", "SwiftData", "ARKit", "RealityKit", "Vision", "Swift Charts"]
 liveUrl: "https://doorframefamily.com"
+appStore: "https://apps.apple.com/app/doorframe-height-tracker/id6819159306"
 featured: false
 draft: false
 ---
@@ -24,4 +25,4 @@ Doorframe uses Swift 6, SwiftUI with Liquid Glass, and SwiftData. ARKit and Real
 
 The app has no account, no server, and no tracking. Data leaves the phone only when you share it. The app stores children's heights, so I made this decision before any other.
 
-Doorframe is on TestFlight. It will be on the App Store as "Doorframe: Height Tracker". Its website is [doorframefamily.com](https://doorframefamily.com).
+Doorframe 1.0 came out on the App Store on October 25, 2026, as [Doorframe: Height Tracker](https://apps.apple.com/app/doorframe-height-tracker/id6819159306). It is free and needs iOS 26. Its website is [doorframefamily.com](https://doorframefamily.com).
