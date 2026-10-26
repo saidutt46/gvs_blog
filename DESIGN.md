@@ -90,6 +90,19 @@
 - **No entrance animations, scroll effects, or page transitions**
 - **Easing:** ease for all transitions (simple, predictable)
 
+## Feature posts
+- **Scope:** Only blog entries with `kind: feature`, rendered by `FeaturePostLayout`. Every other page keeps the Motion rules above.
+- **Allowed:** Animated and interactive figures (inline SVG). Motion explains a process: dots along arrows, a step player, a context bar, a day and night toggle.
+- **Not allowed:** Page transitions, parallax, scroll-jacking, animated text, or motion that does not explain something.
+- **Triggers:** An animation runs once when its figure scrolls into view, or when the reader presses a control. Nothing loops without a control. Autoplay is off by default.
+- **Reduced motion:** With `prefers-reduced-motion: reduce`, figures show their final state or a step-through with buttons.
+- **Without JS:** Every figure renders as a readable static SVG with a caption and an ordered text description. Controls stay hidden.
+- **Identity:** The same fonts (DM Sans, Geist Mono), the same light and dark tokens, the one accent `#AF87FF` and the 8px scale. Figures may use `--text`, `--muted`, `--border`, `--code-bg` and `--accent` at reduced opacity. No new colours or fonts. The dream figure may use the dark tokens in the light theme.
+- **Width:** Body text stays at 640px. Figures may break out to 960px. Under 600px, figures switch to a vertical layout or scroll inside their own frame, never the page.
+- **Mobile first:** At least half the readers are on phones. Figures are designed at 375px first: labels stay legible, tap targets are 44px or more, there is no horizontal page scroll, and the 960px breakout applies only at 600px and up.
+- **No hover-only behaviour:** Tap, click or keyboard focus does everything hover does.
+- **Budget:** All JS on a feature post is 60 KB gzipped or less. Lighthouse performance and accessibility are 95 or more. Figures cause no layout shift.
+
 ## Components
 - **PostList:** Title + date (blog) or title + tags + date (notes)
 - **PostLayout:** Back link, title, date/tags meta, markdown body
@@ -131,3 +144,4 @@
 | 2026-10-17 | Project cards show 4 tech tags | Less noise in the list; full list stays on the project page |
 | 2026-10-17 | Reading time on posts, RSS in footer | Small reader conveniences, no new visual weight |
 | 2026-10-17 | Record the `#AF87FF` accent | Added in commit 028aa96; this doc still said no accent |
+| 2026-10-26 | Feature-post exception, approved by Dutt | Dutt asked for an animated, diagram-led Skynet HQ post; scoped to one layout so the rest of the site stays flat. Mobile first |

@@ -1,0 +1,77 @@
+---
+/**
+ * Figure: the shared frame for every figure in a `kind: feature` post.
+ *
+ * Contract (other tasks rely on this; do not change it without a task):
+ * - Props:
+ *   - `id` (required): the figure id, e.g. "fig-06". Output as `id` and
+ *     `data-fig` on the <figure>. Checks count `data-fig=` in the HTML.
+ *   - `caption` (required): the caption text. Rendered in the figcaption
+ *     as `#<id>-caption`; the SVG wrapper is labelled by it.
+ *   - `wide` (optional, default false): adds `.fig-wide`, which breaks out
+ *     of the 640px column to `min(960px, 100vw - 32px)`.
+ *   - `interactive` (optional, default false): use when the SVG itself holds
+ *     focusable controls. The wrapper then gets `role="group"` instead of
+ *     `role="img"` (role="img" hides its children from assistive tech).
+ *   - Any other attribute (for example `data-stub="fig-06"`) is copied onto
+ *     the <figure>.
+ * - Slots:
+ *   - `svg`: the static drawing. It must be readable in its final state
+ *     with no JS. Wrapped in `.fig-svg` with `role="img"` and
+ *     `aria-labelledby="<id>-caption"`.
+ *   - `controls`: buttons, sliders, toggles. Rendered inside
+ *     `[data-fig-controls]` with `hidden`; the figure script removes
+ *     `hidden` when it runs. Empty when the slot is not given, so a script
+ *     (for example stepper.ts) can mount its own controls there.
+ *   - default: the text alternative, an `<ol>` (or a table for F2b, F10).
+ *     Rendered in the figcaption as `#<id>-text`, always visible.
+ * - Also output: `[data-fig-live]`, an `aria-live="polite"` region. Put
+ *   state text there with `announce()` from figure.ts.
+ * - Scripts: a figure component adds its own `<script>` and finds its root
+ *   with `getFigure(id)` from figure.ts. No inline handlers.
+ * - Mobile first (half the readers are on phones; see feature.css):
+ *   - Design the drawing for 375px first. Rendered labels are 12px or
+ *     more there. If one drawing cannot do both, put two <svg>s in the
+ *     `svg` slot: `class="fig-narrow"` (shown under 600px) and
+ *     `class="fig-broad"` (shown from 600px).
+ *   - `wide` only breaks out from 600px; under 600px it is a no-op.
+ *   - Tap targets are 44px or more. Hover is never the only way: anything
+ *     shown on hover must also show on tap/click and on keyboard focus.
+ *   - Nothing may widen the page at 375px; the frame scrolls instead.
+ */
+interface Props {
+  id: string;
+  caption: string;
+  wide?: boolean;
+  interactive?: boolean;
+  [attr: string]: unknown;
+}
+
+const { id, caption, wide = false, interactive = false, class: extraClass, ...rest } = Astro.props;
+const captionId = `${id}-caption`;
+const textId = `${id}-text`;
+const hasControls = Astro.slots.has('controls');
+---
+
+<figure id={id} data-fig={id} class:list={['fig', { 'fig-wide': wide }, extraClass]} {...rest}>
+  <div class="fig-frame">
+    <div
+      class="fig-svg"
+      role={interactive ? 'group' : 'img'}
+      aria-labelledby={captionId}
+      aria-describedby={textId}
+    >
+      <slot name="svg" />
+    </div>
+  </div>
+  <div class="fig-controls" data-fig-controls hidden>
+    {hasControls && <slot name="controls" />}
+  </div>
+  <p class="fig-live" data-fig-live aria-live="polite"></p>
+  <figcaption>
+    <span class="fig-caption" id={captionId}>{caption}</span>
+    <div class="fig-text" id={textId}>
+      <slot />
+    </div>
+  </figcaption>
+</figure>

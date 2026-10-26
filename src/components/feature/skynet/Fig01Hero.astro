@@ -1,0 +1,27 @@
+---
+/**
+ * Fig01Hero (fig-01): Hero: one person, one crew. STUB from T-002.
+ * The figure task replaces the placeholder SVG and removes `data-stub`.
+ * Props: `caption` (text from the MDX), `wide` (default true).
+ * Default slot: the text alternative (`<ol>`) written in the MDX.
+ * Keep the id "fig-01" and the Figure contract (see ../Figure.astro).
+ */
+import Figure from '../Figure.astro';
+
+interface Props {
+  caption?: string;
+  wide?: boolean;
+}
+
+const { caption = 'TODO', wide = true } = Astro.props;
+---
+
+<Figure id="fig-01" caption={caption} wide={wide} data-stub="fig-01">
+  <svg slot="svg" class="fig-stub" viewBox="0 0 640 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <rect x="1" y="1" width="638" height="158" rx="8" />
+    <text x="320" y="86" text-anchor="middle">fig-01: Hero: one person, one crew (placeholder)</text>
+  </svg>
+  <slot>
+    <ol><li>TODO</li></ol>
+  </slot>
+</Figure>
