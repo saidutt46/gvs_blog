@@ -1,10 +1,20 @@
 ---
 /**
- * Fig06xLoop (fig-06x): Day and night loop. STUB from T-002.
- * The figure task replaces the placeholder SVG and removes `data-stub`.
+ * Fig06xLoop (fig-06x): the whole learning loop, day and night.
  * Props: `caption` (text from the MDX), `wide` (default true).
  * Default slot: the text alternative (`<ol>`) written in the MDX.
- * Keep the id "fig-06x" and the Figure contract (see ../Figure.astro).
+ *
+ * Drawing: 07-learning-loop.md section 6 (the Mermaid, lines 88-106).
+ * `.fig-narrow` (under 760px) puts Day above Night with one return rail;
+ * `.fig-broad` (760px and up) puts Day and Night side by side.
+ * Controls: Day / Night toggle and Approve.
+ * - Day: dots run from the session into episodic, lessons and the handoff.
+ * - Night: the dream gathers them, facts land in knowledge, a proposal
+ *   appears. Approve sends the card to procedural memory, and the next
+ *   morning's session loads it at start.
+ * Reduced motion: no dots; each control switches to its final state at once.
+ * No JS: both phases drawn in full, controls hidden.
+ * Box styles: mem-* as in Fig06Memories (same mapping as Fig12Dirs).
  */
 import Figure from '../Figure.astro';
 
@@ -14,14 +24,369 @@ interface Props {
 }
 
 const { caption = 'TODO', wide = true } = Astro.props;
+
+type Style = 'working' | 'episodic' | 'semantic' | 'procedural' | 'plain' | 'dream' | 'proposal';
+interface Box { id: string; x: number; y: number; w: number; h: number; style: Style; lines: string[]; group?: 'day' | 'night' }
+interface Edge { id: string; d: string; group?: 'day' | 'night' }
+interface Text { x: number; y: number; t: string; anchor?: string; rotate?: boolean; cls?: string }
+interface Panel { x: number; y: number; w: number; h: number; label: string; group: 'day' | 'night' }
+
+// Labels: 07-learning-loop.md lines 92-104.
+const T = {
+  W: ['Working memory', 'each session'],
+  E: ['Episodic', 'reports · handoffs ·', 'ledgers · messages'],
+  L1: ['Lessons / inbox', 'surprise → one cited line'],
+  L2: ['Lessons / inbox', 'surprise →', 'one cited line'],
+  H: ['Handoff', 'checkpoint → relay'],
+  W2: ['Next generation', 'same name'],
+  DR: ['Dream'],
+  S: ['Knowledge', 'cited facts'],
+  PR: ['Proposal', 'metrics + proposals'],
+  P: ['Procedural memory', 'skills · contracts · docs'],
+};
+
+// Narrow (phone first): viewBox 320 x 738. Day panel, Night panel, then
+// procedural memory; one rail on the left carries both reads back to W.
+const narrow = {
+  vb: '0 0 320 738',
+  panels: [
+    { x: 28, y: 8, w: 288, h: 402, label: 'Day', group: 'day' },
+    { x: 28, y: 426, w: 288, h: 200, label: 'Night', group: 'night' },
+  ] as Panel[],
+  boxes: [
+    { id: 'W', x: 44, y: 40, w: 256, h: 52, style: 'working', lines: T.W, group: 'day' },
+    { id: 'E', x: 84, y: 112, w: 216, h: 70, style: 'episodic', lines: T.E },
+    { id: 'L', x: 84, y: 198, w: 216, h: 52, style: 'plain', lines: T.L1 },
+    { id: 'H', x: 84, y: 266, w: 216, h: 52, style: 'episodic', lines: T.H, group: 'day' },
+    { id: 'W2', x: 84, y: 342, w: 216, h: 52, style: 'working', lines: T.W2, group: 'day' },
+    { id: 'DR', x: 100, y: 462, w: 160, h: 48, style: 'dream', lines: T.DR, group: 'night' },
+    { id: 'S', x: 36, y: 554, w: 136, h: 56, style: 'semantic', lines: T.S, group: 'night' },
+    { id: 'PR', x: 180, y: 554, w: 136, h: 56, style: 'proposal', lines: T.PR, group: 'night' },
+    { id: 'P', x: 36, y: 666, w: 280, h: 56, style: 'procedural', lines: T.P },
+  ] as Box[],
+  edges: [
+    { id: 'WE', d: 'M60 92 V147 H78', group: 'day' },
+    { id: 'WL', d: 'M60 92 V224 H78', group: 'day' },
+    { id: 'WH', d: 'M60 92 V292 H78', group: 'day' },
+    { id: 'HW2', d: 'M192 318 V336', group: 'day' },
+    { id: 'EDR', d: 'M300 147 H308 V486 H266', group: 'night' },
+    { id: 'LDR', d: 'M300 224 H308 V486 H266', group: 'night' },
+    { id: 'DRS', d: 'M150 510 V530 H104 V548', group: 'night' },
+    { id: 'DRPR', d: 'M210 510 V530 H248 V548', group: 'night' },
+    { id: 'PRP', d: 'M248 610 V660' },
+    { id: 'PW', d: 'M36 694 H12 V66 H38' },
+    { id: 'SW', d: 'M36 582 H12 V66 H38' },
+  ] as Edge[],
+  texts: [
+    { x: 240, y: 642, t: 'owner approves', anchor: 'end' },
+    { x: 25, y: 300, t: 'loaded at start · index at start', anchor: 'middle', rotate: true },
+  ] as Text[],
+};
+
+// Broad (760px and up): viewBox 760 x 488. Day left, Night right,
+// procedural memory below both, the knowledge index read along the top.
+const broad = {
+  vb: '0 0 760 488',
+  panels: [
+    { x: 8, y: 28, w: 364, h: 384, label: 'Day', group: 'day' },
+    { x: 388, y: 28, w: 364, h: 384, label: 'Night', group: 'night' },
+  ] as Panel[],
+  boxes: [
+    { id: 'W', x: 24, y: 186, w: 128, h: 60, style: 'working', lines: T.W, group: 'day' },
+    { id: 'E', x: 192, y: 64, w: 168, h: 70, style: 'episodic', lines: T.E },
+    { id: 'L', x: 192, y: 150, w: 168, h: 70, style: 'plain', lines: T.L2 },
+    { id: 'H', x: 192, y: 236, w: 168, h: 52, style: 'episodic', lines: T.H, group: 'day' },
+    { id: 'W2', x: 192, y: 320, w: 168, h: 52, style: 'working', lines: T.W2, group: 'day' },
+    { id: 'DR', x: 420, y: 160, w: 120, h: 50, style: 'dream', lines: T.DR, group: 'night' },
+    { id: 'S', x: 584, y: 84, w: 152, h: 56, style: 'semantic', lines: T.S, group: 'night' },
+    { id: 'PR', x: 584, y: 230, w: 152, h: 56, style: 'proposal', lines: T.PR, group: 'night' },
+    { id: 'P', x: 220, y: 424, w: 320, h: 56, style: 'procedural', lines: T.P },
+  ] as Box[],
+  edges: [
+    { id: 'WE', d: 'M152 216 H172 V99 H186', group: 'day' },
+    { id: 'WL', d: 'M152 216 H172 V185 H186', group: 'day' },
+    { id: 'WH', d: 'M152 216 H172 V262 H186', group: 'day' },
+    { id: 'HW2', d: 'M276 288 V314', group: 'day' },
+    { id: 'EDR', d: 'M360 99 H396 V185 H414', group: 'night' },
+    { id: 'LDR', d: 'M360 185 H414', group: 'night' },
+    { id: 'DRS', d: 'M540 175 H562 V112 H578', group: 'night' },
+    { id: 'DRPR', d: 'M540 195 H562 V258 H578', group: 'night' },
+    { id: 'PRP', d: 'M660 286 V452 H546' },
+    { id: 'PW', d: 'M220 452 H88 V252' },
+    { id: 'SW', d: 'M660 84 V16 H88 V180' },
+  ] as Edge[],
+  texts: [
+    { x: 652, y: 360, t: 'owner approves', anchor: 'end' },
+    { x: 96, y: 400, t: 'loaded at start' },
+    { x: 420, y: 11, t: 'index at start', anchor: 'middle' },
+  ] as Text[],
+};
+
+const variants = [
+  { id: 'n', cls: 'fig-narrow', ...narrow },
+  { id: 'b', cls: 'fig-broad', ...broad },
+];
+
+const lineY = (b: Box, i: number) => {
+  const n = b.lines.length;
+  const top = b.y + b.h / 2 - ((n - 1) * 17) / 2 + 5;
+  return top + i * 17;
+};
 ---
 
-<Figure id="fig-06x" caption={caption} wide={wide} data-stub="fig-06x">
-  <svg slot="svg" class="fig-stub" viewBox="0 0 640 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <rect x="1" y="1" width="638" height="158" rx="8" />
-    <text x="320" y="86" text-anchor="middle">fig-06x: Day and night loop (placeholder)</text>
-  </svg>
+<Figure id="fig-06x" caption={caption} wide={wide} interactive>
+  <div slot="svg" class="f6x" data-phase="all" data-pr="on">
+    {variants.map((v) => (
+      <svg class={v.cls} viewBox={v.vb} xmlns="http://www.w3.org/2000/svg" data-f6x-svg>
+        <defs>
+          <marker id={`f6x${v.id}-arr`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="arr-head" />
+          </marker>
+        </defs>
+        {v.panels.map((p) => (
+          <g class={`panel ${p.group}`}>
+            <rect x={p.x} y={p.y} width={p.w} height={p.h} rx="10" />
+            <text class="panel-label fig-mono" x={p.x + 12} y={p.y + 22}>{p.label}</text>
+          </g>
+        ))}
+        {v.edges.map((e) => (
+          <path d={e.d} class:list={['edge', e.group]} data-edge={e.id} marker-end={`url(#f6x${v.id}-arr)`} />
+        ))}
+        {v.texts.map((t) => (
+          <text
+            class="lbl"
+            x={t.rotate ? 0 : t.x}
+            y={t.rotate ? 0 : t.y}
+            transform={t.rotate ? `translate(${t.x} ${t.y}) rotate(-90)` : undefined}
+            text-anchor={t.anchor ?? 'start'}
+          >{t.t}</text>
+        ))}
+        {v.boxes.map((b) => (
+          <g class:list={['box', b.group, `box-${b.id}`]}>
+            <rect class={`mem mem-${b.style}`} x={b.x} y={b.y} width={b.w} height={b.h} rx={b.style === 'dream' ? b.h / 2 : 8} />
+            {b.lines.map((l, i) => (
+              <text class={i === 0 ? 'box-title' : 'box-sub'} x={b.x + b.w / 2} y={lineY(b, i)} text-anchor="middle">{l}</text>
+            ))}
+          </g>
+        ))}
+      </svg>
+    ))}
+  </div>
+  <div slot="controls" class="f6x-controls">
+    <div class="f6x-toggle" role="group" aria-label="Phase">
+      <button type="button" class="fig-btn" data-f6x-phase="day" aria-pressed="true">Day</button>
+      <button type="button" class="fig-btn" data-f6x-phase="night" aria-pressed="false">Night</button>
+    </div>
+    <button type="button" class="fig-btn" data-f6x-approve disabled>Approve</button>
+  </div>
   <slot>
     <ol><li>TODO</li></ol>
   </slot>
 </Figure>
+
+<style>
+  .f6x svg {
+    max-width: 440px;
+    margin: 0 auto;
+  }
+  .f6x svg.fig-broad {
+    max-width: 880px;
+  }
+  /* T-011 removes this once the shared fix lands (feature.css's
+     `.fig-svg svg { display: block }` outranks `.fig-broad { display: none }`).
+     The 760px switch point is this figure's own and stays. */
+  :global(.post-content.feature) .f6x svg.fig-broad {
+    display: none;
+  }
+  @media (min-width: 760px) {
+    :global(.post-content.feature) .f6x svg.fig-narrow {
+      display: none;
+    }
+    :global(.post-content.feature) .f6x svg.fig-broad {
+      display: block;
+    }
+  }
+
+  .panel rect {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 1.5;
+  }
+  .panel-label {
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+  .edge {
+    fill: none;
+    stroke: var(--text);
+    stroke-opacity: 0.55;
+    stroke-width: 1.5;
+  }
+  .arr-head {
+    fill: var(--text);
+    fill-opacity: 0.55;
+  }
+  .lbl {
+    font-size: 13px;
+    fill-opacity: 0.85;
+  }
+  .box-title {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .box-sub {
+    font-size: 13px;
+  }
+
+  /* Memory styles: the same mapping as Fig06Memories and Fig12Dirs. */
+  .mem {
+    stroke-width: 1.5;
+  }
+  .mem-working {
+    fill: var(--bg);
+    stroke: var(--text);
+    stroke-dasharray: 6 4;
+  }
+  .mem-episodic {
+    fill: var(--code-bg);
+    stroke: var(--muted);
+  }
+  .mem-semantic {
+    fill: color-mix(in srgb, var(--accent) 14%, var(--bg));
+    stroke: var(--accent);
+  }
+  .mem-procedural {
+    fill: color-mix(in srgb, var(--accent) 30%, var(--bg));
+    stroke: var(--accent);
+    stroke-width: 3;
+  }
+  /* Not memory stores: intake, the dream (a process), the proposal card. */
+  .mem-plain {
+    fill: var(--bg);
+    stroke: var(--muted);
+  }
+  .mem-dream {
+    fill: var(--code-bg);
+    stroke: var(--text);
+  }
+  .mem-proposal {
+    fill: var(--bg);
+    stroke: var(--accent);
+    stroke-dasharray: 3 3;
+  }
+
+  /* States set by the script. data-phase="all" (no JS) shows everything. */
+  .box,
+  .edge,
+  .panel {
+    transition: opacity 0.4s ease;
+  }
+  .f6x[data-phase='day'] .night,
+  .f6x[data-phase='night'] .day {
+    opacity: 0.35;
+  }
+  .f6x[data-pr='off'] .box-PR {
+    opacity: 0.12;
+  }
+  .f6x[data-pr='sent'] .box-PR {
+    opacity: 0.3;
+  }
+  .box-P .mem {
+    transition: stroke-width 0.4s ease;
+  }
+  .f6x[data-pr='sent'] .box-P .mem {
+    stroke-width: 5;
+  }
+
+  :global(.flow-card) {
+    fill: var(--accent);
+    stroke: var(--bg);
+    stroke-width: 2;
+  }
+
+  .f6x-controls,
+  .f6x-toggle {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+</style>
+
+<script>
+  import { getFigure, showControls, announce } from '../figure';
+  import { prefersReducedMotion } from '../motion';
+  import { flow, visible } from './Fig06Flow';
+
+  const fig = getFigure('fig-06x');
+  const wrap = fig?.root.querySelector<HTMLElement>('.f6x');
+  if (fig && wrap) {
+    const svgs = Array.from(wrap.querySelectorAll<SVGSVGElement>('[data-f6x-svg]'));
+    const phaseBtns = Array.from(fig.root.querySelectorAll<HTMLButtonElement>('[data-f6x-phase]'));
+    const approve = fig.root.querySelector<HTMLButtonElement>('[data-f6x-approve]');
+    let run = 0;
+
+    // Send dots along each group of edges in turn. Stops early when a newer
+    // control press has started (run counter) or under reduced motion.
+    const play = async (groups: string[][], id: number, cls?: string, r?: number) => {
+      const svg = svgs.find(visible);
+      if (!svg || prefersReducedMotion()) return;
+      for (const g of groups) {
+        if (id !== run) return;
+        const paths = g
+          .map((e) => svg.querySelector<SVGPathElement>(`[data-edge="${e}"]`))
+          .filter((p): p is SVGPathElement => !!p);
+        await flow(svg, paths, 800, cls, r);
+      }
+    };
+
+    const setPhase = (phase: 'day' | 'night') => {
+      wrap.dataset.phase = phase;
+      phaseBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.f6xPhase === phase)));
+    };
+
+    const day = async (morning = false) => {
+      const id = ++run;
+      setPhase('day');
+      if (!morning) wrap.dataset.pr = 'off';
+      if (approve) approve.disabled = true;
+      announce(fig, morning
+        ? 'Next morning: sessions start with the approved change loaded.'
+        : 'Day: each session writes reports, handoffs, ledgers, messages and lessons.');
+      await play([['WE', 'WL', 'WH'], ['HW2']], id);
+    };
+
+    const night = async () => {
+      const id = ++run;
+      setPhase('night');
+      wrap.dataset.pr = 'off';
+      if (approve) approve.disabled = true;
+      announce(fig, 'Night: the dream reads the day, writes cited facts and drafts a proposal.');
+      await play([['EDR', 'LDR'], ['DRS', 'DRPR']], id);
+      if (id !== run) return;
+      wrap.dataset.pr = 'on';
+      if (approve) approve.disabled = false;
+      announce(fig, 'A proposal is waiting for the owner to approve.');
+    };
+
+    const approveIt = async () => {
+      const id = ++run;
+      if (approve) approve.disabled = true;
+      wrap.dataset.pr = 'sent';
+      announce(fig, 'Approved: the change goes into procedural memory.');
+      await play([['PRP']], id, 'flow-card', 8);
+      if (id !== run) return;
+      setPhase('day');
+      await play([['PW', 'SW']], id);
+      if (id !== run) return;
+      day(true);
+    };
+
+    phaseBtns.forEach((b) =>
+      b.addEventListener('click', () => (b.dataset.f6xPhase === 'night' ? night() : day())),
+    );
+    approve?.addEventListener('click', approveIt);
+    wrap.dataset.phase = 'day';
+    wrap.dataset.pr = 'off';
+    showControls(fig);
+  }
+</script>
