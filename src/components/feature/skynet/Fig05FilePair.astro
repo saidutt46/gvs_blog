@@ -1,10 +1,16 @@
 ---
 /**
- * Fig05FilePair (fig-05): Prompt and report file pair. STUB from T-002.
- * The figure task replaces the placeholder SVG and removes `data-stub`.
+ * Fig05FilePair (fig-05): Prompt and report file pair.
  * Props: `caption` (text from the MDX), `wide` (default false).
  * Default slot: the text alternative (`<ol>`) written in the MDX.
- * Keep the id "fig-05" and the Figure contract (see ../Figure.astro).
+ *
+ * Drawing: two file cards in plain HTML and CSS (headings only, no
+ * template body). Stacked on a phone, side by side from 600px. The shared
+ * timestamp is marked in the accent colour on both file names.
+ * Labels: 03-architecture.md "The file protocol" (lines 55-59); headings
+ * from docs/templates/prompt.md and report.md (headings only).
+ * Motion: none. With JS on a phone (under 600px) the two cards become
+ * tabs; from 600px both show. No JS: both cards are stacked, no controls.
  */
 import Figure from '../Figure.astro';
 
@@ -14,14 +20,190 @@ interface Props {
 }
 
 const { caption = 'TODO', wide = false } = Astro.props;
+
+const TS = '20261025T065654Z';
+const CARDS = [
+  {
+    key: 'prompt',
+    tab: 'Prompt',
+    file: 'prompt.md',
+    writer: 'written by the parent',
+    headings: ['Goal', 'Context', 'Scope', 'Acceptance check', 'Non-goals', 'Security', 'When done'],
+  },
+  {
+    key: 'report',
+    tab: 'Report',
+    file: 'report.md',
+    writer: 'written by the worker',
+    headings: ['Summary', 'Evidence', 'Changes / findings', 'Open questions / blockers', 'Suggested next step', 'Security', 'Problems and improvements'],
+    notes: { Evidence: 'each check, with its exit code' } as Record<string, string>,
+  },
+];
 ---
 
-<Figure id="fig-05" caption={caption} wide={wide} data-stub="fig-05">
-  <svg slot="svg" class="fig-stub" viewBox="0 0 640 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <rect x="1" y="1" width="638" height="158" rx="8" />
-    <text x="320" y="86" text-anchor="middle">fig-05: Prompt and report file pair (placeholder)</text>
-  </svg>
+<Figure id="fig-05" caption={caption} wide={wide} interactive>
+  <div slot="svg" class="f5">
+    <div class="f5-cards">
+      {CARDS.map((c, i) => (
+        <section class="card" id={`f5-card-${c.key}`} data-card={c.key} aria-label={`${c.tab} file`}>
+          <header class="card-head">
+            <p class="fname fig-mono"><span class="ts">{TS}</span>-{c.file}</p>
+            <p class="writer">{c.writer}</p>
+          </header>
+          <ul class="heads fig-mono">
+            {c.headings.map((h) => (
+              <li>
+                <span class="h">## {h}</span>
+                {c.notes?.[h] && <span class="hnote">{c.notes[h]}</span>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+    <p class="f5-foot">The purple part of each name is the shared timestamp. One writer per file.</p>
+  </div>
+  <div slot="controls" class="f5-tabs" role="tablist" aria-label="File">
+    {CARDS.map((c, i) => (
+      <button type="button" class="fig-btn f5-tab" role="tab" id={`f5-tab-${c.key}`} data-tab={c.key} aria-controls={`f5-card-${c.key}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+        {c.tab}
+      </button>
+    ))}
+  </div>
   <slot>
     <ol><li>TODO</li></ol>
   </slot>
 </Figure>
+
+<style>
+  .f5-cards {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+  .card {
+    border: 1.5px solid var(--muted);
+    border-radius: 8px;
+    background: var(--bg);
+    overflow: hidden;
+    min-width: 0;
+  }
+  .card[hidden] {
+    display: none;
+  }
+  .card-head {
+    padding: 12px 16px;
+    background: var(--code-bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .fname {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+  .ts {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .writer {
+    margin: 2px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .heads {
+    list-style: none;
+    margin: 0;
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+  .heads li {
+    padding: 4px 0;
+    overflow-wrap: anywhere;
+  }
+  .hnote {
+    display: block;
+    padding-left: 24px;
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+  .f5-foot {
+    margin: 12px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+  }
+  .f5-tabs {
+    display: flex;
+    gap: 8px;
+  }
+  .f5-tab[aria-selected='true'] {
+    border-color: var(--accent);
+    border-width: 2px;
+    font-weight: 600;
+  }
+  @media (min-width: 600px) {
+    .f5-cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      max-width: none;
+    }
+    .f5-tabs {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { getFigure, showControls, announce } from '../figure';
+
+  const fig = getFigure('fig-05');
+  if (fig) {
+    const cards = Array.from(fig.root.querySelectorAll<HTMLElement>('.card'));
+    const tabs = Array.from(fig.root.querySelectorAll<HTMLButtonElement>('.f5-tab'));
+    const phone = window.matchMedia('(max-width: 599.98px)');
+    let current = 'prompt';
+
+    const apply = () => {
+      cards.forEach((c) => {
+        const on = c.dataset.card === current;
+        c.hidden = phone.matches && !on;
+        if (phone.matches) {
+          c.setAttribute('role', 'tabpanel');
+          c.setAttribute('aria-labelledby', `f5-tab-${c.dataset.card}`);
+        } else {
+          c.removeAttribute('role');
+          c.removeAttribute('aria-labelledby');
+        }
+      });
+      tabs.forEach((t) => {
+        const on = t.dataset.tab === current;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+    };
+    const select = (key: string, focus = false) => {
+      current = key;
+      apply();
+      const t = tabs.find((x) => x.dataset.tab === key);
+      if (focus) t?.focus();
+      announce(fig, `Showing the ${key} file.`);
+    };
+
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(t.dataset.tab ?? 'prompt'));
+      t.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          e.preventDefault();
+          const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+          select(n.dataset.tab ?? 'prompt', true);
+        }
+      });
+    });
+    phone.addEventListener('change', apply);
+    apply();
+    showControls(fig);
+  }
+</script>
