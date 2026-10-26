@@ -1,10 +1,18 @@
 ---
 /**
- * Fig01Hero (fig-01): Hero: one person, one crew. STUB from T-002.
- * The figure task replaces the placeholder SVG and removes `data-stub`.
+ * Fig01Hero (fig-01): one person, one crew.
  * Props: `caption` (text from the MDX), `wide` (default true).
  * Default slot: the text alternative (`<ol>`) written in the MDX.
- * Keep the id "fig-01" and the Figure contract (see ../Figure.astro).
+ *
+ * Drawing: two inline SVGs of the same tree (Dutt on top, then cos, the
+ * conductors, the workers). `.fig-narrow` (under 600px) is tall and tight;
+ * `.fig-broad` (600px and up) is wider and shorter.
+ * Labels: 03-architecture.md Diagram A (lines 9-17) and ~/skynet-hq/docs/01-architecture.md
+ * roles table (lines 21-28). The one-line roles are shortened from those rows.
+ * Motion: dots travel the edges once when the figure scrolls into view
+ * (onceInView). A tap, click or Enter on a box shows its one-line role.
+ * Reduced motion: no dots; taps still work. No JS: the SVG is static and
+ * complete; the controls stay hidden.
  */
 import Figure from '../Figure.astro';
 
@@ -14,14 +22,281 @@ interface Props {
 }
 
 const { caption = 'TODO', wide = true } = Astro.props;
+
+type Kind = 'human' | 'cos' | 'cond' | 'worker';
+interface Node { key: string; kind: Kind; title: string; sub?: string; x: number; y: number; w: number; h: number }
+
+const ROLES: Record<string, string> = {
+  dutt: 'You: talk to cos from a phone, a laptop or a browser.',
+  cos: 'Chief of Staff: talks to you, keeps the HQ ledgers, starts and stops conductors.',
+  condA: 'Conductor: one per project. Breaks features into tasks and starts workers.',
+  condB: 'Conductor: one per project. Breaks features into tasks and starts workers.',
+  recon: 'Recon: maps the code a feature touches. Read-only.',
+  architect: 'Architect: designs the work and splits it into tasks.',
+  dev: 'Dev: implements one task on its own branch.',
+  verify: 'Verify: runs the claimed checks again and reports pass or fail.',
+};
+
+const narrow = {
+  vb: '0 0 320 440',
+  nodes: [
+    { key: 'dutt', kind: 'human', title: 'Dutt', sub: 'phone, laptop, browser', x: 60, y: 8, w: 200, h: 52 },
+    { key: 'cos', kind: 'cos', title: 'cos', sub: 'Chief of Staff', x: 60, y: 100, w: 200, h: 52 },
+    { key: 'condA', kind: 'cond', title: 'conductor', sub: 'project A', x: 8, y: 196, w: 148, h: 52 },
+    { key: 'condB', kind: 'cond', title: 'conductor', sub: 'project B', x: 164, y: 196, w: 148, h: 52 },
+    { key: 'recon', kind: 'worker', title: 'recon', x: 20, y: 326, w: 136, h: 44 },
+    { key: 'architect', kind: 'worker', title: 'architect', x: 164, y: 326, w: 136, h: 44 },
+    { key: 'dev', kind: 'worker', title: 'dev', x: 20, y: 378, w: 136, h: 44 },
+    { key: 'verify', kind: 'worker', title: 'verify', x: 164, y: 378, w: 136, h: 44 },
+  ] as Node[],
+  group: { x: 4, y: 292, w: 312, h: 144, tx: 16, ty: 312 },
+  edges: [
+    { d: 'M160 60 V94', step: 0 },
+    { d: 'M130 152 C130 174 82 170 82 190', step: 1 },
+    { d: 'M190 152 C190 174 238 170 238 190', step: 1 },
+    { d: 'M82 248 V286', step: 2 },
+    { d: 'M238 248 V286', step: 2 },
+  ],
+};
+
+const broad = {
+  vb: '0 0 720 340',
+  nodes: [
+    { key: 'dutt', kind: 'human', title: 'Dutt', sub: 'phone, laptop, browser', x: 260, y: 8, w: 200, h: 52 },
+    { key: 'cos', kind: 'cos', title: 'cos', sub: 'Chief of Staff', x: 260, y: 88, w: 200, h: 52 },
+    { key: 'condA', kind: 'cond', title: 'conductor', sub: 'project A', x: 150, y: 168, w: 180, h: 52 },
+    { key: 'condB', kind: 'cond', title: 'conductor', sub: 'project B', x: 390, y: 168, w: 180, h: 52 },
+    { key: 'recon', kind: 'worker', title: 'recon', x: 20, y: 274, w: 160, h: 44 },
+    { key: 'architect', kind: 'worker', title: 'architect', x: 196, y: 274, w: 160, h: 44 },
+    { key: 'dev', kind: 'worker', title: 'dev', x: 372, y: 274, w: 160, h: 44 },
+    { key: 'verify', kind: 'worker', title: 'verify', x: 548, y: 274, w: 160, h: 44 },
+  ] as Node[],
+  group: { x: 8, y: 244, w: 704, h: 88, tx: 20, ty: 263 },
+  edges: [
+    { d: 'M360 60 V82', step: 0 },
+    { d: 'M320 140 C320 156 240 150 240 162', step: 1 },
+    { d: 'M400 140 C400 156 480 150 480 162', step: 1 },
+    { d: 'M240 220 V238', step: 2 },
+    { d: 'M480 220 V238', step: 2 },
+  ],
+};
+
+const variants = [
+  { id: 'n', cls: 'fig-narrow', ...narrow },
+  { id: 'b', cls: 'fig-broad', ...broad },
+];
 ---
 
-<Figure id="fig-01" caption={caption} wide={wide} data-stub="fig-01">
-  <svg slot="svg" class="fig-stub" viewBox="0 0 640 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <rect x="1" y="1" width="638" height="158" rx="8" />
-    <text x="320" y="86" text-anchor="middle">fig-01: Hero: one person, one crew (placeholder)</text>
-  </svg>
+<Figure id="fig-01" caption={caption} wide={wide} interactive>
+  <div slot="svg" class="f1">
+    {variants.map((v) => (
+      <svg class={v.cls} viewBox={v.vb} xmlns="http://www.w3.org/2000/svg" data-f1-svg>
+        <defs>
+          <marker id={`f1${v.id}-arr`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="arr-head" />
+          </marker>
+        </defs>
+        <rect class="grp" x={v.group.x} y={v.group.y} width={v.group.w} height={v.group.h} rx="10" />
+        <text class="grp-t" x={v.group.tx} y={v.group.ty}>workers, one task each</text>
+        {v.edges.map((e) => (
+          <path d={e.d} class="edge" data-step={e.step} marker-end={`url(#f1${v.id}-arr)`} />
+        ))}
+        {v.nodes.map((n) => (
+          <g class="node" data-role={n.key}>
+            <rect class="sel-ring" x={n.x - 5} y={n.y - 5} width={n.w + 10} height={n.h + 10} rx="11" />
+            <rect class={`box box-${n.kind}`} x={n.x} y={n.y} width={n.w} height={n.h} rx="8" />
+            <text class="n-title" x={n.x + n.w / 2} y={n.sub ? n.y + n.h / 2 - 3 : n.y + n.h / 2 + 5} text-anchor="middle">{n.title}</text>
+            {n.sub && <text class="n-sub" x={n.x + n.w / 2} y={n.y + n.h / 2 + 15} text-anchor="middle">{n.sub}</text>}
+          </g>
+        ))}
+      </svg>
+    ))}
+  </div>
+  <div slot="controls" class="f1-controls">
+    <p class="f1-panel" data-f1-hint>Tap a box to see what it does.</p>
+  </div>
+  <script type="application/json" data-f1-roles set:html={JSON.stringify(ROLES)} is:inline></script>
   <slot>
     <ol><li>TODO</li></ol>
   </slot>
 </Figure>
+
+<style>
+  .f1 svg {
+    max-width: 440px;
+    margin: 0 auto;
+  }
+  .f1 svg.fig-broad {
+    max-width: 840px;
+  }
+
+  .edge {
+    fill: none;
+    stroke: var(--text);
+    stroke-opacity: 0.55;
+    stroke-width: 1.5;
+  }
+  .arr-head {
+    fill: var(--text);
+    fill-opacity: 0.55;
+  }
+  .grp {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 4;
+  }
+  .grp-t {
+    font-size: 13px;
+    fill-opacity: 0.8;
+  }
+  .n-title {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .n-sub {
+    font-size: 13px;
+    fill-opacity: 0.85;
+  }
+
+  /* Role styles: fill, stroke weight and dash differ, so colour is never the only cue. */
+  .box {
+    stroke-width: 1.5;
+  }
+  .box-human {
+    fill: var(--bg);
+    stroke: var(--text);
+    stroke-width: 2;
+  }
+  .box-cos {
+    fill: color-mix(in srgb, var(--accent) 30%, var(--bg));
+    stroke: var(--accent);
+    stroke-width: 3;
+  }
+  .box-cond {
+    fill: color-mix(in srgb, var(--accent) 14%, var(--bg));
+    stroke: var(--accent);
+  }
+  .box-worker {
+    fill: var(--code-bg);
+    stroke: var(--muted);
+  }
+
+  .sel-ring {
+    fill: none;
+    stroke: var(--text);
+    stroke-width: 2;
+    opacity: 0;
+  }
+  .node[aria-pressed='true'] .sel-ring,
+  .node:focus-visible .sel-ring {
+    opacity: 1;
+  }
+  .node[role='button'] {
+    cursor: pointer;
+    outline: none;
+  }
+  @media (hover: hover) {
+    .node[role='button']:hover .sel-ring {
+      opacity: 0.4;
+    }
+  }
+
+  :global(.f1 .flow-dot) {
+    fill: var(--accent);
+    stroke: var(--bg);
+    stroke-width: 1.5;
+  }
+
+  .f1-controls {
+    width: 100%;
+  }
+  .f1-panel {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .f1-panel[hidden] {
+    display: none;
+  }
+</style>
+
+<script>
+  import { getFigure, showControls, announce } from '../figure';
+  import { prefersReducedMotion, onceInView } from '../motion';
+
+  const NS = 'http://www.w3.org/2000/svg';
+  const fig = getFigure('fig-01');
+  if (fig) {
+    const roles: Record<string, string> = JSON.parse(
+      fig.root.querySelector('[data-f1-roles]')?.textContent ?? '{}',
+    );
+    const svgs = Array.from(fig.root.querySelectorAll<SVGSVGElement>('[data-f1-svg]'));
+    const nodes = Array.from(fig.root.querySelectorAll<SVGGElement>('.node'));
+    const hint = fig.root.querySelector<HTMLElement>('[data-f1-hint]');
+
+    const select = (key: string) => {
+      nodes.forEach((n) => n.setAttribute('aria-pressed', String(n.dataset.role === key)));
+      const text = roles[key];
+      if (hint) hint.hidden = true;
+      // The figure's live region is visible text, so it shows the role line.
+      if (text) announce(fig, text);
+    };
+
+    nodes.forEach((n) => {
+      const name = n.querySelector('.n-title')?.textContent ?? '';
+      n.setAttribute('role', 'button');
+      n.setAttribute('tabindex', '0');
+      n.setAttribute('aria-pressed', 'false');
+      n.setAttribute('aria-label', `${name}: show its role`);
+      n.addEventListener('click', () => select(n.dataset.role ?? ''));
+      n.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          select(n.dataset.role ?? '');
+        }
+      });
+    });
+
+    // One dot per edge, step by step, once.
+    const send = (svg: SVGSVGElement, paths: SVGPathElement[], ms: number) =>
+      new Promise<void>((done) => {
+        const dots = paths.map(() => {
+          const c = document.createElementNS(NS, 'circle');
+          c.setAttribute('r', '5');
+          c.setAttribute('class', 'flow-dot');
+          svg.appendChild(c);
+          return c;
+        });
+        const lens = paths.map((p) => p.getTotalLength());
+        const t0 = performance.now();
+        const tick = (now: number) => {
+          const k = Math.min(1, (now - t0) / ms);
+          paths.forEach((p, i) => {
+            const pt = p.getPointAtLength(lens[i] * k);
+            dots[i].setAttribute('cx', String(pt.x));
+            dots[i].setAttribute('cy', String(pt.y));
+          });
+          if (k < 1) requestAnimationFrame(tick);
+          else {
+            dots.forEach((d) => d.remove());
+            done();
+          }
+        };
+        requestAnimationFrame(tick);
+      });
+
+    const run = async () => {
+      if (prefersReducedMotion()) return;
+      const svg = svgs.find((s) => s.getBoundingClientRect().width > 0);
+      if (!svg) return;
+      for (const step of [0, 1, 2]) {
+        const paths = Array.from(svg.querySelectorAll<SVGPathElement>(`path.edge[data-step="${step}"]`));
+        await send(svg, paths, 700);
+      }
+    };
+
+    showControls(fig);
+    onceInView(fig.svg, run, 0.5);
+  }
+</script>

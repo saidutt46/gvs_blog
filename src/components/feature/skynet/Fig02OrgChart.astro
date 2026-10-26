@@ -1,10 +1,18 @@
 ---
 /**
- * Fig02OrgChart (fig-02): Org chart. STUB from T-002.
- * The figure task replaces the placeholder SVG and removes `data-stub`.
+ * Fig02OrgChart (fig-02): the crew, who may start whom.
  * Props: `caption` (text from the MDX), `wide` (default true).
  * Default slot: the text alternative (`<ol>`) written in the MDX.
- * Keep the id "fig-02" and the Figure contract (see ../Figure.astro).
+ *
+ * Drawing: two inline SVGs. `.fig-narrow` (under 600px) is a vertical
+ * chart; `.fig-broad` (600px and up) puts the five workers in one row.
+ * Labels: "does / never does" are shortened from the roles table in
+ * ~/skynet-hq/docs/01-architecture.md (lines 21-28). "May start" comes
+ * from its "Who may spawn whom" table (lines 34-41). Depth: line 43.
+ * Motion: tap, click or focus a role to show its panel and mark the roles
+ * it may start (a dot in the corner and a heavier border). Reduced motion:
+ * the same, with no transitions. No JS: the SVG is static and the panel
+ * stays hidden.
  */
 import Figure from '../Figure.astro';
 
@@ -14,14 +22,293 @@ interface Props {
 }
 
 const { caption = 'TODO', wide = true } = Astro.props;
+
+type Kind = 'human' | 'cos' | 'cond' | 'worker' | 'helper';
+interface Role { key: string; kind: Kind; title: string; sub?: string; does: string; never: string; may: string[] }
+
+const ALL = ['cos', 'cond', 'recon', 'research', 'architect', 'dev', 'verify', 'sme'];
+
+const ROLES: Role[] = [
+  { key: 'dutt', kind: 'human', title: 'Dutt', sub: 'the one human', does: 'Talks to cos from a phone, a laptop or a browser. May start any role.', never: '', may: ALL },
+  { key: 'cos', kind: 'cos', title: 'cos', sub: 'Chief of Staff', does: 'Talks to Dutt, keeps the HQ ledgers, starts and stops conductors.', never: 'Writes project code, or starts workers inside a project.', may: ['cond'] },
+  { key: 'cond', kind: 'cond', title: 'conductor', sub: 'one per project', does: 'Breaks features into tasks, starts workers, verifies, and merges task branches into the feature branch.', never: 'Writes implementation code, merges to main, or switches branches in the main checkout.', may: ['recon', 'research', 'architect', 'dev', 'verify', 'sme'] },
+  { key: 'recon', kind: 'worker', title: 'recon', does: 'Maps the code a feature touches: files, entry points, risks.', never: 'Edits files, or starts anyone.', may: [] },
+  { key: 'research', kind: 'worker', title: 'research', does: 'Answers a question from outside knowledge, with sources.', never: 'Edits files, or starts anyone.', may: [] },
+  { key: 'architect', kind: 'worker', title: 'architect', does: 'Designs the work and splits it into tasks with file scopes.', never: 'Edits code.', may: ['research', 'sme'] },
+  { key: 'dev', kind: 'worker', title: 'dev', does: 'Implements one task in its own worktree, runs its checks, and commits on its branch.', never: 'Touches files outside its scope, merges, or pushes to main.', may: ['recon', 'research', 'sme'] },
+  { key: 'verify', kind: 'worker', title: 'verify', does: 'Runs the claimed checks again, reads the diff, and reports pass or fail.', never: 'Fixes what it finds, or starts anyone.', may: [] },
+  { key: 'sme', kind: 'helper', title: 'SME', sub: 'helper', does: 'Gives a deep answer on one focused subject, so its parent keeps its own context.', never: 'Edits files, or starts anyone.', may: [] },
+];
+
+interface Node { key: string; x: number; y: number; w: number; h: number }
+const byKey = Object.fromEntries(ROLES.map((r) => [r.key, r]));
+
+// Narrow (phone first): viewBox 320 x 520, one column, workers in a 2 x 3 grid.
+const narrow = {
+  vb: '0 0 320 520',
+  nodes: [
+    { key: 'dutt', x: 60, y: 6, w: 200, h: 52 },
+    { key: 'cos', x: 60, y: 90, w: 200, h: 52 },
+    { key: 'cond', x: 60, y: 174, w: 200, h: 52 },
+    { key: 'recon', x: 16, y: 274, w: 136, h: 44 },
+    { key: 'research', x: 168, y: 274, w: 136, h: 44 },
+    { key: 'architect', x: 16, y: 326, w: 136, h: 44 },
+    { key: 'dev', x: 168, y: 326, w: 136, h: 44 },
+    { key: 'verify', x: 16, y: 378, w: 136, h: 44 },
+    { key: 'sme', x: 60, y: 462, w: 200, h: 52 },
+  ] as Node[],
+  group: { x: 4, y: 240, w: 312, h: 194, tx: 16, ty: 260 },
+  edges: ['M160 58 V84', 'M160 142 V168', 'M160 226 V234', 'M160 434 V456'],
+  helperLabel: { x: 172, y: 450, anchor: 'start' },
+};
+
+// Broad (600px and up): viewBox 720 x 400, workers in one row.
+const broad = {
+  vb: '0 0 720 400',
+  nodes: [
+    { key: 'dutt', x: 260, y: 6, w: 200, h: 52 },
+    { key: 'cos', x: 260, y: 84, w: 200, h: 52 },
+    { key: 'cond', x: 260, y: 162, w: 200, h: 52 },
+    { key: 'recon', x: 16, y: 262, w: 128, h: 44 },
+    { key: 'research', x: 156, y: 262, w: 128, h: 44 },
+    { key: 'architect', x: 296, y: 262, w: 128, h: 44 },
+    { key: 'dev', x: 436, y: 262, w: 128, h: 44 },
+    { key: 'verify', x: 576, y: 262, w: 128, h: 44 },
+    { key: 'sme', x: 260, y: 340, w: 200, h: 52 },
+  ] as Node[],
+  group: { x: 4, y: 232, w: 712, h: 88, tx: 16, ty: 250 },
+  edges: ['M360 58 V78', 'M360 136 V156', 'M360 214 V226', 'M360 320 V334'],
+  helperLabel: { x: 372, y: 332, anchor: 'start' },
+};
+
+const variants = [
+  { id: 'n', cls: 'fig-narrow', ...narrow },
+  { id: 'b', cls: 'fig-broad', ...broad },
+];
 ---
 
-<Figure id="fig-02" caption={caption} wide={wide} data-stub="fig-02">
-  <svg slot="svg" class="fig-stub" viewBox="0 0 640 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <rect x="1" y="1" width="638" height="158" rx="8" />
-    <text x="320" y="86" text-anchor="middle">fig-02: Org chart (placeholder)</text>
-  </svg>
+<Figure id="fig-02" caption={caption} wide={wide} interactive>
+  <div slot="svg" class="f2">
+    {variants.map((v) => (
+      <svg class={v.cls} viewBox={v.vb} xmlns="http://www.w3.org/2000/svg" data-f2-svg>
+        <defs>
+          <marker id={`f2${v.id}-arr`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="arr-head" />
+          </marker>
+        </defs>
+        <rect class="grp" x={v.group.x} y={v.group.y} width={v.group.w} height={v.group.h} rx="10" />
+        <text class="grp-t" x={v.group.tx} y={v.group.ty}>workers, one task each</text>
+        {v.edges.map((d, i) => (
+          <path d={d} class:list={['edge', { helper: i === 3 }]} marker-end={`url(#f2${v.id}-arr)`} />
+        ))}
+        <text class="grp-t" x={v.helperLabel.x} y={v.helperLabel.y}>helpers, on request</text>
+        {v.nodes.map((n) => {
+          const r = byKey[n.key];
+          return (
+            <g class="node" data-role={r.key}>
+              <rect class="sel-ring" x={n.x - 5} y={n.y - 5} width={n.w + 10} height={n.h + 10} rx="11" />
+              <rect class={`box box-${r.kind}`} x={n.x} y={n.y} width={n.w} height={n.h} rx="8" />
+              <text class="n-title" x={n.x + n.w / 2} y={r.sub ? n.y + n.h / 2 - 3 : n.y + n.h / 2 + 5} text-anchor="middle">{r.title}</text>
+              {r.sub && <text class="n-sub" x={n.x + n.w / 2} y={n.y + n.h / 2 + 15} text-anchor="middle">{r.sub}</text>}
+              <circle class="may-dot" cx={n.x + n.w - 2} cy={n.y + 2} r="6" />
+            </g>
+          );
+        })}
+      </svg>
+    ))}
+  </div>
+  <div slot="controls" class="f2-controls">
+    <p class="f2-hint" data-f2-hint>Tap a role to see what it does, what it never does, and who it may start.</p>
+    {ROLES.map((r) => (
+      <div class="f2-info" data-info={r.key} hidden>
+        <p class="f2-name">{r.title}</p>
+        <dl>
+          <dt>Does</dt><dd>{r.does}</dd>
+          {r.never && <><dt>Never</dt><dd>{r.never}</dd></>}
+          <dt>May start</dt>
+          <dd>{r.may.length ? r.may.map((k) => byKey[k].title).join(', ') : 'Nobody.'}</dd>
+        </dl>
+      </div>
+    ))}
+  </div>
+  <script type="application/json" data-f2-may set:html={JSON.stringify(Object.fromEntries(ROLES.map((r) => [r.key, r.may])))} is:inline></script>
   <slot>
     <ol><li>TODO</li></ol>
   </slot>
 </Figure>
+
+<style>
+  .f2 svg {
+    max-width: 440px;
+    margin: 0 auto;
+  }
+  .f2 svg.fig-broad {
+    max-width: 840px;
+  }
+
+  .edge {
+    fill: none;
+    stroke: var(--text);
+    stroke-opacity: 0.55;
+    stroke-width: 1.5;
+  }
+  .edge.helper {
+    stroke-dasharray: 4 4;
+  }
+  .arr-head {
+    fill: var(--text);
+    fill-opacity: 0.55;
+  }
+  .grp {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 4;
+  }
+  .grp-t {
+    font-size: 13px;
+    fill-opacity: 0.8;
+  }
+  .n-title {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .n-sub {
+    font-size: 13px;
+    fill-opacity: 0.85;
+  }
+
+  .box {
+    stroke-width: 1.5;
+  }
+  .box-human {
+    fill: var(--bg);
+    stroke: var(--text);
+    stroke-width: 2;
+  }
+  .box-cos {
+    fill: color-mix(in srgb, var(--accent) 30%, var(--bg));
+    stroke: var(--accent);
+    stroke-width: 3;
+  }
+  .box-cond {
+    fill: color-mix(in srgb, var(--accent) 14%, var(--bg));
+    stroke: var(--accent);
+  }
+  .box-worker {
+    fill: var(--code-bg);
+    stroke: var(--muted);
+  }
+  .box-helper {
+    fill: var(--bg);
+    stroke: var(--text);
+    stroke-dasharray: 6 4;
+  }
+
+  .sel-ring {
+    fill: none;
+    stroke: var(--text);
+    stroke-width: 2;
+    opacity: 0;
+  }
+  .node[aria-pressed='true'] .sel-ring,
+  .node:focus-visible .sel-ring {
+    opacity: 1;
+  }
+  .may-dot {
+    fill: var(--accent);
+    stroke: var(--bg);
+    stroke-width: 2;
+    opacity: 0;
+  }
+  .node.may .may-dot {
+    opacity: 1;
+  }
+  .node.may .box {
+    stroke: var(--accent);
+    stroke-width: 3.5;
+  }
+  .node[role='button'] {
+    cursor: pointer;
+    outline: none;
+  }
+  @media (hover: hover) {
+    .node[role='button']:hover .sel-ring {
+      opacity: 0.4;
+    }
+  }
+
+  .f2-controls {
+    width: 100%;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .f2-hint {
+    margin: 0;
+    opacity: 0.8;
+  }
+  .f2-info[hidden],
+  .f2-hint[hidden] {
+    display: none;
+  }
+  .f2-name {
+    margin: 0 0 4px;
+    font-weight: 600;
+  }
+  .f2-info dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 2px 12px;
+  }
+  .f2-info dt {
+    font-weight: 500;
+  }
+  .f2-info dd {
+    margin: 0;
+  }
+</style>
+
+<script>
+  import { getFigure, showControls, announce } from '../figure';
+
+  const fig = getFigure('fig-02');
+  if (fig) {
+    const may: Record<string, string[]> = JSON.parse(
+      fig.root.querySelector('[data-f2-may]')?.textContent ?? '{}',
+    );
+    const nodes = Array.from(fig.root.querySelectorAll<SVGGElement>('.node'));
+    const infos = Array.from(fig.root.querySelectorAll<HTMLElement>('[data-info]'));
+    const hint = fig.root.querySelector<HTMLElement>('[data-f2-hint]');
+
+    const select = (key: string) => {
+      const starts = may[key] ?? [];
+      nodes.forEach((n) => {
+        const k = n.dataset.role ?? '';
+        n.setAttribute('aria-pressed', String(k === key));
+        n.classList.toggle('may', starts.includes(k));
+      });
+      infos.forEach((i) => (i.hidden = i.dataset.info !== key));
+      if (hint) hint.hidden = true;
+      const name = infos.find((i) => i.dataset.info === key)?.querySelector('.f2-name')?.textContent;
+      if (name) announce(fig, `Showing ${name}.`);
+    };
+
+    nodes.forEach((n) => {
+      const name = n.querySelector('.n-title')?.textContent ?? '';
+      n.setAttribute('role', 'button');
+      n.setAttribute('tabindex', '0');
+      n.setAttribute('aria-pressed', 'false');
+      n.setAttribute('aria-label', `${name}: show what it does and never does`);
+      n.addEventListener('click', () => select(n.dataset.role ?? ''));
+      n.addEventListener('focus', () => select(n.dataset.role ?? ''));
+      n.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          select(n.dataset.role ?? '');
+        }
+      });
+    });
+    showControls(fig);
+  }
+</script>
