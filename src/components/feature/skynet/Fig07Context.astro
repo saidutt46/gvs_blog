@@ -1,12 +1,20 @@
 ---
 /**
- * Fig07Context (fig-07): Context meter and relay. STUB from T-002.
- * The figure task replaces the placeholder SVG and removes `data-stub`.
+ * Fig07Context (fig-07): context meter and relay, with F7b (the handoff's
+ * headings card) and the before/after relay timeline.
  * Props: `caption` (text from the MDX), `wide` (default true).
  * Default slot: the text alternative (`<ol>`) written in the MDX.
  * Keep the id "fig-07" and the Figure contract (see ../Figure.astro).
+ *
+ * Drawing: SVGs with no viewBox (user units are CSS px, x in percent), so
+ * text stays 12px or more at 375px and the bar stretches to any width.
+ * Marker positions are relative shares of the window; no number is shown.
+ * No JS: bar at the relay point, gen 1 and gen 2 cards, all four levels.
+ * JS (Fig07Context.ts): slider, Play (not under reduced motion), role and
+ * build-day switches.
  */
 import Figure from '../Figure.astro';
+import { F7_NAMES, F7_ROLES, f7Marks, type F7Role } from './Fig07Data';
 
 interface Props {
   caption?: string;
@@ -14,14 +22,435 @@ interface Props {
 }
 
 const { caption = 'TODO', wide = true } = Astro.props;
+
+const role: F7Role = 'conductor';
+const [cp, soon, now] = f7Marks('today', role);
+const start = now; // the static (no-JS) state: the bar at the relay point
+const pct = (f: number) => `${(f * 100).toFixed(1)}%`;
+
+const levels = [
+  { key: 'checkpoint', name: 'Checkpoint', text: 'Write a checkpoint handoff now, then continue.' },
+  { key: 'soon', name: 'Relay soon', text: 'Finish only the current step, then write a relay handoff.' },
+  { key: 'now', name: 'Relay now', text: 'Stop. Write the relay handoff and request a relay. Repeats until done.' },
+  { key: 'compacted', name: 'Compacted', text: 'Emergency: rebuild a handoff from files, not from the summary, then relay.' },
+];
+
+const headings = [
+  'State in one paragraph',
+  'Read next (in this order)',
+  'Decisions made (and why)',
+  'Open threads',
+  'Live agents I own',
+  'Do not redo',
+  'Next actions (in order)',
+  'Lessons for semantic memory',
+  'Parent notes',
+];
+
+// Before/after timeline: the same span of work, cut at each era's relay
+// point for a conductor (relative widths, no numbers).
+const buildGens = 6;
+const todayGens = Math.round((buildGens * f7Marks('build', role)[2]) / now);
 ---
 
-<Figure id="fig-07" caption={caption} wide={wide} data-stub="fig-07">
-  <svg slot="svg" class="fig-stub" viewBox="0 0 640 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <rect x="1" y="1" width="638" height="158" rx="8" />
-    <text x="320" y="86" text-anchor="middle">fig-07: Context meter and relay (placeholder)</text>
-  </svg>
+<Figure id="fig-07" caption={caption} wide={wide} interactive>
+  <div slot="svg" class="f7" data-f7 data-level="now" data-era="today" data-role={role}>
+    <p class="f7-head fig-mono">
+      <span data-f7-name>{F7_NAMES[role]}</span> · gen 1<br /><span class="f7-cue">level: <span data-f7-cue>relay now</span></span>
+    </p>
+
+    <svg class="f7-meter" width="100%" height="96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+      <text class="f7-small" x="0" y="12">context window</text>
+      <text class="f7-small" x="100%" y="12" text-anchor="end">compacted</text>
+      <rect class="f7-track" x="0" y="20" width="100%" height="20" rx="4" />
+      <rect class="f7-fill" data-f7-fill x="0" y="20" width={pct(start)} height="20" rx="4" />
+      <line class="f7-mark f7-mark-dash" x1="100%" x2="100%" y1="16" y2="44" />
+      <g data-f7-mark="2">
+        <line class="f7-gap" x1={pct(now)} x2={pct(now)} y1="20" y2="40" />
+        <line class="f7-mark" x1={pct(now)} x2={pct(now)} y1="16" y2="50" />
+        <text x={pct(now)} dx="4" y="58">relay now</text>
+      </g>
+      <g data-f7-mark="1">
+        <line class="f7-gap" x1={pct(soon)} x2={pct(soon)} y1="20" y2="40" />
+        <line class="f7-mark" x1={pct(soon)} x2={pct(soon)} y1="16" y2="68" />
+        <text x={pct(soon)} dx="4" y="76">relay soon</text>
+      </g>
+      <g data-f7-mark="0">
+        <line class="f7-gap" x1={pct(cp)} x2={pct(cp)} y1="20" y2="40" />
+        <line class="f7-mark" x1={pct(cp)} x2={pct(cp)} y1="16" y2="86" />
+        <text x={pct(cp)} dx="4" y="94">checkpoint</text>
+      </g>
+    </svg>
+
+    <p class="f7-note" data-f7-build hidden>On build day, every role used the same levels, and relays came at about a fifth of the window.</p>
+
+    <div class="f7-levels">
+      {levels.map((l) => (
+        <div class="f7-level" data-f7-level={l.key} data-active={l.key === 'now' ? 'true' : undefined}>
+          <span class="f7-level-name">{l.name}</span>
+          <span class="f7-level-text">{l.text}</span>
+        </div>
+      ))}
+    </div>
+
+    <div class="f7-relay" data-f7-relay data-on="true">
+      <div class="f7-card">
+        <span class="f7-gen fig-mono">gen 1</span>
+        <span class="f7-name fig-mono" data-f7-name>{F7_NAMES[role]}</span>
+        <span class="f7-status" data-f7-old>writes a relay handoff, then "handoff ready"</span>
+      </div>
+      <span class="f7-arrow" aria-hidden="true"></span>
+      <div class="f7-card f7-handoff f7-after">
+        <span class="f7-gen">Handoff</span>
+        <ol class="f7-headings">
+          {headings.map((h, i) => (
+            <li class={i === headings.length - 1 ? 'f7-parent' : undefined}>{h}</li>
+          ))}
+        </ol>
+        <span class="f7-status">the parent reviews it and adds notes</span>
+      </div>
+      <span class="f7-arrow f7-after" aria-hidden="true"></span>
+      <div class="f7-card f7-after">
+        <span class="f7-gen fig-mono">gen 2</span>
+        <span class="f7-name fig-mono" data-f7-name>{F7_NAMES[role]}</span>
+        <svg class="f7-mini" width="100%" height="8" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <rect class="f7-track" x="0" y="0" width="100%" height="8" rx="3" />
+          <rect class="f7-fill-low" x="0" y="0" width="6%" height="8" rx="3" />
+        </svg>
+        <span class="f7-status">same name; reads the handoff and its citations</span>
+      </div>
+    </div>
+
+    <svg class="f7-timeline" width="100%" height="100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+      <g class="f7-row" data-f7-row="build">
+        <text class="f7-small" x="0" y="12">Build day: relays at about a fifth of the window</text>
+        {Array.from({ length: buildGens }, (_, i) => (
+          <g>
+            <rect class="f7-seg" x={pct(i / buildGens)} y="20" width={pct(1 / buildGens)} height="24" />
+            <text class="f7-seg-text" x={pct((i + 0.5) / buildGens)} y="37" text-anchor="middle">{`gen ${i + 1}`}</text>
+          </g>
+        ))}
+      </g>
+      <g class="f7-row" data-f7-row="today">
+        <text class="f7-small" x="0" y="66">Today: levels raised per role</text>
+        {Array.from({ length: todayGens }, (_, i) => (
+          <g>
+            <rect class="f7-seg" x={pct(i / todayGens)} y="74" width={pct(1 / todayGens)} height="24" />
+            <text class="f7-seg-text" x={pct((i + 0.5) / todayGens)} y="91" text-anchor="middle">{`gen ${i + 1}`}</text>
+          </g>
+        ))}
+      </g>
+    </svg>
+  </div>
+
+  <div slot="controls" class="f7-controls">
+    <label class="f7-slider">
+      <span>Context used</span>
+      <input type="range" min="0" max="100" step="1" value={Math.round(start * 100)} data-f7-range aria-valuetext="relay now level" />
+    </label>
+    <fieldset class="f7-switch">
+      <legend>Role</legend>
+      {F7_ROLES.map((r) => (
+        <label><input type="radio" name="f7-role" value={r} checked={r === role} /> {r}</label>
+      ))}
+    </fieldset>
+    <fieldset class="f7-switch">
+      <legend>Levels</legend>
+      <label><input type="radio" name="f7-era" value="today" checked /> today</label>
+      <label><input type="radio" name="f7-era" value="build" /> build day</label>
+    </fieldset>
+    <button type="button" class="fig-btn" data-f7-play hidden>Play</button>
+  </div>
+
   <slot>
     <ol><li>TODO</li></ol>
   </slot>
 </Figure>
+
+<script>
+  import { initFig07 } from './Fig07Context';
+  initFig07();
+</script>
+
+<style>
+  .f7 {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    padding: 2px;
+  }
+  .f7 p {
+    margin: 0;
+  }
+  .f7-head {
+    font-size: 13px;
+    margin-bottom: 8px;
+    overflow-wrap: anywhere;
+  }
+  .f7-cue {
+    color: var(--muted);
+  }
+  .f7 svg {
+    display: block;
+    overflow: visible;
+  }
+  .f7 svg text {
+    font-size: 12px;
+    fill: var(--text);
+  }
+  .f7 svg .f7-small {
+    fill: var(--muted);
+  }
+  .f7-track {
+    fill: var(--code-bg);
+    stroke: var(--border);
+  }
+  .f7-fill {
+    fill: var(--text);
+    transition: width 0.2s ease;
+  }
+  .f7[data-level='ok'] .f7-fill {
+    fill: var(--muted);
+  }
+  .f7[data-level='checkpoint'] .f7-fill {
+    fill: var(--accent);
+  }
+  .f7-fill-low {
+    fill: var(--muted);
+  }
+  .f7-mark {
+    stroke: var(--text);
+    stroke-width: 1.5;
+  }
+  .f7-gap {
+    stroke: var(--bg);
+    stroke-width: 4;
+  }
+  .f7-mark-dash {
+    stroke-dasharray: 3 3;
+    stroke: var(--muted);
+  }
+  .f7-note {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .f7-note[hidden] {
+    display: none;
+  }
+  .f7-levels {
+    display: grid;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .f7-level {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--border);
+    border-radius: 4px;
+    font-size: 13px;
+  }
+  .f7-level-name {
+    font-weight: 500;
+  }
+  .f7-level-text {
+    color: var(--muted);
+  }
+  .f7-level[data-active='true'] {
+    border-left-color: var(--accent);
+    background: var(--code-bg);
+  }
+  .f7-level[data-active='true'] .f7-level-text {
+    color: var(--text);
+  }
+  .f7-level[data-f7-level='compacted'] {
+    border-style: dashed;
+    border-left-style: solid;
+  }
+  .f7-relay {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin-top: 24px;
+  }
+  .f7-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    min-width: 0;
+    transition: opacity 0.2s ease;
+  }
+  .f7-gen {
+    font-weight: 500;
+    font-size: 13px;
+  }
+  .f7-name {
+    font-size: 13px;
+    overflow-wrap: anywhere;
+  }
+  .f7-status {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .f7-handoff {
+    background: var(--code-bg);
+  }
+  .f7-headings {
+    margin: 0;
+    padding-left: 20px;
+    font-size: 13px;
+  }
+  .f7-parent {
+    color: var(--accent);
+  }
+  .f7-arrow {
+    display: block;
+    align-self: center;
+    width: 2px;
+    height: 24px;
+    background: var(--muted);
+    position: relative;
+    margin-bottom: 6px;
+  }
+  .f7-arrow::after {
+    content: '';
+    position: absolute;
+    left: -5px;
+    bottom: -6px;
+    border: 6px solid transparent;
+    border-bottom: 0;
+    border-top-color: var(--muted);
+  }
+  .f7-relay[data-on='false'] .f7-after {
+    opacity: 0.3;
+  }
+  .f7-timeline {
+    margin-top: 24px;
+  }
+  .f7-seg {
+    fill: var(--code-bg);
+    stroke: var(--bg);
+    stroke-width: 2;
+  }
+  .f7 .f7-timeline .f7-seg-text {
+    fill: var(--muted);
+  }
+  .f7[data-era='build'] [data-f7-row='build'] .f7-seg,
+  .f7[data-era='today'] [data-f7-row='today'] .f7-seg {
+    fill: var(--accent);
+    fill-opacity: 0.35;
+  }
+  .f7[data-era='build'] [data-f7-row='build'] .f7-seg-text,
+  .f7[data-era='today'] [data-f7-row='today'] .f7-seg-text {
+    fill: var(--text);
+  }
+
+  /* Controls */
+  .f7-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+  .f7-slider {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+  }
+  .f7-slider input {
+    width: 100%;
+    min-height: 44px;
+    margin: 0;
+    accent-color: var(--accent);
+    touch-action: manipulation;
+  }
+  .f7-switch {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+  }
+  .f7-switch legend {
+    padding: 0;
+    margin-bottom: 4px;
+    color: var(--muted);
+  }
+  .f7-switch label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .f7-switch label:has(input:checked) {
+    border-color: var(--accent);
+  }
+  .f7-switch input {
+    accent-color: var(--accent);
+    margin: 0;
+  }
+  .f7-switch input:focus-visible,
+  .f7-slider input:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+  }
+  .f7-controls .fig-btn[hidden] {
+    display: none;
+  }
+  .f7-controls .fig-btn {
+    align-self: flex-start;
+  }
+
+  @media (min-width: 600px) {
+    .f7-levels {
+      grid-template-columns: 1fr 1fr;
+    }
+    .f7-relay {
+      flex-direction: row;
+      align-items: center;
+    }
+    .f7-relay > .f7-card {
+      flex: 1 1 0;
+    }
+    .f7-relay > .f7-handoff {
+      flex: 1.3 1 0;
+    }
+    .f7-arrow {
+      width: 24px;
+      height: 2px;
+      margin: 0 8px 0 0;
+      flex: none;
+    }
+    .f7-arrow::after {
+      left: auto;
+      bottom: auto;
+      right: -6px;
+      top: -5px;
+      border: 6px solid transparent;
+      border-right: 0;
+      border-left-color: var(--muted);
+    }
+    .f7-controls {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 16px;
+    }
+    .f7-slider {
+      flex: 1 1 100%;
+    }
+  }
+</style>
