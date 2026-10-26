@@ -39,7 +39,7 @@
 
 ## Color
 - **Approach:** Restrained. Text and background do most of the work. One accent, `#AF87FF`, is used only for link underlines, the active nav item, blockquote rules, and the active-status dot. When the accent colours text, use `--accent-text`: a darker purple of the same hue in light mode (`#7D4EDA`) and `#AF87FF` in dark mode. All text tokens meet WCAG AA (4.5:1 or more) on `--bg` and on `--tag-bg`.
-- **Dark mode strategy:** t3.gg-inspired near-black. Reduce muted text brightness slightly for dark surfaces.
+- **Dark mode strategy:** t3.gg-inspired near-black. Muted text is a mid grey that keeps 4.5:1 contrast on the dark background.
 
 ### Light Theme (default)
 | Token        | Value     | Usage                     |
