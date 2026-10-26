@@ -31,7 +31,7 @@ const measures = ['Relays per agent', 'Context at relay', 'Handoff failures', 'M
 <Figure id="fig-09" caption={caption} wide={wide} interactive>
   <div slot="svg" class="f9">
     <section class="stage" aria-labelledby="f9-in">
-      <h4 id="f9-in">In: episodes since the last dream</h4>
+      <p class="f9-h" id="f9-in">In: episodes since the last dream</p>
       <ul class="eps">
         {episodes.map((e, i) => <li class="drift" style={`--i:${i}`}>{e}</li>)}
       </ul>
@@ -40,35 +40,35 @@ const measures = ['Relays per agent', 'Context at relay', 'Handoff failures', 'M
     <div class="arrow" aria-hidden="true"></div>
 
     <section class="stage core" aria-labelledby="f9-dream">
-      <h4 id="f9-dream">The dream</h4>
-      <p>Reads every root. Writes facts. Measures. Proposes. Applies no proposal.</p>
+      <p class="f9-h" id="f9-dream">The dream</p>
+      <p>Reads every episode since the last dream. Writes facts. Measures. Proposes. Applies no proposal.</p>
     </section>
 
     <div class="arrow" aria-hidden="true"></div>
 
     <section class="stage" aria-labelledby="f9-out">
-      <h4 id="f9-out">Out</h4>
+      <p class="f9-h" id="f9-out">Out</p>
       <div class="outs">
         <div class="out drift" style="--i:6">
-          <h5><span class="chip k"></span>Knowledge: cited facts</h5>
+          <p class="f9-h5"><span class="chip k"></span>Knowledge: cited facts</p>
           <p>Lessons become one-line facts with a source and a date. Stale facts are corrected.</p>
           <p class="ex">First dream: one file went from 2 facts to 23.</p>
         </div>
         <div class="out drift" style="--i:7">
-          <h5>Measures</h5>
+          <p class="f9-h5">Measures</p>
           <ul class="tags">
             {measures.map((m) => <li>{m}</li>)}
           </ul>
           <p class="ex">First dream: 3 handoffs needed a follow-up; 0 memory misses.</p>
         </div>
         <div class="out drift" style="--i:8">
-          <h5>Proposals</h5>
+          <p class="f9-h5">Proposals</p>
           <div class="slot" id="f9-wait" aria-label="Waiting for approval">
             <p class="empty">Nothing waiting.</p>
           </div>
         </div>
         <div class="out">
-          <h5><span class="chip p"></span>Procedural memory</h5>
+          <p class="f9-h5"><span class="chip p"></span>Procedural memory</p>
           <div class="slot" id="f9-done" aria-label="Approved">
             <div class="card" id="f9-card" data-state="approved">
               <p class="title">Workers lint their own report before they send it.</p>
@@ -101,21 +101,19 @@ const measures = ['Relays per agent', 'Context at relay', 'Handoff failures', 'M
     font-size: 14px;
     line-height: 1.5;
   }
-  .f9 h4,
-  .f9 h5,
   .f9 p,
   .f9 ul {
     margin: 0;
     padding: 0;
     list-style: none;
   }
-  .f9 h4 {
+  .f9 .f9-h {
     font-size: 14px;
     font-weight: 600;
     color: var(--p-muted);
     margin-bottom: 8px;
   }
-  .f9 h5 {
+  .f9 .f9-h5 {
     font-size: 14px;
     font-weight: 600;
     display: flex;
@@ -171,7 +169,7 @@ const measures = ['Relays per agent', 'Context at relay', 'Handoff failures', 'M
     padding: 12px;
     background: color-mix(in srgb, var(--p-accent) 12%, var(--p-bg));
   }
-  .core h4 {
+  .core .f9-h {
     color: var(--p-text);
     margin-bottom: 4px;
   }

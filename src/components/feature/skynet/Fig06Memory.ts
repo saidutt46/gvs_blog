@@ -55,7 +55,7 @@ export const MEMORIES: Memory[] = [
     short: 'how we work',
     holds: 'How the crew works.',
     example: 'Skills, agent definitions, contracts, docs, scripts.',
-    rule: 'Nothing edits it on its own. Changes arrive as proposals, the owner approves, and the decision is logged.',
+    rule: 'Nothing edits it on its own. Changes arrive as proposals, they are approved, and the decision is logged.',
   },
 ];
 

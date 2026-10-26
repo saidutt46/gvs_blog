@@ -122,6 +122,16 @@ const broadH = BY(STEPS.length - 1) + 30;
   .f3 svg.fig-broad {
     max-width: 840px;
   }
+  /* At 600-639px the broad drawing is scaled to about 0.89, so 13px labels
+     render under 12px. Draw them at 14px there. */
+  @media (min-width: 600px) and (max-width: 639px) {
+    .f3 svg.fig-broad .who,
+    .f3 svg.fig-broad .what,
+    .f3 svg.fig-broad .arrow-lbl,
+    .f3 svg.fig-broad .badge-n {
+      font-size: 14px;
+    }
+  }
   .band {
     fill: transparent;
     stroke: var(--border);
@@ -255,7 +265,7 @@ const broadH = BY(STEPS.length - 1) + 30;
     rows.forEach((r) => {
       r.setAttribute('role', 'button');
       r.setAttribute('tabindex', '0');
-      r.setAttribute('aria-label', `Show step ${Number(r.dataset.step) + 1}`);
+      r.setAttribute('aria-label', `${Array.from(r.querySelectorAll('text'), (x) => x.textContent?.trim()).filter(Boolean).join(' ')}: show this step`);
       const go = () => {
         stepper.stop();
         stepper.go(Number(r.dataset.step));

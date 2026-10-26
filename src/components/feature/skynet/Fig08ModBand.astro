@@ -25,7 +25,7 @@ interface Props {
 
 const { caption = 'TODO', wide = true } = Astro.props;
 
-const start = 42; // mid state: past the checkpoint level for a conductor
+const start = 42; // starting position of the slider
 const level = f7Level(start / 100, f7Marks('today', 'conductor'));
 const cells = 10;
 ---

@@ -206,7 +206,7 @@ A handoff passes one test. A fresh session that reads only the handoff and the f
   <ol>
     <li>The agent's name and role.</li>
     <li>The relay generation, such as gen 2.</li>
-    <li>A context bar in percent. Its colour changes from green to yellow to red as the session fills.</li>
+    <li>A context bar in percent. The bar darkens as the level rises, and the label names the level.</li>
     <li>The next step, such as relay.</li>
     <li>The number of crew sessions that are live.</li>
   </ol>
@@ -253,7 +253,7 @@ A lesson catches a surprise at the moment it happens. When a session is surprise
 These lessons are from the first two days. The Claude Code behaviours were observed on 2026-10-25 with Claude Code 2.1.310.
 
 - Deny rules of the form `Write(path)` never match. Claude Code checks writes against `Edit` rules.
-- Claude Code runs its own short `caffeinate` processes. They fooled the crew's keep-awake check, so the crew now tracks its own process by a pidfile.
+- Claude Code runs its own short `caffeinate` processes. They fooled the crew's keep-awake check, so the crew now tracks its own process by name.
 - Allow rules match the command as it was typed. So the crew calls its scripts by their full path.
 - A new git repository asks for folder trust once. Its worktrees inherit that trust.
 - A decision that I made directly with a conductor never reached cos. So cos sent a later prompt that pointed to work I had rejected. Conductors now forward my exact words to cos in the same turn.
@@ -323,7 +323,7 @@ skynet-lint feeds the dream. It was the crew's first project: a small Rust tool 
   </ol>
 </Fig06xLoop>
 
-The first dream ran on 25 October 2026, a few hours after the crew did its first real work. It read every root: HQ and each project that had run work.
+The first dream ran on 25 October 2026, a few hours after the crew did its first real work. It read the files of HQ and of each project that had run work.
 
 It found that the conductors doing real work relayed at about a fifth of their window. One conductor went from generation 1 to generation 6 in about 1 hour 40 minutes. Another went through three relays in about 70 minutes.
 

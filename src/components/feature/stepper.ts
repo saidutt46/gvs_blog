@@ -17,8 +17,9 @@
  *     It never loops. It is not shown under reduced motion.
  * - Returns `{ go(i), next(), prev(), play(), stop(), index() }`.
  * - Prev is disabled on the first step and Next on the last.
- * - Mobile: every button and dot is a 44px tap target, the row wraps
- *   at 375px instead of widening the page, and nothing uses hover.
+ * - Mobile: every button and dot is a 44px tap target. Under 600px Prev,
+ *   a "Step n of N" text and Next share one row and the dots are hidden;
+ *   Play wraps to its own row. Nothing uses hover.
  * - Before JS runs, the controls stay hidden and the SVG shows its static
  *   final state, so `onStep` must fully set each step's visual state.
  */
@@ -74,6 +75,10 @@ export function createStepper(fig: FigureParts, options: StepperOptions): Steppe
     return d;
   });
 
+  const stepText = document.createElement('span');
+  stepText.className = 'fig-step-text';
+  stepText.setAttribute('aria-hidden', 'true');
+
   let playBtn: HTMLButtonElement | undefined;
   if (playLabel && !prefersReducedMotion()) {
     playBtn = button(playLabel, 'fig-btn');
@@ -88,6 +93,7 @@ export function createStepper(fig: FigureParts, options: StepperOptions): Steppe
       if (i === current) d.setAttribute('aria-current', 'step');
       else d.removeAttribute('aria-current');
     });
+    stepText.textContent = `Step ${current + 1} of ${count}`;
     onStep(current);
     announce(fig, `Step ${current + 1} of ${count}: ${steps[current]}`);
   }
@@ -125,7 +131,7 @@ export function createStepper(fig: FigureParts, options: StepperOptions): Steppe
     go(current + 1);
   });
 
-  fig.controls.append(prevBtn, dots, nextBtn);
+  fig.controls.append(prevBtn, stepText, dots, nextBtn);
   if (playBtn) fig.controls.append(playBtn);
   showControls(fig);
   render();
