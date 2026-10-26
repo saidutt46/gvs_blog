@@ -295,7 +295,7 @@ const variants = [
     };
 
     nodes.forEach((n) => {
-      const name = n.querySelector('.n-title')?.textContent ?? '';
+      const name = Array.from(n.querySelectorAll('text'), (x) => x.textContent?.trim()).filter(Boolean).join(' ');
       n.setAttribute('role', 'button');
       n.setAttribute('tabindex', '0');
       n.setAttribute('aria-pressed', 'false');

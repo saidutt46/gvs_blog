@@ -61,7 +61,7 @@
 .post-content.feature .fig-caption {
   display: block;
   margin-top: 8px;
-  color: var(--muted);
+  color: var(--text);
   font-size: 14px;
   line-height: 1.6;
 }
@@ -70,7 +70,7 @@
 .post-content.feature .fig-text {
   margin-top: 8px;
   font-size: 14px;
-  color: var(--muted);
+  color: var(--text);
 }
 
 .post-content.feature .fig-text ol {
@@ -155,6 +155,27 @@
 
 .post-content.feature .fig-dot[aria-current='step']::after {
   background: var(--accent);
+}
+
+/* Stepper status text ("Step n of N") sits between Prev and Next on a phone. */
+.post-content.feature .fig-step-text {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Under 600px the dots are hidden; Play wraps to its own row. */
+@media (max-width: 599px) {
+  .post-content.feature .fig-dots {
+    display: none;
+  }
+}
+
+@media (min-width: 600px) {
+  .post-content.feature .fig-step-text {
+    display: none;
+  }
 }
 
 /* Site focus ring (DESIGN.md Accessibility). */

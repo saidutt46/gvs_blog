@@ -48,7 +48,7 @@ const narrow = {
   labels: [
     { x: 104, y: 104, lines: ['reports, handoffs, ledgers'] },
     { x: 104, y: 228, lines: ['dream: consolidate + cite'] },
-    { x: 104, y: 352, lines: ['proposals, owner approves'] },
+    { x: 104, y: 352, lines: ['proposals, approved'] },
     { x: 44, y: 224, lines: ['loaded at start'], anchor: 'middle', rotate: true },
   ] as Label[],
 };
@@ -73,7 +73,7 @@ const broad = {
   labels: [
     { x: 360, y: 46, lines: ['reports, handoffs, ledgers'], anchor: 'middle' },
     { x: 568, y: 192, lines: ['dream:', 'consolidate + cite'], anchor: 'end' },
-    { x: 360, y: 344, lines: ['proposals, owner approves'], anchor: 'middle' },
+    { x: 360, y: 344, lines: ['proposals, approved'], anchor: 'middle' },
     { x: 152, y: 206, lines: ['loaded at start'] },
     { x: 360, y: 104, lines: ['latest handoff + its citations'], anchor: 'middle' },
     { x: 362, y: 198, lines: ['index at start,', 'topics on demand'], anchor: 'middle', bg: true },
@@ -149,12 +149,16 @@ const variants = [
     max-width: 840px;
   }
   /* Narrow drawing under 760px, broad from 760px (the broad one needs that
-     width for 12px labels). Selectors outrank feature.css's
-     `.fig-svg svg { display: block }`, which otherwise shows both.
-     The 760px switch point stays after that. */
-  /* T-011 removes this once the shared fix lands */
-  :global(.post-content.feature) .f6 svg.fig-broad {
-    display: none;
+     width for 12px labels). */
+  /* 600-759px: feature.css shows the broad drawing from 600px; keep the
+     narrow one until 760px. */
+  @media (min-width: 600px) and (max-width: 759px) {
+    :global(.post-content.feature) .f6 svg.fig-narrow {
+      display: block;
+    }
+    :global(.post-content.feature) .f6 svg.fig-broad {
+      display: none;
+    }
   }
   @media (min-width: 760px) {
     :global(.post-content.feature) .f6 svg.fig-narrow {
@@ -332,7 +336,7 @@ const variants = [
     };
 
     nodes.forEach((n) => {
-      const name = n.querySelector('.mem-title')?.textContent ?? '';
+      const name = Array.from(n.querySelectorAll('text'), (x) => x.textContent?.trim()).filter(Boolean).join(' ');
       n.setAttribute('role', 'button');
       n.setAttribute('tabindex', '0');
       n.setAttribute('aria-pressed', 'false');

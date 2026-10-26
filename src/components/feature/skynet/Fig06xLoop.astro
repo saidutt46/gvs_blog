@@ -78,7 +78,7 @@ const narrow = {
     { id: 'SW', d: 'M36 582 H12 V66 H38' },
   ] as Edge[],
   texts: [
-    { x: 240, y: 642, t: 'owner approves', anchor: 'end' },
+    { x: 240, y: 642, t: 'approved', anchor: 'end' },
     { x: 25, y: 300, t: 'loaded at start · index at start', anchor: 'middle', rotate: true },
   ] as Text[],
 };
@@ -116,7 +116,7 @@ const broad = {
     { id: 'SW', d: 'M660 84 V16 H88 V180' },
   ] as Edge[],
   texts: [
-    { x: 652, y: 360, t: 'owner approves', anchor: 'end' },
+    { x: 652, y: 360, t: 'approved', anchor: 'end' },
     { x: 96, y: 400, t: 'loaded at start' },
     { x: 420, y: 11, t: 'index at start', anchor: 'middle' },
   ] as Text[],
@@ -192,11 +192,15 @@ const lineY = (b: Box, i: number) => {
   .f6x svg.fig-broad {
     max-width: 880px;
   }
-  /* T-011 removes this once the shared fix lands (feature.css's
-     `.fig-svg svg { display: block }` outranks `.fig-broad { display: none }`).
-     The 760px switch point is this figure's own and stays. */
-  :global(.post-content.feature) .f6x svg.fig-broad {
-    display: none;
+  /* 600-759px: feature.css shows the broad drawing from 600px; keep the
+     narrow one until 760px. */
+  @media (min-width: 600px) and (max-width: 759px) {
+    :global(.post-content.feature) .f6x svg.fig-narrow {
+      display: block;
+    }
+    :global(.post-content.feature) .f6x svg.fig-broad {
+      display: none;
+    }
   }
   @media (min-width: 760px) {
     :global(.post-content.feature) .f6x svg.fig-narrow {
@@ -285,6 +289,16 @@ const lineY = (b: Box, i: number) => {
   .f6x[data-phase='night'] .day {
     opacity: 0.35;
   }
+  :global([data-theme='dark']) .f6x[data-phase='day'] .night,
+  :global([data-theme='dark']) .f6x[data-phase='night'] .day {
+    opacity: 0.5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .f6x[data-phase='day'] .night,
+    :global(:root:not([data-theme='light'])) .f6x[data-phase='night'] .day {
+      opacity: 0.5;
+    }
+  }
   .f6x[data-pr='off'] .box-PR {
     opacity: 0.12;
   }
@@ -365,7 +379,7 @@ const lineY = (b: Box, i: number) => {
       if (id !== run) return;
       wrap.dataset.pr = 'on';
       if (approve) approve.disabled = false;
-      announce(fig, 'A proposal is waiting for the owner to approve.');
+      announce(fig, 'A proposal is waiting for approval.');
     };
 
     const approveIt = async () => {
