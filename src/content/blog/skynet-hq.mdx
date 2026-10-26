@@ -145,7 +145,7 @@ HQ is one folder in my home directory. It holds what the whole crew shares. Each
 
 Git ignores that folder through `.git/info/exclude`. So the crew's files never show in a diff or a pull request.
 
-## Memory is the system
+## Four kinds of memory
 
 <Fig06Memories caption="Information moves from working memory into episodic, semantic and procedural memory, and then back into the next session.">
   <ol>
@@ -184,7 +184,7 @@ The next sections go around the figure. They start with working memory and end w
   </ol>
 </Fig07Context>
 
-Context is a budget. Each session loads its contract first, then its prompt or its handoff. Then it loads a short knowledge index and only the files that these cite.
+Each session spends its context with care. It loads its contract first, then its prompt or its handoff. Then it loads a short knowledge index and only the files that these cite.
 
 Two habits keep the budget small. Before a session researches anything, it searches the knowledge files and earlier reports. If someone already found the answer, it cites that report. Long command output goes into a file, and the session searches the file.
 
@@ -192,7 +192,7 @@ A worker can also give the reading to a helper. The helper reads many files and 
 
 Context use is measured. The status line records each session's context. A hook reads it and injects an instruction at each level. The figure shows the four instructions.
 
-Each level fires at a percent or at a token count, whichever comes first. On a window of a million tokens, a rule in percent alone waits too long. A token count can also be set per role.
+Each level fires at a percent or at a token count, whichever comes first. On a very large window, a rule in percent alone waits too long. A token count can also be set per role.
 
 Compaction is the failure case. Claude Code can compact a long session into a summary, but the model writes that summary under pressure, and it loses specifics. A relay keeps a handoff that the session writes on purpose, while it still has room to write it well.
 
@@ -230,7 +230,7 @@ Each file has one writer. Two writers on one file is how a ledger gets corrupted
 | Decisions | Only what I decided, in my own words |
 | Message logs | Every message a session sends or receives |
 
-The decisions ledger keeps my exact words. The HQ rules say that nobody asks Dutt twice. A new session reads the decisions ledger before it asks me again.
+The decisions ledger keeps my exact words. The HQ rules say that nobody asks Dutt twice. A new session reads the decisions ledger before it asks me again. {/* framing: how 'nobody asks twice' works in practice */}
 
 Here are three lines from the contextsmith ledger on the first morning. I cut the details column short.
 
@@ -365,11 +365,11 @@ The crew runs unattended in auto mode, so its limits are explicit. A deny list b
 
 Conductors own the git work in their repository. I asked for that, because I did not want cos to do it: "I don't want you, chief of staff, to do that … dirty work."
 
-Releases to users still need me. On the first full day, the auto-mode safety classifier blocked a merge that deploys to production three times. It also blocked a TestFlight upload. Each time, my go had come through another session. The rule is now plain: conductors prepare, Dutt clicks.
+Releases to users still need me. On the first full day, the auto-mode safety classifier blocked three merges that deploy to production. It also blocked a TestFlight upload. Each time, my go had come through another session. The rule is now plain: conductors prepare, Dutt clicks.
 
-On build day, the classifier also blocked the build agent twice when it tried to change its own permissions. I applied those two changes myself. That is the boundary at work.
+On build day, the classifier also blocked the build agent twice when it tried to change its own permissions. I applied those two changes myself.
 
-Worktrees protect work in progress. Each dev works in its own git worktree. Before a worktree is removed, its uncommitted work is saved to a private git ref. A worktree is removed only when it is clean and merged.
+Worktrees protect work in progress. Each dev works in its own git worktree. When a worker retires or relays, its uncommitted work is saved to a private git ref. A worktree is removed only when it is clean and merged.
 
 ## Build day
 
@@ -398,4 +398,4 @@ The first real project was skynet-lint. I sent the ask from my phone to cos, and
 
 Skynet HQ is private for now. {/* framing: wording for Dutt to confirm; no release date or promise */}
 
-The crew is a few days old. It has already changed its own relay levels from what it measured. For the first week or two, I want to keep the process light. The dream proposes, and I decide how much process is enough. {/* framing: summary of decisions.md 20261025T221645Z ("improve it in the first 1 or 2 weeks") */}
+The crew is a few days old. After the first dream measured the crew, I raised its relay levels per role. For the first week or two, I want to keep the process light. The dream proposes changes, and cos and I decide which ones to apply. {/* framing: summary of decisions.md 20261025T221645Z ("improve it in the first 1 or 2 weeks"); Dutt to confirm wording */}
