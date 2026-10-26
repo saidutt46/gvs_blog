@@ -1,12 +1,22 @@
 ---
 /**
- * Fig12Dirs (fig-12): Directory structure. STUB from T-002.
- * The figure task replaces the placeholder SVG and removes `data-stub`.
+ * Fig12Dirs (fig-12): Directory structure, folder level only.
  * Props: `caption` (text from the MDX), `wide` (default false).
  * Default slot: the text alternative (`<ol>`) written in the MDX.
- * Keep the id "fig-12" and the Figure contract (see ../Figure.astro).
+ *
+ * Two trees: HQ (`~/skynet-hq/`) and a repo's `.orchestration/`. Each
+ * folder is a `<details>`: its summary shows the name and the memory style
+ * chip; opening it shows the folder's purpose and the memory type it holds.
+ * The legend uses the same mapping as F6 (Fig06Memory.ts). Opening,
+ * focusing or hovering a folder highlights its memory type in the legend.
+ * No JS: every folder is open (the full tree is readable). With JS the
+ * folders start closed and open on tap. Reduced motion: nothing moves.
+ * Mobile: the trees stack; from 600px they sit side by side.
+ * Purposes: ~/skynet-hq/docs/02-file-protocol.md, 06-memory.md section 1,
+ * docs/README.md (mods). briefs/, setup/, launchd/ and root files are left out.
  */
 import Figure from '../Figure.astro';
+import { MEMORIES, MEM_BY_KEY, type MemKey } from './Fig06Memory';
 
 interface Props {
   caption?: string;
@@ -14,14 +24,232 @@ interface Props {
 }
 
 const { caption = 'TODO', wide = false } = Astro.props;
+
+interface Item { name: string; purpose: string; mem: MemKey; children?: Item[] }
+
+const hq: Item[] = [
+  { name: 'bin/', purpose: 'Scripts, including the only way to start a session.', mem: 'procedural' },
+  {
+    name: 'docs/', purpose: 'The crew’s contracts and docs.', mem: 'procedural',
+    children: [{ name: 'templates/', purpose: 'Templates for contracts, prompts, reports and handoffs.', mem: 'procedural' }],
+  },
+  { name: 'ledgers/', purpose: 'Projects, agents, the owner’s asks and decisions.', mem: 'episodic' },
+  { name: 'knowledge/', purpose: 'Cited facts about how the crew runs.', mem: 'semantic' },
+  { name: 'dreams/', purpose: 'One report per dream.', mem: 'episodic' },
+  { name: 'handoffs/', purpose: 'Handoffs for the next session.', mem: 'episodic' },
+  { name: 'runs/', purpose: 'Prompt and report pairs.', mem: 'episodic' },
+  { name: 'mods/', purpose: 'The crew mod: the status band and the message log.', mem: 'procedural' },
+  { name: 'projects/<name>/', purpose: 'A backup of each project’s ledger, tasks and decisions.', mem: 'episodic' },
+];
+
+const repo: Item[] = [
+  { name: 'runs/', purpose: 'Prompt and report pairs, with exit codes.', mem: 'episodic' },
+  { name: 'handoffs/', purpose: 'Every agent’s handoffs.', mem: 'episodic' },
+  { name: 'knowledge/', purpose: 'Cited facts about this codebase; inbox.md is the intake.', mem: 'semantic' },
+  { name: 'messages/', purpose: 'Every message each session sent or received.', mem: 'episodic' },
+  { name: 'ledger.md', purpose: 'Append-only event log.', mem: 'episodic' },
+  { name: 'tasks.md', purpose: 'Features, tasks, scopes and status.', mem: 'episodic' },
+  { name: 'decisions.md', purpose: 'Architecture decisions for this repo.', mem: 'episodic' },
+  { name: 'STATUS.md', purpose: 'One-screen current state.', mem: 'episodic' },
+];
+
+const trees = [
+  { root: '~/skynet-hq/', items: hq },
+  { root: '<repo>/.orchestration/', items: repo },
+];
 ---
 
-<Figure id="fig-12" caption={caption} wide={wide} data-stub="fig-12">
-  <svg slot="svg" class="fig-stub" viewBox="0 0 640 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <rect x="1" y="1" width="638" height="158" rx="8" />
-    <text x="320" y="86" text-anchor="middle">fig-12: Directory structure (placeholder)</text>
-  </svg>
+<Figure id="fig-12" caption={caption} wide={wide} interactive>
+  <div slot="svg" class="f12">
+    <ul class="f12-key" aria-label="Memory types">
+      {MEMORIES.map((m) => (
+        <li data-key={m.key}>
+          <span class={`chip mem-${m.key}`} aria-hidden="true"></span>
+          <span>{m.name}{m.key === 'working' && <span class="note">: no folder, it lives in the session</span>}</span>
+        </li>
+      ))}
+    </ul>
+    <div class="f12-trees">
+      {trees.map((t) => (
+        <div class="tree">
+          <p class="tree-root fig-mono">{t.root}</p>
+          <ul>
+            {t.items.map((it) => (
+              <li>
+                <details open data-mem={it.mem}>
+                  <summary>
+                    <span class={`chip mem-${it.mem}`} aria-hidden="true"></span>
+                    <span class="fig-mono">{it.name}</span>
+                  </summary>
+                  <p class="purpose">{it.purpose} <span class="kind">{MEM_BY_KEY[it.mem].name} memory.</span></p>
+                  {it.children && (
+                    <ul>
+                      {it.children.map((c) => (
+                        <li>
+                          <details open data-mem={c.mem}>
+                            <summary>
+                              <span class={`chip mem-${c.mem}`} aria-hidden="true"></span>
+                              <span class="fig-mono">{c.name}</span>
+                            </summary>
+                            <p class="purpose">{c.purpose} <span class="kind">{MEM_BY_KEY[c.mem].name} memory.</span></p>
+                          </details>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </details>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
   <slot>
     <ol><li>TODO</li></ol>
   </slot>
 </Figure>
+
+<style>
+  .f12 {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .f12 ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .f12-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .f12-key li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 6px;
+    border: 1.5px solid transparent;
+    border-radius: 4px;
+    transition: border-color 0.2s ease;
+  }
+  .f12-key li[data-on] {
+    border-color: var(--text);
+  }
+  .note {
+    opacity: 0.8;
+  }
+  .f12-trees {
+    display: grid;
+    gap: 16px;
+  }
+  @media (min-width: 600px) {
+    .f12-trees {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .tree-root {
+    margin: 8px 0 0;
+    font-weight: 500;
+  }
+  .tree > ul {
+    border-left: 1px solid var(--border);
+    margin-left: 6px;
+    padding-left: 8px;
+  }
+  .f12 li li {
+    margin-left: 24px;
+  }
+  .f12 summary {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    list-style: none;
+    touch-action: manipulation;
+  }
+  .f12 summary::-webkit-details-marker {
+    display: none;
+  }
+  .f12 summary::before {
+    content: '\25B8';
+    display: inline-block;
+    width: 14px;
+    font-size: 18px;
+    line-height: 1;
+    text-align: center;
+    transition: transform 0.2s ease;
+  }
+  .f12 details[open] > summary::before {
+    transform: rotate(90deg);
+  }
+  .purpose {
+    margin: -6px 0 8px 20px;
+  }
+  .kind {
+    font-weight: 600;
+  }
+
+  /* Memory chips: the same mapping as F6 (Fig06Memories). Colour is never
+     the only cue: border style and weight differ, and the name is written. */
+  .chip {
+    flex: none;
+    display: inline-block;
+    width: 24px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1.5px solid;
+    box-sizing: border-box;
+  }
+  .mem-working {
+    background: var(--bg);
+    border-color: var(--text);
+    border-style: dashed;
+  }
+  .mem-episodic {
+    background: var(--code-bg);
+    border-color: var(--muted);
+  }
+  .mem-semantic {
+    background: color-mix(in srgb, var(--accent) 14%, var(--bg));
+    border-color: var(--accent);
+  }
+  .mem-procedural {
+    background: color-mix(in srgb, var(--accent) 30%, var(--bg));
+    border-color: var(--accent);
+    border-width: 3px;
+  }
+</style>
+
+<script>
+  import { getFigure, announce } from '../figure';
+
+  const fig = getFigure('fig-12');
+  if (fig) {
+    const keys = Array.from(fig.root.querySelectorAll<HTMLElement>('.f12-key li'));
+    const all = Array.from(fig.root.querySelectorAll<HTMLDetailsElement>('details[data-mem]'));
+    const mark = (mem: string | null) =>
+      keys.forEach((k) => k.toggleAttribute('data-on', k.dataset.key === mem));
+
+    all.forEach((d) => {
+      d.open = false;
+      const s = d.querySelector('summary');
+      const mem = d.dataset.mem ?? null;
+      d.addEventListener('toggle', () => {
+        if (!d.open) return;
+        mark(mem);
+        const name = s?.textContent?.trim() ?? '';
+        const kind = d.querySelector('.kind')?.textContent ?? '';
+        announce(fig, `${name}: ${kind}`);
+      });
+      s?.addEventListener('focus', () => mark(mem));
+      s?.addEventListener('mouseenter', () => mark(mem));
+    });
+    fig.root.querySelector('.f12-trees')?.addEventListener('mouseleave', () => mark(null));
+  }
+</script>
