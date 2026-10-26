@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostLayout from '../../components/PostLayout.astro';
+import FeaturePostLayout from '../../components/FeaturePostLayout.astro';
 import { getCollection, render } from 'astro:content';
 import { readingMinutes } from '../../lib/format';
 
@@ -14,10 +15,11 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+const Layout = post.data.kind === 'feature' ? FeaturePostLayout : PostLayout;
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description} activeNav="blog" publishedDate={post.data.date}>
-  <PostLayout title={post.data.title} date={post.data.date} backLink="blog/" backLabel="back to blog" readingMinutes={readingMinutes(post.body ?? '')}>
+  <Layout title={post.data.title} date={post.data.date} backLink="blog/" backLabel="back to blog" readingMinutes={readingMinutes(post.body ?? '')}>
     <Content />
-  </PostLayout>
+  </Layout>
 </BaseLayout>

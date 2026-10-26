@@ -1,0 +1,256 @@
+/*
+ * feature.css: styles for `kind: feature` posts only.
+ * Loaded by FeaturePostLayout.astro and nowhere else.
+ * Uses only the DESIGN.md tokens (--text, --muted, --border, --code-bg,
+ * --accent, --bg) and the 8px spacing scale. No new colours or fonts.
+ * See DESIGN.md "Feature posts".
+ *
+ * Mobile first: the base rules are for a 375px phone. Larger screens add
+ * rules in `min-width` queries. Rules every figure keeps:
+ * - Tap targets are 44px or more. Hover is never the only way to do
+ *   something; tap or click does everything hover does. Hover styles sit
+ *   under `@media (hover: hover)`.
+ * - No horizontal page scroll at 375px. A figure that cannot fit scrolls
+ *   inside its own frame (`.fig-frame`).
+ * - Labels stay legible at 375px: draw a vertical variant whose rendered
+ *   text is 12px or more. Use `.fig-narrow` for the phone drawing and
+ *   `.fig-broad` for the 600px+ drawing when a figure needs both.
+ * - The wide breakout (`.fig-wide`) only applies at 600px and up.
+ */
+
+/* Body text stays in the 640px column (from global .post-content). */
+.post-content.feature {
+  max-width: 640px;
+}
+
+/* ---------- Figure frame (phone first) ---------- */
+.post-content.feature .fig {
+  margin: 32px 0;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.post-content.feature .fig-frame {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  max-width: 100%;
+  overflow-x: auto; /* a figure scrolls inside its frame, never the page */
+}
+
+.post-content.feature .fig-svg svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+}
+
+.post-content.feature .fig-svg svg text {
+  fill: var(--text);
+}
+
+.post-content.feature .fig-svg .fig-mono {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+}
+
+/* Variant drawings: phone (narrow) by default, broad from 600px. */
+.post-content.feature .fig-svg svg.fig-broad {
+  display: none;
+}
+
+.post-content.feature .fig-caption {
+  display: block;
+  margin-top: 8px;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Text alternative (the <ol>). Visible: it is the no-JS and reader version. */
+.post-content.feature .fig-text {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.post-content.feature .fig-text ol {
+  margin: 0;
+  padding-left: 24px;
+}
+
+.post-content.feature .fig-text li {
+  margin-bottom: 4px;
+}
+
+/* ---------- Controls ---------- */
+/* Controls render with `hidden`; the figure script removes it when JS runs. */
+.post-content.feature .fig-controls[hidden] {
+  display: none;
+}
+
+.post-content.feature .fig-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.post-content.feature .fig-btn {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.post-content.feature .fig-btn:disabled {
+  color: var(--muted);
+  border-color: var(--border);
+  cursor: default;
+}
+
+.post-content.feature .fig-btn[aria-pressed='true'] {
+  border-color: var(--accent);
+}
+
+/* Stepper progress dots: each is a 44px hit area with a small visible dot.
+   The row wraps on a phone instead of widening the page. */
+.post-content.feature .fig-dots {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.post-content.feature .fig-dot {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  touch-action: manipulation;
+}
+
+.post-content.feature .fig-dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background-color 0.2s ease;
+}
+
+.post-content.feature .fig-dot[aria-current='step']::after {
+  background: var(--accent);
+}
+
+/* Stepper status text ("Step n of N") sits between Prev and Next on a phone. */
+.post-content.feature .fig-step-text {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Under 600px the dots are hidden; Play wraps to its own row. */
+@media (max-width: 599px) {
+  .post-content.feature .fig-dots {
+    display: none;
+  }
+}
+
+@media (min-width: 600px) {
+  .post-content.feature .fig-step-text {
+    display: none;
+  }
+}
+
+/* Site focus ring (DESIGN.md Accessibility). */
+.post-content.feature .fig-btn:focus-visible,
+.post-content.feature .fig-dot:focus-visible,
+.post-content.feature .fig [tabindex]:focus-visible,
+.post-content.feature .fig summary:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+/* Live region for state text announced by figure scripts. */
+.post-content.feature .fig-live {
+  margin-top: 8px;
+  font-size: 14px;
+  min-height: 1.6em;
+}
+
+.post-content.feature .fig-live:empty {
+  min-height: 0;
+  margin: 0;
+}
+
+/* Placeholder used by T-002 stubs until a figure is drawn. */
+.post-content.feature .fig-stub rect {
+  fill: var(--code-bg);
+  stroke: var(--border);
+}
+
+.post-content.feature .fig-stub text {
+  fill: var(--muted);
+  font-size: 14px;
+}
+
+/* ---------- Hover (devices that can hover only; never the only way) ---------- */
+@media (hover: hover) {
+  .post-content.feature .fig-btn:not(:disabled):hover {
+    border-color: var(--text);
+  }
+}
+
+/* ---------- 600px and up ---------- */
+@media (min-width: 600px) {
+  .post-content.feature .fig {
+    margin: 48px 0;
+  }
+
+  .post-content.feature .fig-frame {
+    padding: 16px;
+  }
+
+  /* Wide figures break out of the 640px column, centred on it. */
+  .post-content.feature .fig.fig-wide {
+    width: min(960px, 100vw - 32px);
+    max-width: none;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .post-content.feature .fig-svg svg.fig-narrow {
+    display: none;
+  }
+
+  .post-content.feature .fig-svg svg.fig-broad {
+    display: block;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .post-content.feature .fig *,
+  .post-content.feature .fig *::before,
+  .post-content.feature .fig *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

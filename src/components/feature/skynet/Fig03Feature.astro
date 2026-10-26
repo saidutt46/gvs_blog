@@ -1,0 +1,282 @@
+---
+/**
+ * Fig03Feature (fig-03): Life of a feature.
+ * Props: `caption` (text from the MDX), `wide` (default true).
+ * Default slot: the text alternative (`<ol>`) written in the MDX.
+ *
+ * Drawing: two inline SVGs from one STEPS list. `.fig-narrow` (phone) is a
+ * vertical list of ten steps. `.fig-broad` (600px and up) is four lanes
+ * (Dutt, cos, conductor, workers) with an arrow per step.
+ * Labels: 03-architecture.md Diagram B (lines 20-37).
+ * Motion: a step player (Prev / Next / dots, via createStepper). The active
+ * step is highlighted with its lanes, and its message shows in the panel.
+ * A tap on a row or arrow jumps to it. Play is off until pressed; it is not
+ * offered under reduced motion. No JS: the SVG shows all ten steps, no
+ * highlight, and the controls stay hidden.
+ */
+import Figure from '../Figure.astro';
+
+interface Props {
+  caption?: string;
+  wide?: boolean;
+}
+
+const { caption = 'TODO', wide = true } = Astro.props;
+
+const LANES = ['Dutt', 'cos', 'conductor', 'workers'];
+
+// from/to are lane indexes. short = label on the arrow; msg = the panel text.
+const STEPS = [
+  { from: 0, to: 1, short: 'add X to project Y', msg: '"Add X to project Y" (from the phone)' },
+  { from: 1, to: 1, short: 'inbox row, prompt file', msg: 'cos writes an inbox row and a prompt file' },
+  { from: 1, to: 2, short: 'new work + file', msg: '"new work: <prompt file>"' },
+  { from: 2, to: 3, short: 'recon, architect', msg: 'Recon, then an architect: a task list with file scopes' },
+  { from: 2, to: 3, short: 'devs in parallel', msg: 'Devs in parallel where scopes do not overlap' },
+  { from: 3, to: 2, short: 'reports + exit codes', msg: 'Reports with exit codes' },
+  { from: 2, to: 3, short: 'verifier re-runs', msg: 'A verifier re-runs every claimed check' },
+  { from: 2, to: 2, short: 'merge passing tasks', msg: 'Merge the passing tasks into the feature branch' },
+  { from: 2, to: 1, short: 'feature report', msg: 'Feature report to cos' },
+  { from: 1, to: 0, short: '10 lines or fewer', msg: '10 lines or fewer: done, in progress, blocked, needs you' },
+];
+
+const lanesOf = (s: { from: number; to: number }) => (s.from === s.to ? String(s.from) : `${s.from},${s.to}`);
+
+// Narrow: viewBox 320 x 536. One row per step.
+const ROW = 52;
+const narrowH = 8 + STEPS.length * ROW;
+
+// Broad: viewBox 600 x 560. Lane columns, one row per step.
+const LX = [75, 225, 375, 525];
+const BY = (i: number) => 98 + i * 44;
+const broadH = BY(STEPS.length - 1) + 30;
+---
+
+<Figure id="fig-03" caption={caption} wide={wide} interactive>
+  <div slot="svg" class="f3">
+    <svg class="fig-narrow" viewBox={`0 0 320 ${narrowH}`} xmlns="http://www.w3.org/2000/svg" data-f3-svg>
+      {STEPS.map((s, i) => (
+        <g class="row" data-step={i} data-lanes={lanesOf(s)} data-msg={s.msg} transform={`translate(0 ${8 + i * ROW})`}>
+          <rect class="band" x="0" y="0" width="320" height={ROW - 6} rx="8" />
+          <circle class="badge" cx="24" cy={(ROW - 6) / 2} r="13" />
+          <text class="badge-n" x="24" y={(ROW - 6) / 2 + 5} text-anchor="middle">{i + 1}</text>
+          <text class="who" x="48" y="19">{s.from === s.to ? LANES[s.from] : `${LANES[s.from]} to ${LANES[s.to]}`}</text>
+          <text class="what" x="48" y="37">{s.short}</text>
+        </g>
+      ))}
+    </svg>
+
+    <svg class="fig-broad" viewBox={`0 0 600 ${broadH}`} xmlns="http://www.w3.org/2000/svg" data-f3-svg>
+      <defs>
+        <marker id="f3b-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" class="arr-head" />
+        </marker>
+      </defs>
+      {LANES.map((l, i) => (
+        <g class="lane" data-lane={i}>
+          <line class="lane-line" x1={LX[i]} y1="52" x2={LX[i]} y2={broadH - 6} />
+          <rect class="lane-box" x={LX[i] - 62} y="8" width="124" height="40" rx="8" />
+          <text class="lane-name" x={LX[i]} y="33" text-anchor="middle">{l}</text>
+        </g>
+      ))}
+      {STEPS.map((s, i) => {
+        const y = BY(i);
+        const self = s.from === s.to;
+        const x1 = LX[s.from];
+        const x2 = LX[s.to];
+        const dir = x2 > x1 ? 1 : -1;
+        return (
+          <g class="row" data-step={i} data-lanes={lanesOf(s)} data-msg={s.msg}>
+            <rect class="band" x="0" y={y - 24} width="600" height="40" rx="6" />
+            <circle class="badge" cx="16" cy={y - 4} r="11" />
+            <text class="badge-n" x="16" y={y} text-anchor="middle">{i + 1}</text>
+            {self ? (
+              <>
+                <path class="edge" d={`M${x1} ${y - 10} h26 v18 h-20`} marker-end="url(#f3b-arr)" />
+                <text class="arrow-lbl" x={x1 + 38} y={y + 3}>{s.short}</text>
+              </>
+            ) : (
+              <>
+                <path class="edge" d={`M${x1 + dir * 4} ${y} H${x2 - dir * 6}`} marker-end="url(#f3b-arr)" />
+                <text class="arrow-lbl" x={(x1 + x2) / 2} y={y - 8} text-anchor="middle">{s.short}</text>
+              </>
+            )}
+          </g>
+        );
+      })}
+    </svg>
+  </div>
+  <div slot="controls" class="f3-panel">
+    <p class="f3-who" data-f3-who></p>
+    <p class="f3-msg" data-f3-msg></p>
+  </div>
+  <slot>
+    <ol><li>TODO</li></ol>
+  </slot>
+</Figure>
+
+<style>
+  .f3 svg {
+    max-width: 440px;
+    margin: 0 auto;
+  }
+  .f3 svg.fig-broad {
+    max-width: 840px;
+  }
+  /* At 600-639px the broad drawing is scaled to about 0.89, so 13px labels
+     render under 12px. Draw them at 14px there. */
+  @media (min-width: 600px) and (max-width: 639px) {
+    .f3 svg.fig-broad .who,
+    .f3 svg.fig-broad .what,
+    .f3 svg.fig-broad .arrow-lbl,
+    .f3 svg.fig-broad .badge-n {
+      font-size: 14px;
+    }
+  }
+  .band {
+    fill: transparent;
+    stroke: var(--border);
+    stroke-width: 1;
+  }
+  .badge {
+    fill: var(--code-bg);
+    stroke: var(--muted);
+    stroke-width: 1.5;
+  }
+  .badge-n {
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .who {
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .what,
+  .arrow-lbl {
+    font-size: 13px;
+  }
+  .lane-box {
+    fill: var(--code-bg);
+    stroke: var(--muted);
+    stroke-width: 1.5;
+  }
+  .lane-name {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .lane-line {
+    stroke: var(--border);
+    stroke-width: 2;
+    stroke-dasharray: 4 4;
+  }
+  .edge {
+    fill: none;
+    stroke: var(--text);
+    stroke-opacity: 0.6;
+    stroke-width: 1.5;
+  }
+  .arr-head {
+    fill: var(--text);
+    fill-opacity: 0.6;
+  }
+
+  /* Active state (JS only): the row, its badge, and its lanes. */
+  .row.on .band {
+    fill: color-mix(in srgb, var(--accent) 16%, var(--bg));
+    stroke: var(--accent);
+    stroke-width: 2;
+  }
+  .row.on .badge {
+    fill: var(--accent);
+    stroke: var(--accent);
+  }
+  .row.on .badge-n {
+    fill: #222222;
+  }
+  .row.on .edge {
+    stroke: var(--text);
+    stroke-opacity: 1;
+    stroke-width: 2.5;
+  }
+  .lane.on .lane-box {
+    fill: color-mix(in srgb, var(--accent) 30%, var(--bg));
+    stroke: var(--accent);
+    stroke-width: 3;
+  }
+  .row[role='button'] {
+    cursor: pointer;
+    outline: none;
+  }
+  .row[role='button']:focus-visible .band {
+    stroke: var(--text);
+    stroke-width: 2;
+  }
+
+  .f3-panel {
+    width: 100%;
+    min-height: 3.6em;
+  }
+  .f3-who {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .f3-msg {
+    margin: 2px 0 0;
+    font-size: 14px;
+    line-height: 1.6;
+    font-family: 'Geist Mono', ui-monospace, monospace;
+  }
+</style>
+
+<script>
+  import { getFigure } from '../figure';
+  import { createStepper } from '../stepper';
+
+  const fig = getFigure('fig-03');
+  if (fig) {
+    const rows = Array.from(fig.root.querySelectorAll<SVGGElement>('.row'));
+    const lanes = Array.from(fig.root.querySelectorAll<SVGGElement>('.lane'));
+    const who = fig.root.querySelector<HTMLElement>('[data-f3-who]');
+    const msg = fig.root.querySelector<HTMLElement>('[data-f3-msg]');
+    const total = Math.max(...rows.map((r) => Number(r.dataset.step))) + 1;
+    const names = ['Dutt', 'cos', 'conductor', 'workers'];
+    const info = Array.from({ length: total }, (_, i) => {
+      const r = rows.find((x) => Number(x.dataset.step) === i)!;
+      const ls = (r.dataset.lanes ?? '').split(',').map(Number);
+      return {
+        lanes: ls,
+        who: ls.length === 1 ? names[ls[0]] : `${names[ls[0]]} to ${names[ls[1]]}`,
+        text: r.dataset.msg ?? '',
+      };
+    });
+
+    const stepper = createStepper(fig, {
+      steps: info.map((x) => x.text),
+      playLabel: 'Play',
+      playDelayMs: 1700,
+      onStep(i) {
+        rows.forEach((r) => r.classList.toggle('on', Number(r.dataset.step) === i));
+        lanes.forEach((l) => l.classList.toggle('on', info[i].lanes.includes(Number(l.dataset.lane))));
+        if (who) who.textContent = `Step ${i + 1}: ${info[i].who}`;
+        if (msg) msg.textContent = info[i].text;
+      },
+    });
+
+    rows.forEach((r) => {
+      r.setAttribute('role', 'button');
+      r.setAttribute('tabindex', '0');
+      r.setAttribute('aria-label', `${Array.from(r.querySelectorAll('text'), (x) => x.textContent?.trim()).filter(Boolean).join(' ')}: show this step`);
+      const go = () => {
+        stepper.stop();
+        stepper.go(Number(r.dataset.step));
+      };
+      r.addEventListener('click', go);
+      r.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          go();
+        }
+      });
+    });
+  }
+</script>

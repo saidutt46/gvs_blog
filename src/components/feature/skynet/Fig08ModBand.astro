@@ -1,0 +1,151 @@
+---
+/**
+ * Fig08ModBand (fig-08): a drawn replica of the crew mod's band above the
+ * prompt: agent · role · gen 2 · ctx bar and percent · next: relay · crew
+ * N live. Percent only; no token counts.
+ * Props: `caption` (text from the MDX), `wide` (default true, so the band
+ * fits on one line on a desktop).
+ * Default slot: the text alternative (`<ol>`) written in the MDX.
+ * Keep the id "fig-08" and the Figure contract (see ../Figure.astro).
+ *
+ * The band is text in Geist Mono plus an inline SVG bar. It wraps to two
+ * lines when its frame is narrow (a phone) and is one line when wide.
+ * Bar colour: muted (the mod's green), accent (yellow, from checkpoint),
+ * text colour with "⚠ relay" (red). The percent and the "⚠" are the text
+ * cues, so colour is never the only cue.
+ * No JS: the band at a mid state. JS (Fig08ModBand.ts): slider and Play.
+ */
+import Figure from '../Figure.astro';
+import { f7Level, f7Marks } from './Fig07Data';
+
+interface Props {
+  caption?: string;
+  wide?: boolean;
+}
+
+const { caption = 'TODO', wide = true } = Astro.props;
+
+const start = 42; // starting position of the slider
+const level = f7Level(start / 100, f7Marks('today', 'conductor'));
+const cells = 10;
+---
+
+<Figure id="fig-08" caption={caption} wide={wide} interactive>
+  <div slot="svg" class="f8" data-f8 data-level={level}>
+    <div class="f8-band fig-mono">
+      <span class="f8-grp">cond-contextsmith · conductor · gen 2</span><span class="f8-grp"><span class="f8-sep"> · </span>ctx <svg class="f8-bar" width="45" height="12" viewBox="0 0 45 12" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          {Array.from({ length: cells }, (_, i) => (
+            <rect x={i * 4.5} y="0" width="3" height="12" data-f8-cell data-on={i < Math.round(start / 10) ? 'true' : undefined} />
+          ))}
+        </svg> <span data-f8-pct>{start}%</span> · <span data-f8-next>next: relay</span> · crew 4 live</span>
+    </div>
+  </div>
+
+  <div slot="controls" class="f8-controls">
+    <label class="f8-slider">
+      <span>Context used</span>
+      <input type="range" min="0" max="100" step="1" value={start} data-f8-range />
+    </label>
+    <button type="button" class="fig-btn" data-f8-play hidden>Play</button>
+  </div>
+
+  <slot>
+    <ol><li>TODO</li></ol>
+  </slot>
+</Figure>
+
+<script>
+  import { initFig08 } from './Fig08ModBand';
+  initFig08();
+</script>
+
+<style>
+  .f8 {
+    container-type: inline-size;
+  }
+  .f8-band {
+    font-size: 12px;
+    line-height: 20px;
+    padding: 8px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+  }
+  .f8-grp {
+    display: block;
+    white-space: nowrap;
+  }
+  .f8-sep {
+    display: none;
+  }
+  /* Beat feature.css's full-width rule for figure SVGs. */
+  .f8 .f8-band svg.f8-bar {
+    display: inline-block;
+    width: 45px;
+    height: 12px;
+    vertical-align: -1px;
+  }
+  .f8-bar rect {
+    fill: var(--muted);
+    fill-opacity: 0.35;
+  }
+  .f8-bar rect[data-on='true'] {
+    fill: var(--muted);
+    fill-opacity: 1;
+    transition: fill 0.2s ease;
+  }
+  .f8[data-level='checkpoint'] .f8-bar rect[data-on='true'] {
+    fill: var(--accent);
+  }
+  .f8[data-level='soon'] .f8-bar rect[data-on='true'],
+  .f8[data-level='now'] .f8-bar rect[data-on='true'],
+  .f8[data-level='compacted'] .f8-bar rect[data-on='true'] {
+    fill: var(--text);
+  }
+  .f8[data-level='soon'] [data-f8-next],
+  .f8[data-level='now'] [data-f8-next],
+  .f8[data-level='compacted'] [data-f8-next] {
+    font-weight: 500;
+  }
+  @container (min-width: 680px) {
+    .f8-band {
+      font-size: 13px;
+    }
+    .f8-grp {
+      display: inline;
+    }
+    .f8-sep {
+      display: inline;
+    }
+  }
+
+  .f8-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+  .f8-slider {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+  }
+  .f8-slider input {
+    width: 100%;
+    min-height: 44px;
+    margin: 0;
+    accent-color: var(--accent);
+    touch-action: manipulation;
+  }
+  .f8-slider input:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+  }
+  .f8-controls .fig-btn[hidden] {
+    display: none;
+  }
+  .f8-controls .fig-btn {
+    align-self: flex-start;
+  }
+</style>

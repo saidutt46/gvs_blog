@@ -1,0 +1,308 @@
+---
+/**
+ * Fig09Dream (fig-09): the dream panel, vertical: episodes in, the dream, then
+ * cited facts, measures and a proposal out.
+ * Props: `caption` (text from the MDX), `wide` (default true).
+ * Default slot: the text alternative (`<ol>`) written in the MDX.
+ *
+ * Panel uses the dark tokens even in the light theme (DESIGN.md "Feature
+ * posts"). Motion: episodes drift in once when the figure scrolls into view
+ * and the outputs come out after them. The "Approve" button moves the proposal
+ * card from "waiting" to "procedural memory"; it toggles back with "Reset".
+ * No JS: final state (the proposal already approved), button hidden.
+ * Reduced motion: starts in the final state, nothing moves, the button still
+ * toggles. Labels: brief 07-learning-loop.md section 5 (lines 72-86), the first
+ * dream's metrics (dreams/20261025T112644Z-dream.md lines 9-20), 06-memory.md
+ * section 8; proposal example from the post text (applied proposals).
+ */
+import Figure from '../Figure.astro';
+
+interface Props {
+  caption?: string;
+  wide?: boolean;
+}
+
+const { caption = 'TODO', wide = true } = Astro.props;
+
+const episodes = ['Ledgers', 'Reports', 'Handoffs', 'Lessons', 'Repo inboxes', 'Message logs'];
+const measures = ['Relays per agent', 'Context at relay', 'Handoff failures', 'Memory misses', 'Verify failures'];
+---
+
+<Figure id="fig-09" caption={caption} wide={wide} interactive>
+  <div slot="svg" class="f9">
+    <section class="stage" aria-labelledby="f9-in">
+      <p class="f9-h" id="f9-in">In: episodes since the last dream</p>
+      <ul class="eps">
+        {episodes.map((e, i) => <li class="drift" style={`--i:${i}`}>{e}</li>)}
+      </ul>
+    </section>
+
+    <div class="arrow" aria-hidden="true"></div>
+
+    <section class="stage core" aria-labelledby="f9-dream">
+      <p class="f9-h" id="f9-dream">The dream</p>
+      <p>Reads every episode since the last dream. Writes facts. Measures. Proposes. Applies no proposal.</p>
+    </section>
+
+    <div class="arrow" aria-hidden="true"></div>
+
+    <section class="stage" aria-labelledby="f9-out">
+      <p class="f9-h" id="f9-out">Out</p>
+      <div class="outs">
+        <div class="out drift" style="--i:6">
+          <p class="f9-h5"><span class="chip k"></span>Knowledge: cited facts</p>
+          <p>Lessons become one-line facts with a source and a date. Stale facts are corrected.</p>
+          <p class="ex">First dream: one file went from 2 facts to 23.</p>
+        </div>
+        <div class="out drift" style="--i:7">
+          <p class="f9-h5">Measures</p>
+          <ul class="tags">
+            {measures.map((m) => <li>{m}</li>)}
+          </ul>
+          <p class="ex">First dream: 3 handoffs needed a follow-up; 0 memory misses.</p>
+        </div>
+        <div class="out drift" style="--i:8">
+          <p class="f9-h5">Proposals</p>
+          <div class="slot" id="f9-wait" aria-label="Waiting for approval">
+            <p class="empty">Nothing waiting.</p>
+          </div>
+        </div>
+        <div class="out">
+          <p class="f9-h5"><span class="chip p"></span>Procedural memory</p>
+          <div class="slot" id="f9-done" aria-label="Approved">
+            <div class="card" id="f9-card" data-state="approved">
+              <p class="title">Workers lint their own report before they send it.</p>
+              <p class="status">Approved by cos or Dutt</p>
+            </div>
+            <p class="empty">Nothing yet.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <button slot="controls" type="button" class="fig-btn" id="f9-btn" aria-controls="f9-card">Reset</button>
+  <slot>
+    <ol><li>TODO</li></ol>
+  </slot>
+</Figure>
+
+<style>
+  .f9 {
+    --p-bg: #050505;
+    --p-text: #fafafa;
+    --p-muted: #a3a3a3;
+    --p-border: #333333;
+    --p-code: #161616;
+    --p-accent: #af87ff;
+    background: var(--p-bg);
+    color: var(--p-text);
+    border-radius: 6px;
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .f9 p,
+  .f9 ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .f9 .f9-h {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--p-muted);
+    margin-bottom: 8px;
+  }
+  .f9 .f9-h5 {
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .eps {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .eps li,
+  .tags li {
+    border: 1px solid var(--p-border);
+    background: var(--p-code);
+    border-radius: 4px;
+    padding: 8px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 8px 0;
+  }
+  .tags li {
+    min-height: 0;
+    padding: 2px 8px;
+    font-size: 13px;
+  }
+  .arrow {
+    height: 24px;
+    width: 2px;
+    margin: 0 auto;
+    background: var(--p-border);
+    position: relative;
+  }
+  .arrow::after {
+    content: '';
+    position: absolute;
+    left: -4px;
+    bottom: -1px;
+    border: 5px solid transparent;
+    border-top: 7px solid var(--p-border);
+    border-bottom: 0;
+  }
+  .core {
+    border: 1.5px solid var(--p-accent);
+    border-radius: 6px;
+    padding: 12px;
+    background: color-mix(in srgb, var(--p-accent) 12%, var(--p-bg));
+  }
+  .core .f9-h {
+    color: var(--p-text);
+    margin-bottom: 4px;
+  }
+  .outs {
+    display: grid;
+    gap: 8px;
+  }
+  .out {
+    border: 1px solid var(--p-border);
+    border-radius: 6px;
+    padding: 12px;
+  }
+  .ex {
+    color: var(--p-muted);
+    margin-top: 8px;
+  }
+  .chip {
+    flex: none;
+    width: 24px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1.5px solid var(--p-accent);
+    box-sizing: border-box;
+  }
+  .chip.k {
+    background: color-mix(in srgb, var(--p-accent) 14%, var(--p-bg));
+  }
+  .chip.p {
+    background: color-mix(in srgb, var(--p-accent) 30%, var(--p-bg));
+    border-width: 3px;
+  }
+  .slot {
+    border: 1.5px dashed var(--p-border);
+    border-radius: 4px;
+    padding: 8px;
+    min-height: 44px;
+  }
+  .slot .empty {
+    display: none;
+    color: var(--p-muted);
+  }
+  .slot:not(:has(.card)) .empty {
+    display: block;
+  }
+  .card {
+    border: 1.5px solid var(--p-accent);
+    border-radius: 4px;
+    padding: 8px 12px;
+    background: color-mix(in srgb, var(--p-accent) 14%, var(--p-bg));
+  }
+  .card .title {
+    font-weight: 600;
+  }
+  .card .status {
+    color: var(--p-muted);
+    margin-top: 2px;
+  }
+  .card[data-state='pending'] {
+    border-style: dashed;
+  }
+  .card.arrive {
+    animation: f9-arrive 0.5s ease both;
+  }
+  @keyframes f9-arrive {
+    from { transform: translateY(-16px); opacity: 0; }
+    to { transform: none; opacity: 1; }
+  }
+
+  /* Drift in once: JS arms the figure, then releases it on scroll into view. */
+  .f9[data-armed] .drift {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  .f9[data-go] .drift {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition-delay: calc(var(--i) * 80ms);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .f9 .drift,
+    .card.arrive {
+      transition: none !important;
+      animation: none !important;
+      transform: none !important;
+      opacity: 1 !important;
+    }
+  }
+  @media (min-width: 700px) {
+    .eps {
+      grid-template-columns: repeat(6, 1fr);
+    }
+    .outs {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>
+
+<script>
+  import { getFigure, showControls, announce } from '../figure';
+  import { onceInView, prefersReducedMotion } from '../motion';
+
+  const fig = getFigure('fig-09');
+  if (fig) {
+    const panel = fig.root.querySelector<HTMLElement>('.f9')!;
+    const card = fig.root.querySelector<HTMLElement>('#f9-card')!;
+    const status = card.querySelector<HTMLElement>('.status')!;
+    const wait = fig.root.querySelector<HTMLElement>('#f9-wait')!;
+    const done = fig.root.querySelector<HTMLElement>('#f9-done')!;
+    const btn = fig.root.querySelector<HTMLButtonElement>('#f9-btn')!;
+    const reduced = prefersReducedMotion();
+
+    const setState = (approved: boolean, animate: boolean) => {
+      (approved ? done : wait).prepend(card);
+      card.dataset.state = approved ? 'approved' : 'pending';
+      status.textContent = approved ? 'Approved by cos or Dutt' : 'Waiting for approval';
+      btn.textContent = approved ? 'Reset' : 'Approve';
+      card.classList.remove('arrive');
+      if (animate && !prefersReducedMotion()) {
+        void card.offsetWidth;
+        card.classList.add('arrive');
+      }
+      announce(fig, approved ? 'Proposal approved: now procedural memory.' : 'Proposal waiting for approval.');
+    };
+
+    // Final state first (reduced motion); otherwise start with the proposal waiting.
+    if (!reduced) {
+      setState(false, false);
+      fig.live.textContent = '';
+      panel.setAttribute('data-armed', '');
+      onceInView(panel, () => panel.setAttribute('data-go', ''), 0.2);
+    }
+    btn.addEventListener('click', () => setState(card.dataset.state !== 'approved', true));
+    showControls(fig);
+  }
+</script>

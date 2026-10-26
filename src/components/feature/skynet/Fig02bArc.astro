@@ -1,0 +1,143 @@
+---
+/**
+ * Fig02bArc (fig-02b): Designed, built, learned.
+ * Props: `caption` (text from the MDX), `wide` (default false).
+ * Default slot: the text alternative (`<ol>`) written in the MDX.
+ *
+ * Drawing: a static grid in HTML, no script. From 600px it is a table-like
+ * grid of three columns; under 600px each row is a card and the three
+ * columns stack, each marked by its label. Same three fills as the memory
+ * figures (plain, tinted, strong) so the columns read in order.
+ * Labels: shortened from ~/skynet-hq/briefs/skynet-hq-blog/01-origin.md,
+ * "Designed -> built -> learned", rows at lines 61-66. High level only.
+ */
+import Figure from '../Figure.astro';
+
+interface Props {
+  caption?: string;
+  wide?: boolean;
+}
+
+const { caption = 'TODO', wide = false } = Astro.props;
+
+const ROWS = [
+  { topic: 'Permissions', designed: 'An allow list', built: 'Auto mode with deny rules, and a classifier as a second guard', learned: 'Conductors prepare releases, Dutt clicks' },
+  { topic: 'Relays', designed: 'Relay at a fixed share of the context', built: 'A percent or a token count, whichever comes first', learned: 'Levels set per role' },
+  { topic: 'The dream', designed: 'A nightly dream', built: 'Its own dream worker and a scheduled job', learned: 'cos runs it at the end of the day' },
+  { topic: 'Viewing', designed: 'Terminal viewer windows', built: 'Ghostty, plus a mode without tmux', learned: 'Four short commands' },
+  { topic: 'Worktrees', designed: 'Beside each repo', built: 'One worktree root, no branch switching in my checkout', learned: 'Snapshotted and locked while in use' },
+  { topic: 'Reports', designed: 'Workers report to the conductor', built: 'The same, plus a message log from a mod', learned: 'My words are forwarded verbatim' },
+];
+---
+
+<Figure id="fig-02b" caption={caption} wide={wide}>
+  <div slot="svg" class="f2b">
+    <div class="head" aria-hidden="true">
+      <span></span><span class="h-d">Designed</span><span class="h-b">Built</span><span class="h-l">Learned</span>
+    </div>
+    {ROWS.map((r) => (
+      <div class="row">
+        <p class="topic">{r.topic}</p>
+        <p class="cell c-d" data-label="Designed">{r.designed}</p>
+        <p class="cell c-b" data-label="Built">{r.built}</p>
+        <p class="cell c-l" data-label="Learned">{r.learned}</p>
+      </div>
+    ))}
+  </div>
+  <slot>
+    <ol><li>TODO</li></ol>
+  </slot>
+</Figure>
+
+<style>
+  .f2b {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+  .head {
+    display: none;
+  }
+  .row {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  p {
+    margin: 0;
+  }
+  .topic {
+    padding: 8px 12px;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .cell {
+    padding: 8px 12px;
+    border-top: 1px solid var(--border);
+  }
+  .cell::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0.75;
+    letter-spacing: 0.02em;
+  }
+  .c-d {
+    background: var(--bg);
+  }
+  .c-b {
+    background: color-mix(in srgb, var(--accent) 14%, var(--bg));
+  }
+  .c-l {
+    background: color-mix(in srgb, var(--accent) 30%, var(--bg));
+    border-left: 3px solid var(--accent);
+  }
+
+  @media (min-width: 600px) {
+    .f2b {
+      gap: 0;
+      display: grid;
+      grid-template-columns: 7rem 1fr 1fr 1fr;
+    }
+    .head,
+    .row {
+      display: grid;
+      grid-column: 1 / -1;
+      grid-template-columns: subgrid;
+    }
+    .head {
+      font-weight: 600;
+    }
+    .head span {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .h-b {
+      background: color-mix(in srgb, var(--accent) 14%, var(--bg));
+    }
+    .h-l {
+      background: color-mix(in srgb, var(--accent) 30%, var(--bg));
+    }
+    .row {
+      border: 0;
+      border-radius: 0;
+      border-top: 1px solid var(--border);
+    }
+    .topic {
+      align-self: start;
+    }
+    .cell {
+      border-top: 0;
+    }
+    .cell::before {
+      display: none;
+    }
+    .c-l {
+      border-left: 0;
+    }
+  }
+</style>
