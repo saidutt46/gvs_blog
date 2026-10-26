@@ -1,10 +1,13 @@
 ---
 /**
- * Fig11Timeline (fig-11): Build-day timeline. STUB from T-002.
- * The figure task replaces the placeholder SVG and removes `data-stub`.
- * Props: `caption` (text from the MDX), `wide` (default true).
+ * Fig11Timeline (fig-11): the build night as a vertical timeline.
+ * Props: `caption` (text from the MDX), `wide` (default false).
  * Default slot: the text alternative (`<ol>`) written in the MDX.
- * Keep the id "fig-11" and the Figure contract (see ../Figure.astro).
+ *
+ * Milestones are `<details>`. No JS: all are open. With JS they start closed
+ * and open on tap; an "Open all" button is not needed. Reduced motion:
+ * nothing moves. Labels: briefs/02-build-day.md lines 10-17 (review, fixes),
+ * 28-33 (build), 35-41 (tests), 43-50 (good failures), 55-58 (handover).
  */
 import Figure from '../Figure.astro';
 
@@ -13,15 +16,245 @@ interface Props {
   wide?: boolean;
 }
 
-const { caption = 'TODO', wide = true } = Astro.props;
+const { caption = 'TODO', wide = false } = Astro.props;
+
+interface Pair { failure: string; became: string }
+interface Milestone { title: string; line: string; items?: string[]; pairs?: Pair[] }
+
+const steps: Milestone[] = [
+  {
+    title: 'Review',
+    line: 'Check the starter pack against the real Mac, then plan.',
+    items: [
+      'Repositories live in folders by platform, so each project gets a registration file with its real path.',
+      'The conductor would have switched branches in Dutt’s own checkout, so each feature gets its own integration worktree.',
+    ],
+  },
+  {
+    title: 'Fixes',
+    line: 'Eight gaps, each one fixed.',
+    items: [
+      'Hooks act only on crew sessions, so Dutt’s own sessions pay nothing.',
+      'Context levels fire at a percent or at a token count, whichever comes first.',
+      'Unattended sessions run in auto mode, with a deny list for anything outward-facing or destructive.',
+    ],
+  },
+  {
+    title: 'Build',
+    line: 'One session built the harness.',
+    items: [
+      'A spawn script, the only way to start, retire or relay a session.',
+      'A context hook and a status line.',
+      'Five skills and seven agent definitions.',
+      'The crew mod: a band above the prompt, and a log of every message between sessions.',
+    ],
+  },
+  {
+    title: 'Tests',
+    line: 'Four tests on a small Rust repository.',
+    items: [
+      'Handshake: a worker acked, reported and was retired, in about a minute.',
+      'Context hook: told a worker to relay on its first tool call.',
+      'Worker relay: generation 2 finished the task from the handoff alone.',
+      'Conductor relay: the band showed “gen 2”.',
+    ],
+  },
+  {
+    title: 'Good failures',
+    line: 'Each one became a lesson.',
+    pairs: [
+      { failure: 'Ledger lines out of order', became: 'One helper stamps the moment of writing.' },
+      { failure: 'A deny rule that never matched', became: 'Writes are checked against Edit rules.' },
+      { failure: 'Ctrl-C in the wrong tmux window', became: 'Attach lands on the right window.' },
+      { failure: 'A keep-awake check that was fooled', became: 'The crew tracks its own process by a pidfile.' },
+      { failure: 'Two classifier refusals', became: 'The boundary working. Dutt applied both changes.' },
+      { failure: 'A folder-trust prompt', became: 'New repos are pre-trusted; worktrees inherit it.' },
+    ],
+  },
+  {
+    title: 'Handover',
+    line: 'The crew takes over.',
+    items: [
+      'The first real project is skynet-lint, a checker for the crew’s own files.',
+      'Dutt sent the ask from his phone. The full flow ran, from recon to merge.',
+      'The build agent stepped back and cos ran the system.',
+    ],
+  },
+];
 ---
 
-<Figure id="fig-11" caption={caption} wide={wide} data-stub="fig-11">
-  <svg slot="svg" class="fig-stub" viewBox="0 0 640 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <rect x="1" y="1" width="638" height="158" rx="8" />
-    <text x="320" y="86" text-anchor="middle">fig-11: Build-day timeline (placeholder)</text>
-  </svg>
+<Figure id="fig-11" caption={caption} wide={wide} interactive>
+  <div slot="svg" class="f11">
+    <p class="when">Night of 24 to 25 October 2026, Pacific time</p>
+    <ol class="rail">
+      {steps.map((s, i) => (
+        <li>
+          <details open>
+            <summary>
+              <span class="dot" aria-hidden="true">{i + 1}</span>
+              <span class="head">
+                <span class="t">{s.title}</span>
+                <span class="l">{s.line}</span>
+              </span>
+            </summary>
+            <div class="body">
+              {s.items && (
+                <ul>
+                  {s.items.map((it) => <li>{it}</li>)}
+                </ul>
+              )}
+              {s.pairs && (
+                <ul class="pairs">
+                  {s.pairs.map((p) => (
+                    <li>
+                      <span class="f">{p.failure}</span>
+                      <span class="b">{p.became}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </details>
+        </li>
+      ))}
+    </ol>
+  </div>
   <slot>
     <ol><li>TODO</li></ol>
   </slot>
 </Figure>
+
+<style>
+  .f11 {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .f11 ol,
+  .f11 ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .when {
+    margin: 0 0 8px;
+    color: var(--muted);
+  }
+  .rail {
+    position: relative;
+  }
+  .rail::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 16px;
+    bottom: 16px;
+    width: 2px;
+    background: var(--border);
+  }
+  .rail > li {
+    position: relative;
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+    padding: 4px 0;
+    cursor: pointer;
+    list-style: none;
+    touch-action: manipulation;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+  }
+  .dot {
+    flex: none;
+    position: relative;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid var(--accent);
+    background: var(--bg);
+    display: grid;
+    place-items: center;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  details[open] > summary .dot {
+    background: color-mix(in srgb, var(--accent) 30%, var(--bg));
+  }
+  .head {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+  }
+  .t {
+    font-weight: 600;
+  }
+  .l {
+    color: var(--muted);
+  }
+  summary::after {
+    content: '\25B8';
+    flex: none;
+    font-size: 18px;
+    transition: transform 0.2s ease;
+  }
+  details[open] > summary::after {
+    transform: rotate(90deg);
+  }
+  .body {
+    margin: 0 0 12px 44px;
+  }
+  .body ul > li {
+    padding: 2px 0 2px 12px;
+    position: relative;
+  }
+  .body ul > li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 11px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--muted);
+  }
+  .pairs > li {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 8px;
+  }
+  .pairs .f {
+    font-weight: 600;
+  }
+  .pairs .b {
+    color: var(--muted);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    summary::after {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { getFigure, announce } from '../figure';
+
+  const fig = getFigure('fig-11');
+  if (fig) {
+    fig.root.querySelectorAll<HTMLDetailsElement>('details').forEach((d) => {
+      d.open = false;
+      d.addEventListener('toggle', () => {
+        if (!d.open) return;
+        const t = d.querySelector('.t')?.textContent ?? '';
+        announce(fig, `${t} opened.`);
+      });
+    });
+  }
+</script>
