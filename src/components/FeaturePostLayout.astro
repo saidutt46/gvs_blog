@@ -1,0 +1,42 @@
+---
+/**
+ * FeaturePostLayout: the layout for blog entries with `kind: feature`.
+ * Same header as PostLayout (back link, title, date, reading time).
+ * The body sits in `.post-content.feature` and is the only place that
+ * loads `src/styles/feature.css`, so every other page stays unchanged.
+ * The CSS is linked by URL, not imported: Astro bundles imported CSS per
+ * route, and `blog/[...slug]` serves every post, so an import would put
+ * feature.css on plain posts too. The <link> sits before the content, so
+ * it blocks render of the post and there is no unstyled flash.
+ * Body text stays at 640px; figures with `wide` break out to 960px.
+ * See DESIGN.md "Feature posts".
+ */
+import { formatDate } from '../lib/format';
+import featureCss from '../styles/feature.css?url';
+
+interface Props {
+  title: string;
+  date: Date;
+  backLink: string;
+  backLabel: string;
+  readingMinutes?: number;
+}
+
+const { title, date, backLink, backLabel, readingMinutes } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<link rel="stylesheet" href={featureCss} />
+<div class="post-content feature">
+  <a class="back-link" href={`${base}${backLink}`}>&larr; {backLabel}</a>
+  <div class="post-header">
+    <h1>{title}</h1>
+    <div class="post-meta">
+      <time datetime={date.toISOString()}>{formatDate(date)}</time>
+      {readingMinutes && <span>{' · '}{readingMinutes} min read</span>}
+    </div>
+  </div>
+  <div class="post-body">
+    <slot />
+  </div>
+</div>
