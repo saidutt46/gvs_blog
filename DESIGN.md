@@ -38,20 +38,21 @@
 | Code            | 14px    | 400    | 1.6         | normal         |
 
 ## Color
-- **Approach:** Restrained. Text and background do most of the work. One accent, `#AF87FF`, is used only for link underlines, the active nav item, blockquote rules, and the active-status dot.
-- **Dark mode strategy:** t3.gg-inspired near-black. Reduce muted text brightness slightly for dark surfaces.
+- **Approach:** Restrained. Text and background do most of the work. One accent, `#AF87FF`, is used only for link underlines, the active nav item, blockquote rules, and the active-status dot. When the accent colours text, use `--accent-text`: a darker purple of the same hue in light mode (`#7D4EDA`) and `#AF87FF` in dark mode. All text tokens meet WCAG AA (4.5:1 or more) on `--bg` and on `--tag-bg`.
+- **Dark mode strategy:** t3.gg-inspired near-black. Muted text is a mid grey that keeps 4.5:1 contrast on the dark background.
 
 ### Light Theme (default)
 | Token        | Value     | Usage                     |
 |--------------|-----------|---------------------------|
 | `--bg`       | `#fafafa` | Page background           |
 | `--text`     | `#222222` | Body text, headings       |
-| `--muted`    | `#888888` | Subtitles, dates, meta    |
+| `--muted`    | `#6b6b6b` | Subtitles, dates, meta    |
 | `--border`   | `#e0e0e0` | Dividers, borders         |
 | `--link`     | `#222222` | Links (underline on hover)|
 | `--accent`   | `#AF87FF` | Link underline, active nav, blockquote rule |
+| `--accent-text` | `#7D4EDA` | Accent-coloured text (link hover, figure labels) |
 | `--tag-bg`   | `#f0f0f0` | Tag pill background       |
-| `--tag-text` | `#999999` | Tag pill text             |
+| `--tag-text` | `#6b6b6b` | Tag pill text             |
 | `--code-bg`  | `#f0f0f0` | Code block background     |
 
 ### Dark Theme (inspired by t3.gg)
@@ -59,10 +60,11 @@
 |--------------|-----------|
 | `--bg`       | `#050505` |
 | `--text`     | `#fafafa` |
-| `--muted`    | `#525252` |
+| `--muted`    | `#828282` |
 | `--border`   | `#1a1a1a` |
 | `--link`     | `#fafafa` |
 | `--accent`   | `#AF87FF` |
+| `--accent-text` | `#AF87FF` |
 | `--tag-bg`   | `#1a1a1a` |
 | `--tag-text` | `#888888` |
 | `--code-bg`  | `#161616` |
@@ -97,7 +99,7 @@
 - **Triggers:** An animation runs once when its figure scrolls into view, or when the reader presses a control. Nothing loops without a control. Autoplay is off by default.
 - **Reduced motion:** With `prefers-reduced-motion: reduce`, figures show their final state or a step-through with buttons.
 - **Without JS:** Every figure renders as a readable static SVG with a caption and an ordered text description. Controls stay hidden.
-- **Identity:** The same fonts (DM Sans, Geist Mono), the same light and dark tokens, the one accent `#AF87FF` and the 8px scale. Figures may use `--text`, `--muted`, `--border`, `--code-bg` and `--accent` at reduced opacity. No new colours or fonts. The dream figure may use the dark tokens in the light theme.
+- **Identity:** The same fonts (DM Sans, Geist Mono), the same light and dark tokens, the one accent `#AF87FF` and the 8px scale. Figures may use `--text`, `--muted`, `--border`, `--code-bg` and `--accent` at reduced opacity. Accent-coloured text in figures uses `--accent-text`. No new colours or fonts. The dream figure may use the dark tokens in the light theme.
 - **Width:** Body text stays at 640px. Figures may break out to 960px. Under 600px, figures switch to a vertical layout or scroll inside their own frame, never the page.
 - **Mobile first:** At least half the readers are on phones. Figures are designed at 375px first: labels stay legible, tap targets are 44px or more, there is no horizontal page scroll, and the 960px breakout applies only at 600px and up.
 - **No hover-only behaviour:** Tap, click or keyboard focus does everything hover does.
@@ -145,3 +147,4 @@
 | 2026-10-17 | Reading time on posts, RSS in footer | Small reader conveniences, no new visual weight |
 | 2026-10-17 | Record the `#AF87FF` accent | Added in commit 028aa96; this doc still said no accent |
 | 2026-10-26 | Feature-post exception, approved by Dutt | Dutt asked for an animated, diagram-led Skynet HQ post; scoped to one layout so the rest of the site stays flat. Mobile first |
+| 2026-10-26 | AA contrast: darker --muted and --tag-text; new --accent-text for accent-coloured text in light mode | Approved by Dutt |
