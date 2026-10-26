@@ -54,7 +54,7 @@
 }
 
 /* Variant drawings: phone (narrow) by default, broad from 600px. */
-.post-content.feature .fig-broad {
+.post-content.feature .fig-svg svg.fig-broad {
   display: none;
 }
 
@@ -215,11 +215,11 @@
     transform: translateX(-50%);
   }
 
-  .post-content.feature .fig-narrow {
+  .post-content.feature .fig-svg svg.fig-narrow {
     display: none;
   }
 
-  .post-content.feature .fig-broad {
+  .post-content.feature .fig-svg svg.fig-broad {
     display: block;
   }
 }
