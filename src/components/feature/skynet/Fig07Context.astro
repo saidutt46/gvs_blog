@@ -47,10 +47,9 @@ const headings = [
   'Parent notes',
 ];
 
-// Before/after timeline: the same span of work, cut at each era's relay
-// point for a conductor (relative widths, no numbers).
+// Before/after timeline. Build day: gen 1 to 6 (the dream's count for one
+// conductor). Today: a shape only, two segments, no count and no labels.
 const buildGens = 6;
-const todayGens = Math.round((buildGens * f7Marks('build', role)[2]) / now);
 ---
 
 <Figure id="fig-07" caption={caption} wide={wide} interactive>
@@ -133,12 +132,9 @@ const todayGens = Math.round((buildGens * f7Marks('build', role)[2]) / now);
       </g>
       <g class="f7-row" data-f7-row="today">
         <text class="f7-small" x="0" y="66">Today: levels raised per role</text>
-        {Array.from({ length: todayGens }, (_, i) => (
-          <g>
-            <rect class="f7-seg" x={pct(i / todayGens)} y="74" width={pct(1 / todayGens)} height="24" />
-            <text class="f7-seg-text" x={pct((i + 0.5) / todayGens)} y="91" text-anchor="middle">{`gen ${i + 1}`}</text>
-          </g>
-        ))}
+        <rect class="f7-seg" x="0" y="74" width="62%" height="24" />
+        <rect class="f7-seg" x="62%" y="74" width="38%" height="24" />
+        <text class="f7-seg-text" x="31%" y="91" text-anchor="middle">today: fewer, later relays</text>
       </g>
     </svg>
   </div>
