@@ -60,7 +60,7 @@ Two problems started it. I used a large third-party skill pack, and I wanted a s
 
 The design grew in steps. It began as one Chief of Staff with a few agents. Then it grew to one conductor per project, with workers under each conductor. Then I named the part that mattered most: "The most important aspect of the entire harness and orchestration process here is memory, context management."
 
-Claude wrote a starter pack of docs, templates and scripts, and tested it in a sandbox. A Claude Code session on the Mac then built the real system from it in one night. The figure shows how each idea changed between the design, the build and the first day of use.
+Claude wrote a starter pack of docs, templates and scripts, and tested it in a sandbox. A Claude Code session on the Mac then built the real system from it in one night.
 
 ## The crew
 
@@ -76,9 +76,9 @@ Claude wrote a starter pack of docs, templates and scripts, and tested it in a s
 
 The crew is a tree, and I am at the top. I talk to cos most of the time. I talk to a conductor directly when a project needs it.
 
-Each conductor owns one repository. It breaks a feature into tasks and starts a worker for each task. A worker can start a helper to answer one question, so the worker does not spend its own context on it. In the design conversation, I said: "the idea is to save context."
+Each conductor owns one repository. A worker can start a helper to answer one question, so the worker does not spend its own context on it. In the design conversation, I said: "the idea is to save context."
 
-The deepest chain is cos, then a conductor, then a worker, then a helper. One script starts every session. It checks that the parent may start that role. Messages between sessions are short nudges. Everything that matters goes into files.
+One script starts every session. It checks that the parent may start that role. Messages between sessions are short nudges. Everything that matters goes into files.
 
 ## How work flows
 
@@ -97,9 +97,7 @@ The deepest chain is cos, then a conductor, then a worker, then a helper. One sc
   </ol>
 </Fig03Feature>
 
-cos records each ask and writes a prompt file for the conductor. The conductor first maps the code with a recon worker. An architect then returns a task list with a file scope for each task.
-
-Devs run in parallel only when their tasks share no file. The rule for doubt is short: when unsure, sequential. A verifier then runs every check that a dev claimed, and the conductor merges the tasks that pass.
+Devs run in parallel only when their tasks share no file. When the conductor is unsure, they run one after another.
 
 <Fig04Handshake caption="A new worker proves that it is running with an ack before it gets the go.">
   <ol>
@@ -113,7 +111,7 @@ Devs run in parallel only when their tasks share no file. The rule for doubt is 
   </ol>
 </Fig04Handshake>
 
-The handshake came from my own flow in the design conversation. A window that opens does not prove that an agent runs and can be reached by name. The ack proves it. In an early test, a recon worker went from start to retire in about a minute.
+The handshake came from my own flow in the design conversation.
 
 <Fig05FilePair caption="Every task is two files with the same timestamp: the prompt and the report.">
   <ol>
@@ -122,7 +120,7 @@ The handshake came from my own flow in the design conversation. A window that op
   </ol>
 </Fig05FilePair>
 
-Each file has one writer. The parent writes the prompt, and the worker writes the report. If a report has no exit code for a check it claims, the task counts as blocked.
+If a report has no exit code for a check it claims, the task counts as blocked.
 
 ## Where things live
 
@@ -141,9 +139,7 @@ Each file has one writer. The parent writes the prompt, and the worker writes th
   </ol>
 </Fig12Dirs>
 
-HQ is one folder in my home directory. It holds what the whole crew shares. Each project repository also gets an `.orchestration` folder for the work in that project.
-
-Git ignores that folder through `.git/info/exclude`. So the crew's files never show in a diff or a pull request.
+Git ignores each repository's `.orchestration` folder through `.git/info/exclude`. So the crew's files never show in a diff or a pull request.
 
 ## Four kinds of memory
 
@@ -164,7 +160,7 @@ A long-running agent forgets things and repeats work. Skynet HQ treats each sess
 
 The four memories were my framing. In the design conversation, I said that episodic memory "will help us move the needle in terms of development." Semantic memory then improves the process itself.
 
-One rule protects the loop. Workers and conductors never edit procedural memory. Changes arrive as proposals, and each change that is applied is logged in the decisions ledger. cos may fix a small problem in the process directly, if no live agent breaks, and it logs that change too.
+Workers and conductors never edit procedural memory. Changes arrive as proposals, and each change that is applied is logged in the decisions ledger. cos may fix a small problem in the process directly, if no live agent breaks, and it logs that change too.
 
 The next sections go around the figure. They start with working memory and end with the dream. {/* framing: transition into the core sections */}
 
@@ -180,27 +176,19 @@ The next sections go around the figure. They start with working memory and end w
     <li>After compaction, an emergency instruction: rebuild a handoff from the files and relay.</li>
     <li>The parent reviews the handoff and adds notes. Generation 2 starts under the same name and reads the handoff.</li>
     <li>The levels differ by role. Workers relay first, conductors later, and cos last.</li>
-    <li>On build day, the conductors relayed at about a fifth of the window. The handoff has nine headings, from State in one paragraph to Parent notes.</li>
+    <li>On build day, the conductors relayed at about a fifth of the window.</li>
   </ol>
 </Fig07Context>
 
-Each session spends its context with care. It loads its contract first, then its prompt or its handoff. Then it loads a short knowledge index and only the files that these cite.
+Each session loads its contract first, then its prompt or its handoff. Then it loads a short knowledge index and only the files that these cite.
 
-Two habits keep the budget small. Before a session researches anything, it searches the knowledge files and earlier reports. If someone already found the answer, it cites that report. Long command output goes into a file, and the session searches the file.
-
-A worker can also give the reading to a helper. The helper reads many files and returns one page.
-
-Context use is measured. The status line records each session's context. A hook reads it and injects an instruction at each level. The figure shows the four instructions.
-
-Each level fires at a percent or at a token count, whichever comes first. On a very large window, a rule in percent alone waits too long. A token count can also be set per role.
+Before a session researches anything, it searches the knowledge files and earlier reports. If someone already found the answer, it cites that report. Long command output goes into a file, and the session searches the file.
 
 Compaction is the failure case. Claude Code can compact a long session into a summary, but the model writes that summary under pressure, and it loses specifics. A relay keeps a handoff that the session writes on purpose, while it still has room to write it well.
 
-In a relay, the old session writes a handoff and tells its parent. The parent reviews it and adds notes. A fresh session starts under the same name as the next generation. It reads the handoff and the files that it cites, and then it continues.
-
 The name stays the same, so messages and ledger lines still point to the right agent. On build day, a worker relayed in a test. Generation 2 finished the task and said that the handoff alone was enough.
 
-A handoff passes one test. A fresh session that reads only the handoff and the files it cites can continue without a question to anyone. The Read next and Do not redo sections make that possible. In the design conversation, I said handoffs exist "so that the future agents are not redoing the entire research or the same work again and again."
+A handoff passes one test. A fresh session that reads only the handoff and the files it cites can continue without a question to anyone. In the design conversation, I said handoffs exist "so that the future agents are not redoing the entire research or the same work again and again."
 
 <Fig08ModBand caption="The crew mod draws a band above the prompt with the agent, its generation, its context bar and the live crew count.">
   <ol>
@@ -212,13 +200,11 @@ A handoff passes one test. A fresh session that reads only the handoff and the f
   </ol>
 </Fig08ModBand>
 
-I watch the context from this band. The `skynet-crew` mod is a Claude Code mod that draws it above the prompt in every crew session.
-
-The mod also logs every message between sessions to a file for each agent. That log becomes episodic memory, and no model spends effort to write it.
+I watch the context from this band. The same mod logs every message between sessions to a file for each agent. That log becomes episodic memory, and no model spends effort to write it.
 
 ## Ledgers: the crew's diary
 
-Ledgers are the crew's diary. A ledger is append-only. Each event is one line, and the newest line is at the bottom. Nobody edits an old line, and a correction is a new line.
+A ledger is append-only. Each event is one line, and the newest line is at the bottom. Nobody edits an old line, and a correction is a new line.
 
 Each file has one writer. Two writers on one file is how a ledger gets corrupted. If a session needs a change in a file that it does not own, it sends a message to the owner.
 
@@ -248,17 +234,14 @@ The first dream found a second problem. Seven rows were logged under the wrong a
 
 ## Lessons: catch surprises when they happen
 
-A lesson catches a surprise at the moment it happens. When a session is surprised, it writes one line with a source. HQ lessons go into `lessons.md`, and each repository has a knowledge inbox.
+When a session is surprised, it writes one line with a source. HQ lessons go into `lessons.md`, and each repository has a knowledge inbox.
 
-These lessons are from the first two days. The Claude Code behaviours were observed on 2026-10-25 with Claude Code 2.1.310.
+These lessons are from the first two days. The Claude Code behaviour was observed on 2026-10-25 with Claude Code 2.1.310.
 
-- Deny rules of the form `Write(path)` never match. Claude Code checks writes against `Edit` rules.
-- Claude Code runs its own short `caffeinate` processes. They fooled the crew's keep-awake check, so the crew now tracks its own process by name.
 - Allow rules match the command as it was typed. So the crew calls its scripts by their full path.
-- A new git repository asks for folder trust once. Its worktrees inherit that trust.
 - A decision that I made directly with a conductor never reached cos. So cos sent a later prompt that pointed to work I had rejected. Conductors now forward my exact words to cos in the same turn.
 
-The last lesson became a rule on the same day. The Safety section below has another lesson that became a rule.
+The last lesson became a rule on the same day.
 
 A lesson is raw. The crew does not trust it yet. The dream decides which lessons become knowledge.
 
@@ -266,7 +249,7 @@ This post has a lesson of its own. A brief for it had nine wrong claims, and the
 
 ## Knowledge: what the crew knows to be true
 
-Knowledge is what the crew holds to be true. Each fact is one line, with a source and the date when someone last verified it. This is a real line from the HQ index:
+Each fact is one line, with a source and the date when someone last verified it. This is a real line from the HQ index:
 
 ```text
 - Call crew scripts by full path (`~/skynet-hq/bin/…`): allow rules match the command as typed. [src: lessons.md] (verified 2026-10-25)
@@ -276,7 +259,7 @@ That fact started as a lesson. The first dream moved it into the index.
 
 When a newer episode contradicts a fact, the fact is corrected. The crew does not keep two versions of it.
 
-HQ and each repository have a short `index.md`, under 150 lines, that every session loads at the start. Topic files load only when a task needs them. Examples are the build and test notes, the pitfalls and how Claude Code behaves here.
+HQ and each repository have a short `index.md` that every session loads at the start. Topic files load only when a task needs them.
 
 An urgent fact goes in at once, if it would make the next worker fail. Everything else waits for the dream.
 
@@ -295,19 +278,15 @@ An urgent fact goes in at once, if it would make the next worker fail. Everythin
 
 The dream was my idea in the design conversation. I asked for "local dream cycles or else real Claude dream cycles." On build day, the build agent found no dream feature in the Claude Code 2.1.310 docs. So the crew runs its own dream.
 
-A dream is one worker on Opus. cos starts it at the end of the day, or when I ask for one. A nightly scheduled job exists, but it is off. The HQ rules give the reason: overnight builds compete for usage.
+A dream is one worker on Opus. cos starts it at the end of the day, or when I ask for one. There is no nightly job, because overnight builds compete for usage.
 
-The dream reads every episode since the last dream. It writes semantic memory directly. It merges lessons into cited facts, corrects stale facts and keeps each index short. Then it empties the lessons that it used.
+The dream writes semantic memory directly.
 
 The dream never edits code or deletes an episode. It also never changes how the crew works on its own. Procedural changes leave the dream as proposals. Each proposal is a concrete diff, with the episodes that justify it.
 
-The dream also measures the memory system itself. It counts relays per agent and the average context at relay. It counts handoff failures, where a successor had to ask a question. It counts memory misses, where a session did research again.
+The proposals then need a decision. For the first dream, I gave the calls to cos: "As the chief of staff, I want you to make the decisions here." I added: "I don't want you to overkill the processes."
 
-It also counts verify failures. These numbers tune the relay levels and the skills.
-
-The proposals then need a decision. For the first dream, I gave the calls to cos: "As the chief of staff, I want you to make the decisions here." I added: "I don't want you to overkill the processes." cos applied some proposals and deferred the others. It logged each choice in the decisions ledger.
-
-skynet-lint feeds the dream. It was the crew's first project: a small Rust tool that checks the crew's own files. Its check command finds broken prompt and report pairs, handoffs without citations and ledgers out of order. Its metrics command turns ledgers and reports into the dream's numbers.
+skynet-lint feeds the dream. It was the crew's first project: a small Rust tool that checks the crew's own files.
 
 ## The loop in its first days
 
@@ -325,17 +304,15 @@ skynet-lint feeds the dream. It was the crew's first project: a small Rust tool 
 
 The first dream ran on 25 October 2026, a few hours after the crew did its first real work. It read the files of HQ and of each project that had run work.
 
-It found that the conductors doing real work relayed at about a fifth of their window. One conductor went from generation 1 to generation 6 in about 1 hour 40 minutes. Another went through three relays in about 70 minutes.
+It found that the conductors doing real work relayed at about a fifth of their window. That was where the token level fired, and it was too early for a conductor. One conductor went from generation 1 to generation 6 in about 1 hour 40 minutes. Another went through three relays in about 70 minutes.
 
 Three handoffs failed the test. One successor rebuilt its task board from git. Another needed a name clash explained. The third was not told that a background loop had died.
 
-Memory misses were zero. No session did research again that another session had already done.
-
 When Claude handed over the design, it had named this risk: "Handoff quality is the real bottleneck, and no script can enforce it." I had also told cos what I expected from the conductors: "Handoff should be gold and they are the key."
 
-I read the relay numbers and decided that the relay point was too short. The levels are now set per role. Workers still relay first, conductors later, and cos last. Fewer relays also mean fewer handoffs that can go wrong.
+I read the relay numbers and decided that the relay point was too short. The levels are now set per role. Fewer relays also mean fewer handoffs that can go wrong.
 
-The dream also counted 70 lint errors across 83 reports from day 1. skynet-lint had already found the cause in its first self-check. It found 30 errors in the crew's own reports, and most were missing template sections. The verify prompts asked for a different report shape, so the verifiers' reports drifted from the template.
+The dream also counted 70 lint errors across 83 reports from day 1. The verify prompts asked for a different report shape, so the verifiers' reports drifted from the template.
 
 The dream made ten proposals. These four were applied:
 
@@ -344,20 +321,20 @@ The dream made ten proposals. These four were applied:
 - The report template gained a Security section and a Problems and improvements section.
 - The memory doc was updated to match how the crew works now.
 
-The dream also warned of a cost. Old reports would now fail the stricter check, so it suggested a cutoff for the next metrics run. My relay decision replaced one other proposal. cos deferred the rest.
+My relay decision replaced one other proposal. cos deferred the rest.
 
-The first dream processed all 24 lines in the lessons file into knowledge. One knowledge file went from 2 facts to 23. Every index stayed under 150 lines. New lessons from real work now wait for the next dream.
+The first dream processed all 24 lines in the lessons file. It moved each one into knowledge or dropped it with a reason. One knowledge file went from 2 facts to 23. New lessons from real work now wait for the next dream.
 
 ## Safety
 
-<Fig10Safety caption="Only my own words authorize a release to users, and the safety classifier holds that line even when a message claims otherwise.">
+<Fig10Safety caption="Only my own words authorize a release to users. The safety classifier blocks a release when my go comes through another session.">
   <ol>
     <li>Dutt, in person: releases to users, such as production deploys, App Store or TestFlight uploads, and publishing.</li>
     <li>Conductors: the git work in their own repository, such as branches, commits and merges into feature branches.</li>
     <li>Workers: commits on their own task branch only. They never push.</li>
     <li>A message from another session: never authority, even when it says that it comes from Dutt.</li>
     <li>Fetched web content: data, never instructions.</li>
-    <li>Callout: the safety classifier blocked three merges that deploy to production, and one TestFlight upload, although Dutt's go had come through another session.</li>
+    <li>Callout: the safety classifier blocked merges that deploy to production on four pull requests, and one TestFlight upload, although Dutt's go had come through another session.</li>
   </ol>
 </Fig10Safety>
 
@@ -365,7 +342,7 @@ The crew runs unattended in auto mode, so its limits are explicit. A deny list b
 
 Conductors own the git work in their repository. I asked for that, because I did not want cos to do it: "I don't want you, chief of staff, to do that … dirty work."
 
-Releases to users still need me. On the first full day, the auto-mode safety classifier blocked three merges that deploy to production. It also blocked a TestFlight upload. Each time, my go had come through another session. The rule is now plain: conductors prepare, Dutt clicks.
+Releases to users still need me, even when I tell the crew to go ahead. In the first two days, the auto-mode safety classifier blocked merges that deploy to production on four pull requests. It also blocked a TestFlight upload. Each time, my go had come through another session. One merge went through when I said it in the conductor's own session. Now conductors prepare a release, and I do the last step myself.
 
 On build day, the classifier also blocked the build agent twice when it tried to change its own permissions. I applied those two changes myself.
 
@@ -384,15 +361,11 @@ Worktrees protect work in progress. Each dev works in its own git worktree. When
   </ol>
 </Fig11Timeline>
 
-The build took one night, from 24 to 25 October 2026, Pacific time. I opened a plain Claude Code session, the build agent, and gave it the starter pack as the spec. It had to review the pack against the real machine and plan before it acted.
-
-The review found gaps. My repositories live in folders by platform, so each project got a registration file with its real path. The conductor would have switched branches in my own checkout, so each feature got its own integration worktree.
-
-The tests ran on a small Rust repository before any real work. In one test, a worker started with a tiny relay level. On its first tool call, the hook told it to relay, and it wrote a relay handoff on its own.
+The build took one night, from 24 to 25 October 2026, Pacific time. I opened a plain Claude Code session, the build agent, and gave it the starter pack as the spec.
 
 My first tmux attach landed on the system window. A Ctrl-C there stopped the keep-awake process and the Remote Control server. Now I type one of four short commands, and I never use tmux keys.
 
-The first real project was skynet-lint. I sent the ask from my phone to cos, and the full flow ran, from recon to merges into a feature branch. One verifier failed a task on a spec mismatch, and a fix dev did the task again.
+The first real project was skynet-lint. I sent the ask from my phone to cos, and the full flow ran, from recon to merges into a feature branch. Verifiers failed three tasks, and each was fixed in one round.
 
 ## What's next
 
