@@ -24,7 +24,9 @@
  *     `hidden` when it runs. Empty when the slot is not given, so a script
  *     (for example stepper.ts) can mount its own controls there.
  *   - default: the text alternative, an `<ol>` (or a table for F2b, F10).
- *     Rendered in the figcaption as `#<id>-text`, always visible.
+ *     Rendered in the figcaption as `#<id>-text`, collapsed behind a closed
+ *     `<details class="fig-more">` (label "Explain this figure"). The content
+ *     stays in the DOM for screen readers and no-JS; never leave the slot empty.
  * - Also output: `[data-fig-live]`, an `aria-live="polite"` region. Put
  *   state text there with `announce()` from figure.ts.
  * - Scripts: a figure component adds its own `<script>` and finds its root
@@ -70,8 +72,16 @@ const hasControls = Astro.slots.has('controls');
   <p class="fig-live" data-fig-live aria-live="polite"></p>
   <figcaption>
     <span class="fig-caption" id={captionId}>{caption}</span>
-    <div class="fig-text" id={textId}>
-      <slot />
-    </div>
+    <details class="fig-more">
+      <summary class="fig-more-btn">
+        <span>Explain this figure</span>
+        <svg class="fig-more-chev" viewBox="0 0 12 8" width="12" height="8" aria-hidden="true" focusable="false">
+          <path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </summary>
+      <div class="fig-text" id={textId}>
+        <slot />
+      </div>
+    </details>
   </figcaption>
 </figure>
