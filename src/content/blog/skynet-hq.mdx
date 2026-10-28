@@ -62,7 +62,7 @@ Two problems started it. I used a large third-party skill pack, and I wanted a s
 
 The design grew in steps. It began as one Chief of Staff with a few agents. Then it grew to one conductor per project, with workers under each conductor. Then I named the part that mattered most: "The most important aspect of the entire harness and orchestration process here is memory, context management."
 
-The core ideas were inspired by [Kyle Eberle](https://www.linkedin.com/in/kyle-eberle), the chief architect at my day job. His work showed me how to write handoffs with timestamps. It also showed me how to spawn agents, so that the work is spread out and each context is saved. He also gave me a pep talk on how memory works. It covered the four memory types, and what a dream cycle does and how to use it. I brought these ideas into the design conversation. Claude and I then built the crew around them, with the conductors, the handshake, the relays and the crew's own dream. I am grateful to him for his work and for his time. {/* framing: the last two sentences; Dutt to confirm the wording of the credit */}
+The core ideas were inspired by [Kyle Eberle](https://www.linkedin.com/in/kyle-eberle), the chief architect at my day job. His work showed me how to write handoffs with timestamps. It also showed me how to spawn agents, so that the work is spread out and each context is saved. He also gave me a pep talk on how memory works. It covered the four memory types, and what a dream cycle does and how to use it. I brought these ideas into the design conversation. Claude and I then built the crew around them, with the conductors, the handshake, the relays and the crew's own dream. {/* framing: the last sentence; Dutt to confirm */}
 
 Claude wrote a starter pack of docs, templates and scripts, and tested it in a sandbox. A Claude Code session on the Mac then built the real system from it in one night.
 
@@ -75,6 +75,7 @@ Claude wrote a starter pack of docs, templates and scripts, and tested it in a s
     <li>Conductor, one per project: breaks features into tasks, starts workers, verifies, and merges task branches into the feature branch. It never writes implementation code.</li>
     <li>Workers: recon, research, architect, dev and verify. Each worker does one task and then retires.</li>
     <li>Helpers, such as an SME: answer one focused question for a worker. Helpers never start anyone.</li>
+    <li>Outside models, such as OpenAI's Codex: a conductor can hand one a task through that model's own command-line tool.</li>
   </ol>
 </Fig02OrgChart>
 
@@ -86,7 +87,7 @@ One script starts every session. It checks that the parent may start that role. 
 
 Conductors send cos high-level updates only. A conductor alerts cos when it judges that something is important.
 
-The harness can also hand work to a model from another vendor, through that model's own command-line tool. The first case was TinyTv, one of my apps. Its conductor had OpenAI's Codex draw 49 illustrations for the app, all from one style reference. It used my own sign-in, so there was no API spend, and I approved the drawings. The work used the usual files: a research task, ledger lines and dev tasks.
+The harness can also hand work to a model from another vendor, through that model's own command-line tool. The first case was one of my unreleased apps, which I will call Lumen here. Its conductor had OpenAI's Codex draw 49 illustrations for the app, all from one style reference. It used my own sign-in, so there was no API spend, and I approved the drawings. The work used the usual files: a research task, ledger lines and dev tasks.
 
 ## How work flows
 
@@ -383,7 +384,7 @@ The first real project was skynet-lint. I sent the ask from my phone to cos, and
 
 ## What's next
 
-In its first days, the crew helped me release Doorframe on the App Store, with its site. Meontor's accessibility and Apple Watch work landed. The crew also revived TinyTv, an old app of mine.
+In its first days, the crew helped me release Doorframe on the App Store, with its site. Meontor's accessibility and Apple Watch work landed. The crew also revived Lumen, an old app of mine.
 
 Skynet HQ is private for now. {/* framing: wording for Dutt to confirm; no release date or promise */}
 
