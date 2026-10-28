@@ -100,6 +100,7 @@
 - **Reduced motion:** With `prefers-reduced-motion: reduce`, figures show their final state or a step-through with buttons.
 - **Without JS:** Every figure renders as a readable static SVG with a caption and an ordered text description. Controls stay hidden.
 - **Identity:** The same fonts (DM Sans, Geist Mono), the same light and dark tokens, the one accent `#AF87FF` and the 8px scale. Figures may use `--text`, `--muted`, `--border`, `--code-bg` and `--accent` at reduced opacity. Accent-coloured text in figures uses `--accent-text`. No new colours or fonts. The dream figure may use the dark tokens in the light theme.
+- **Figure text:** The text version of each figure sits in a closed `<details>` ("Explain this figure") under the caption.
 - **Width:** Body text stays at 640px. Figures may break out to 960px. Under 600px, figures switch to a vertical layout or scroll inside their own frame, never the page.
 - **Mobile first:** At least half the readers are on phones. Figures are designed at 375px first: labels stay legible, tap targets are 44px or more, there is no horizontal page scroll, and the 960px breakout applies only at 600px and up.
 - **No hover-only behaviour:** Tap, click or keyboard focus does everything hover does.
@@ -148,3 +149,4 @@
 | 2026-10-17 | Record the `#AF87FF` accent | Added in commit 028aa96; this doc still said no accent |
 | 2026-10-26 | Feature-post exception, approved by Dutt | Dutt asked for an animated, diagram-led Skynet HQ post; scoped to one layout so the rest of the site stays flat. Mobile first |
 | 2026-10-26 | AA contrast: darker --muted and --tag-text; new --accent-text for accent-coloured text in light mode | Approved by Dutt |
+| 2026-10-27 | Figure text lists collapsed, Dutt asked | they took too much space under each diagram |

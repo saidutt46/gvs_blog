@@ -35,7 +35,7 @@ import Fig12Dirs from '../../components/feature/skynet/Fig12Dirs.astro';
 
 I work on several projects in my own time. I wanted to move them forward when I am away from my desk. In the design conversation, I put the goal this way: "I should be able to talk to my chief of staff from my mobile, from my laptop, anywhere."
 
-Skynet HQ is the result. It is a crew of Claude Code sessions on my MacBook Pro, which I call Skynet. I talk to one session, the Chief of Staff, called cos. cos starts one conductor for each project, and each conductor starts workers for single tasks.
+Skynet HQ is the result. It is a crew of Claude Code sessions on my MacBook Pro, which I call Skynet. I talk to one session, the Chief of Staff, called cos, and to the conductor of a project when I need its details. cos starts one conductor for each project, and each conductor starts workers for single tasks.
 
 This post shows how the crew is built and how work moves through it. Most of the post is about memory: how each session keeps its context sharp, and how the crew learns from its own records. {/* framing: the one-line outline of the post */}
 
@@ -66,7 +66,7 @@ Claude wrote a starter pack of docs, templates and scripts, and tested it in a s
 
 <Fig02OrgChart caption="The crew has four levels at most, and a script checks who may start whom.">
   <ol>
-    <li>Dutt: talks to cos from a phone, a laptop or a browser.</li>
+    <li>Dutt: talks to cos, and to each conductor as needed, from a phone, a laptop or a browser.</li>
     <li>cos, the Chief of Staff: talks to Dutt, keeps the HQ ledgers, and starts and stops conductors. It never writes project code.</li>
     <li>Conductor, one per project: breaks features into tasks, starts workers, verifies, and merges task branches into the feature branch. It never writes implementation code.</li>
     <li>Workers: recon, research, architect, dev and verify. Each worker does one task and then retires.</li>
@@ -74,7 +74,7 @@ Claude wrote a starter pack of docs, templates and scripts, and tested it in a s
   </ol>
 </Fig02OrgChart>
 
-The crew is a tree, and I am at the top. I talk to cos most of the time. I talk to a conductor directly when a project needs it.
+The crew is a tree, and I am at the top. I talk to cos most of the time. I also talk to each conductor directly when I need the fine details of its project or want to move it forward.
 
 Each conductor owns one repository. A worker can start a helper to answer one question, so the worker does not spend its own context on it. In the design conversation, I said: "the idea is to save context."
 

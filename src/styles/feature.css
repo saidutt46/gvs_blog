@@ -66,7 +66,44 @@
   line-height: 1.6;
 }
 
-/* Text alternative (the <ol>). Visible: it is the no-JS and reader version. */
+/* Text alternative (the <ol>). Collapsed behind a closed <details class="fig-more">;
+   the content stays in the DOM for readers and no-JS. */
+.post-content.feature .fig-more {
+  margin-top: 8px;
+}
+
+.post-content.feature .fig-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.post-content.feature .fig-more-btn::-webkit-details-marker {
+  display: none;
+}
+
+.post-content.feature .fig-more-btn:hover,
+.post-content.feature .fig-more[open] > .fig-more-btn {
+  background: var(--tag-bg);
+}
+
+.post-content.feature .fig-more-chev {
+  flex: none;
+  transition: transform 0.2s ease;
+}
+
+.post-content.feature .fig-more[open] > .fig-more-btn .fig-more-chev {
+  transform: rotate(180deg);
+}
 .post-content.feature .fig-text {
   margin-top: 8px;
   font-size: 14px;
