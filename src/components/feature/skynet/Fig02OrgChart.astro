@@ -29,7 +29,7 @@ interface Role { key: string; kind: Kind; title: string; sub?: string; does: str
 const ALL = ['cos', 'cond', 'recon', 'research', 'architect', 'dev', 'verify', 'sme'];
 
 const ROLES: Role[] = [
-  { key: 'dutt', kind: 'human', title: 'Dutt', sub: 'the one human', does: 'Talks to cos from a phone, a laptop or a browser. May start any role.', never: '', may: ALL },
+  { key: 'dutt', kind: 'human', title: 'Dutt', sub: 'the one human', does: 'Talks to cos, and to each conductor as needed, from a phone, a laptop or a browser. May start any role.', never: '', may: ALL },
   { key: 'cos', kind: 'cos', title: 'cos', sub: 'Chief of Staff', does: 'Talks to Dutt, keeps the HQ ledgers, starts and stops conductors.', never: 'Writes project code, or starts workers inside a project.', may: ['cond'] },
   { key: 'cond', kind: 'cond', title: 'conductor', sub: 'one per project', does: 'Breaks features into tasks, starts workers, verifies, and merges task branches into the feature branch.', never: 'Writes implementation code, merges to main, or switches branches in the main checkout.', may: ['recon', 'research', 'architect', 'dev', 'verify', 'sme'] },
   { key: 'recon', kind: 'worker', title: 'recon', does: 'Maps the code a feature touches: files, entry points, risks.', never: 'Edits files, or starts anyone.', may: [] },
