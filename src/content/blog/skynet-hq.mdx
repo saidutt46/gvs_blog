@@ -62,7 +62,7 @@ Two problems started it. I used a large third-party skill pack, and I wanted a s
 
 The design grew in steps. It began as one Chief of Staff with a few agents. Then it grew to one conductor per project, with workers under each conductor. Then I named the part that mattered most: "The most important aspect of the entire harness and orchestration process here is memory, context management."
 
-The core ideas came from the chief architect at my day job. His work showed me how to write handoffs with timestamps. It also showed me how to spawn agents, so that the work is spread out and each context is saved. He also gave me a pep talk on how memory works. It covered the four memory types, and what a dream cycle does and how to use it. I brought these ideas into the design conversation. Claude and I then built the crew around them, with the conductors, the handshake, the relays and the crew's own dream. I am grateful to him for his work and for his time. {/* framing: the last two sentences; Dutt to confirm the wording of the credit */}
+The core ideas were inspired by the chief architect at my day job. His work showed me how to write handoffs with timestamps. It also showed me how to spawn agents, so that the work is spread out and each context is saved. He also gave me a pep talk on how memory works. It covered the four memory types, and what a dream cycle does and how to use it. I brought these ideas into the design conversation. Claude and I then built the crew around them, with the conductors, the handshake, the relays and the crew's own dream. I am grateful to him for his work and for his time. {/* framing: the last two sentences; Dutt to confirm the wording of the credit */}
 
 Claude wrote a starter pack of docs, templates and scripts, and tested it in a sandbox. A Claude Code session on the Mac then built the real system from it in one night.
 
@@ -166,7 +166,7 @@ Git ignores each repository's `.orchestration` folder through `.git/info/exclude
 
 A long-running agent forgets things and repeats work. Skynet HQ treats each session's context window as scarce, short-lived working memory. Everything that matters lives outside it, in files. Claude said it in one line during the design: "A session is disposable; the files are the agent."
 
-The four memories came from the chief architect's talk. I brought them into the design conversation, where I said that episodic memory "will help us move the needle in terms of development." Semantic memory then improves the process itself.
+I learned the four memory types from the chief architect's talk. I brought them into the design conversation, where I said that episodic memory "will help us move the needle in terms of development." Semantic memory then improves the process itself.
 
 Workers and conductors never edit procedural memory. Changes arrive as proposals, and each change that is applied is logged in the decisions ledger. cos may fix a small problem in the process directly, if no live agent breaks, and it logs that change too.
 
@@ -194,7 +194,7 @@ Before a session researches anything, it searches the knowledge files and earlie
 
 Compaction is the failure case. Claude Code can compact a long session into a summary, but the model writes that summary under pressure, and it loses specifics. A relay keeps a handoff that the session writes on purpose, while it still has room to write it well.
 
-A usage limit is not a reset. On 26 October, requests failed until the wait passed, but the sessions and their context survived. A checkpoint before a known limit keeps the work safe.
+A usage limit is not a reset. Once, requests failed until the wait passed, but the sessions and their context survived. A checkpoint before a known limit keeps the work safe.
 
 The name stays the same, so messages and ledger lines still point to the right agent. On build day, a worker relayed in a test. Generation 2 finished the task and said that the handoff alone was enough.
 
@@ -288,7 +288,7 @@ An urgent fact goes in at once, if it would make the next worker fail. Everythin
   </ol>
 </Fig09Dream>
 
-The dream cycle also came from the chief architect's talk. In the design conversation, I asked for "local dream cycles or else real Claude dream cycles." On build day, the build agent found no dream feature in the Claude Code 2.1.310 docs. So the crew runs its own dream.
+I learned about the dream cycle from the same talk. In the design conversation, I asked for "local dream cycles or else real Claude dream cycles." On build day, the build agent found no dream feature in the Claude Code 2.1.310 docs. So the crew runs its own dream.
 
 A dream is one worker on Opus. cos starts it at the end of the day, or when I ask for one. A nightly job was built, but it is off, because overnight builds compete for usage.
 
