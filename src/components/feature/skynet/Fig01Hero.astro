@@ -4,8 +4,11 @@
  * Props: `caption` (text from the MDX), `wide` (default true).
  * Default slot: the text alternative (`<ol>`) written in the MDX.
  *
- * Drawing: two inline SVGs of the same tree (Dutt on top, then cos, the
- * conductors, the workers). `.fig-narrow` (under 600px) is tall and tight;
+ * Drawing: two inline SVGs of the same tree (Dutt on top, then two Chiefs of
+ * Staff, one on Skynet and one on Gaia Prime, each over its own conductor, then
+ * the workers). The dashed "nudges" line between the two Chiefs of Staff is NOT
+ * a route for work: it has no data-step, so no dot travels it, and nothing is
+ * assigned along it. They only nudge each other. `.fig-narrow` (under 600px) is tall and tight;
  * `.fig-broad` (600px and up) is wider and shorter.
  * Labels: 03-architecture.md Diagram A (lines 9-17) and ~/skynet-hq/docs/01-architecture.md
  * roles table (lines 21-28). The one-line roles are shortened from those rows.
@@ -27,8 +30,9 @@ type Kind = 'human' | 'cos' | 'cond' | 'worker';
 interface Node { key: string; kind: Kind; title: string; sub?: string; x: number; y: number; w: number; h: number }
 
 const ROLES: Record<string, string> = {
-  dutt: 'Dutt: talks to cos, and to each conductor as needed, from a phone, a laptop or a browser.',
-  cos: 'Chief of Staff: talks to you, keeps the HQ ledgers, starts and stops conductors.',
+  dutt: 'Dutt: talks to each Chief of Staff, and to each conductor as needed, from a phone, a laptop or a browser.',
+  cosS: 'cos, the Chief of Staff on Skynet: routes the work for Apple apps and websites.',
+  cosG: 'The Chief of Staff on Gaia Prime: routes the work for Linux services and local AI models.',
   condA: 'Conductor: one per project. Breaks features into tasks and starts workers.',
   condB: 'Conductor: one per project. Breaks features into tasks and starts workers.',
   recon: 'Recon: maps the code a feature touches. Read-only.',
@@ -41,9 +45,10 @@ const narrow = {
   vb: '0 0 320 440',
   nodes: [
     { key: 'dutt', kind: 'human', title: 'Dutt', sub: 'phone, laptop, browser', x: 60, y: 8, w: 200, h: 52 },
-    { key: 'cos', kind: 'cos', title: 'cos', sub: 'Chief of Staff', x: 60, y: 100, w: 200, h: 52 },
-    { key: 'condA', kind: 'cond', title: 'conductor', sub: 'project A', x: 8, y: 196, w: 148, h: 52 },
-    { key: 'condB', kind: 'cond', title: 'conductor', sub: 'project B', x: 164, y: 196, w: 148, h: 52 },
+    { key: 'cosS', kind: 'cos', title: 'cos', sub: 'Skynet · MacBook Pro', x: 4, y: 100, w: 140, h: 52 },
+    { key: 'cosG', kind: 'cos', title: 'Chief of Staff', sub: 'Gaia Prime · Linux box', x: 176, y: 100, w: 140, h: 52 },
+    { key: 'condA', kind: 'cond', title: 'conductor', sub: 'apps, websites', x: 4, y: 196, w: 140, h: 52 },
+    { key: 'condB', kind: 'cond', title: 'conductor', sub: 'services, local AI', x: 176, y: 196, w: 140, h: 52 },
     { key: 'recon', kind: 'worker', title: 'recon', x: 20, y: 326, w: 136, h: 44 },
     { key: 'architect', kind: 'worker', title: 'architect', x: 164, y: 326, w: 136, h: 44 },
     { key: 'dev', kind: 'worker', title: 'dev', x: 20, y: 378, w: 136, h: 44 },
@@ -51,21 +56,24 @@ const narrow = {
   ] as Node[],
   group: { x: 4, y: 292, w: 312, h: 144, tx: 16, ty: 312 },
   edges: [
-    { d: 'M160 60 V94', step: 0 },
-    { d: 'M130 152 C130 174 82 170 82 190', step: 1 },
-    { d: 'M190 152 C190 174 238 170 238 190', step: 1 },
-    { d: 'M82 248 V286', step: 2 },
-    { d: 'M238 248 V286', step: 2 },
+    { d: 'M120 60 C120 80 74 78 74 94', step: 0 },
+    { d: 'M200 60 C200 80 246 78 246 94', step: 0 },
+    { d: 'M74 152 V190', step: 1 },
+    { d: 'M246 152 V190', step: 1 },
+    { d: 'M74 248 V286', step: 2 },
+    { d: 'M246 248 V286', step: 2 },
   ],
+  nudge: { d: 'M149 126 H171', lx: 160, ly: 172 },
 };
 
 const broad = {
   vb: '0 0 720 340',
   nodes: [
     { key: 'dutt', kind: 'human', title: 'Dutt', sub: 'phone, laptop, browser', x: 260, y: 8, w: 200, h: 52 },
-    { key: 'cos', kind: 'cos', title: 'cos', sub: 'Chief of Staff', x: 260, y: 88, w: 200, h: 52 },
-    { key: 'condA', kind: 'cond', title: 'conductor', sub: 'project A', x: 150, y: 168, w: 180, h: 52 },
-    { key: 'condB', kind: 'cond', title: 'conductor', sub: 'project B', x: 390, y: 168, w: 180, h: 52 },
+    { key: 'cosS', kind: 'cos', title: 'cos', sub: 'Skynet · MacBook Pro', x: 150, y: 88, w: 180, h: 52 },
+    { key: 'cosG', kind: 'cos', title: 'Chief of Staff', sub: 'Gaia Prime · Linux box', x: 390, y: 88, w: 180, h: 52 },
+    { key: 'condA', kind: 'cond', title: 'conductor', sub: 'apps, websites', x: 150, y: 168, w: 180, h: 52 },
+    { key: 'condB', kind: 'cond', title: 'conductor', sub: 'services, local AI', x: 390, y: 168, w: 180, h: 52 },
     { key: 'recon', kind: 'worker', title: 'recon', x: 20, y: 274, w: 160, h: 44 },
     { key: 'architect', kind: 'worker', title: 'architect', x: 196, y: 274, w: 160, h: 44 },
     { key: 'dev', kind: 'worker', title: 'dev', x: 372, y: 274, w: 160, h: 44 },
@@ -73,12 +81,14 @@ const broad = {
   ] as Node[],
   group: { x: 8, y: 244, w: 704, h: 88, tx: 20, ty: 263 },
   edges: [
-    { d: 'M360 60 V82', step: 0 },
-    { d: 'M320 140 C320 156 240 150 240 162', step: 1 },
-    { d: 'M400 140 C400 156 480 150 480 162', step: 1 },
+    { d: 'M330 60 C330 72 240 70 240 82', step: 0 },
+    { d: 'M390 60 C390 72 480 70 480 82', step: 0 },
+    { d: 'M240 140 V162', step: 1 },
+    { d: 'M480 140 V162', step: 1 },
     { d: 'M240 220 V238', step: 2 },
     { d: 'M480 220 V238', step: 2 },
   ],
+  nudge: { d: 'M336 114 H384', lx: 360, ly: 106 },
 };
 
 const variants = [
@@ -101,6 +111,8 @@ const variants = [
         {v.edges.map((e) => (
           <path d={e.d} class="edge" data-step={e.step} marker-end={`url(#f1${v.id}-arr)`} />
         ))}
+        <path d={v.nudge.d} class="edge nudge" marker-start={`url(#f1${v.id}-arr)`} marker-end={`url(#f1${v.id}-arr)`} />
+        <text class="nudge-t" x={v.nudge.lx} y={v.nudge.ly} text-anchor="middle">nudges</text>
         {v.nodes.map((n) => (
           <g class="node" data-role={n.key}>
             <rect class="sel-ring" x={n.x - 5} y={n.y - 5} width={n.w + 10} height={n.h + 10} rx="11" />
@@ -135,6 +147,15 @@ const variants = [
     stroke: var(--text);
     stroke-opacity: 0.55;
     stroke-width: 1.5;
+  }
+  .edge.nudge {
+    stroke: var(--muted);
+    stroke-opacity: 1;
+    stroke-dasharray: 4 3;
+  }
+  .nudge-t {
+    font-size: 13px;
+    fill: var(--muted);
   }
   .arr-head {
     fill: var(--text);
