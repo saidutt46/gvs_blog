@@ -1,0 +1,305 @@
+---
+/**
+ * Fig13TwoHQ (fig-13): two machines, two Chiefs of Staff, and the three
+ * kinds of link between them.
+ * Props: `caption` (text from the MDX), `wide` (default true).
+ * Default slot: the text alternative (`<ol>`) written in the MDX.
+ *
+ * Drawing: two inline SVGs. `.fig-narrow` (under 760px) stacks Dutt, the
+ * Skynet box and the Gaia Prime box; `.fig-broad` (760px and up) puts the
+ * two machine boxes side by side under Dutt. The broad drawing waits until
+ * 760px (not feature.css's 600px) so its labels stay 12px or more.
+ * Link styles (line style and arrowheads differ, so colour is never the
+ * only cue):
+ *   (a) solid accent, one head: Dutt to each Chief of Staff. Only his words
+ *       authorize.
+ *   (b) solid text, one head: the procedure copy, Skynet to Gaia Prime only.
+ *   (c) dashed muted, a head at each end: a nudge between the two Chiefs of
+ *       Staff. It carries no authority.
+ * A legend under each drawing repeats the three styles.
+ * Static: no script, no motion, nothing to tap. Spec: architect report
+ * runs/20261112T191140Z-report.md, part 3.
+ */
+import Figure from '../Figure.astro';
+
+interface Props {
+  caption?: string;
+  wide?: boolean;
+}
+
+const { caption = 'TODO', wide = true } = Astro.props;
+
+interface Box { x: number; y: number; w: number; h: number }
+interface Chip extends Box { t: string }
+interface Machine {
+  box: Box;
+  title: { t: string; x: number; y: number; anchor: 'start' | 'end' };
+  cos: Box & { t: string };
+  conductors: { t: string; x: number; y: number };
+  chips: Chip[];
+}
+interface Label { t: string[]; x: number; y: number; anchor: 'start' | 'middle' | 'end' }
+interface Variant {
+  id: string;
+  cls: string;
+  vb: string;
+  dutt: Box;
+  machines: Machine[];
+  auth: string[];
+  authLabels: Label[];
+  copy: string;
+  copyLabel: Label;
+  nudge: string;
+  nudgeLabel: Label;
+  legend: { x: number; y: number; dx: number; dy: number };
+}
+
+const AUTH = 'my words authorize';
+const COPY = 'procedure copy, one way';
+const NUDGE = 'nudges, never authority';
+
+const narrow: Variant = {
+  id: 'n',
+  cls: 'fig-narrow',
+  vb: '0 0 320 576',
+  dutt: { x: 150, y: 8, w: 120, h: 48 },
+  machines: [
+    {
+      box: { x: 8, y: 96, w: 288, h: 152 },
+      title: { t: 'Skynet · MacBook Pro', x: 20, y: 116, anchor: 'start' },
+      cos: { t: 'cos · Chief of Staff', x: 20, y: 128, w: 264, h: 40 },
+      conductors: { t: 'conductors: Apple apps, websites', x: 22, y: 190 },
+      chips: [
+        { t: 'own memory', x: 20, y: 204, w: 88, h: 28 },
+        { t: 'owner of the procedure', x: 116, y: 204, w: 168, h: 28 },
+      ],
+    },
+    {
+      box: { x: 8, y: 332, w: 288, h: 152 },
+      title: { t: 'Gaia Prime · Linux box at home', x: 20, y: 352, anchor: 'start' },
+      cos: { t: 'Chief of Staff', x: 20, y: 364, w: 264, h: 40 },
+      conductors: { t: 'conductors: Linux services, local AI', x: 22, y: 426 },
+      chips: [
+        { t: 'own memory', x: 20, y: 440, w: 88, h: 28 },
+        { t: 'read-only copy', x: 116, y: 440, w: 116, h: 28 },
+      ],
+    },
+  ],
+  // To the Skynet Chief of Staff straight down; to Gaia Prime down a rail
+  // at the right edge, outside both machine boxes.
+  auth: ['M210 56 V122', 'M270 32 H308 V384 H290'],
+  authLabels: [{ t: [AUTH], x: 202, y: 82, anchor: 'end' }],
+  copy: 'M48 248 V326',
+  copyLabel: { t: ['procedure copy,', 'one way'], x: 58, y: 284, anchor: 'start' },
+  nudge: 'M176 254 V326',
+  nudgeLabel: { t: ['nudges,', 'never authority'], x: 186, y: 284, anchor: 'start' },
+  legend: { x: 20, y: 512, dx: 0, dy: 24 },
+};
+
+const broad: Variant = {
+  id: 'b',
+  cls: 'fig-broad',
+  vb: '0 0 720 312',
+  dutt: { x: 300, y: 8, w: 120, h: 48 },
+  machines: [
+    {
+      box: { x: 20, y: 100, w: 280, h: 160 },
+      title: { t: 'Skynet · MacBook Pro', x: 288, y: 120, anchor: 'end' },
+      cos: { t: 'cos · Chief of Staff', x: 32, y: 132, w: 256, h: 40 },
+      conductors: { t: 'conductors: Apple apps, websites', x: 34, y: 196 },
+      chips: [
+        { t: 'own memory', x: 32, y: 212, w: 88, h: 28 },
+        { t: 'owner of the procedure', x: 128, y: 212, w: 160, h: 28 },
+      ],
+    },
+    {
+      box: { x: 420, y: 100, w: 280, h: 160 },
+      title: { t: 'Gaia Prime · Linux box at home', x: 432, y: 120, anchor: 'start' },
+      cos: { t: 'Chief of Staff', x: 432, y: 132, w: 256, h: 40 },
+      conductors: { t: 'conductors: Linux services, local AI', x: 434, y: 196 },
+      chips: [
+        { t: 'own memory', x: 432, y: 212, w: 88, h: 28 },
+        { t: 'read-only copy', x: 528, y: 212, w: 116, h: 28 },
+      ],
+    },
+  ],
+  auth: ['M300 32 H56 V126', 'M420 32 H664 V126'],
+  authLabels: [
+    { t: [AUTH], x: 178, y: 24, anchor: 'middle' },
+    { t: [AUTH], x: 542, y: 24, anchor: 'middle' },
+  ],
+  copy: 'M300 120 H414',
+  copyLabel: { t: ['procedure copy,', 'one way'], x: 360, y: 92, anchor: 'middle' },
+  nudge: 'M294 152 H426',
+  nudgeLabel: { t: ['nudges,', 'never authority'], x: 360, y: 178, anchor: 'middle' },
+  legend: { x: 24, y: 292, dx: 240, dy: 0 },
+};
+
+const variants = [narrow, broad];
+const legendRows = [
+  { cls: 'l-auth', head: 'a', both: false, t: AUTH },
+  { cls: 'l-copy', head: 'b', both: false, t: COPY },
+  { cls: 'l-nudge', head: 'c', both: true, t: NUDGE },
+];
+---
+
+<Figure id="fig-13" caption={caption} wide={wide}>
+  <div slot="svg" class="f13">
+    {variants.map((v) => (
+      <svg class={v.cls} viewBox={v.vb} xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          {['a', 'b', 'c'].map((k) => (
+            <marker id={`f13${v.id}-${k}`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+              <path d="M0 0 L10 5 L0 10 z" class={`head-${k}`} />
+            </marker>
+          ))}
+        </defs>
+
+        {v.machines.map((m) => (
+          <g>
+            <rect class="machine" x={m.box.x} y={m.box.y} width={m.box.w} height={m.box.h} rx="10" />
+            <text class="m-title" x={m.title.x} y={m.title.y} text-anchor={m.title.anchor}>{m.title.t}</text>
+            <rect class="cos" x={m.cos.x} y={m.cos.y} width={m.cos.w} height={m.cos.h} rx="8" />
+            <text class="n-title" x={m.cos.x + m.cos.w / 2} y={m.cos.y + m.cos.h / 2 + 5} text-anchor="middle">{m.cos.t}</text>
+            <text class="line" x={m.conductors.x} y={m.conductors.y}>{m.conductors.t}</text>
+            {m.chips.map((c) => (
+              <g>
+                <rect class="chip" x={c.x} y={c.y} width={c.w} height={c.h} rx={c.h / 2} />
+                <text class="chip-t" x={c.x + c.w / 2} y={c.y + c.h / 2 + 4.5} text-anchor="middle">{c.t}</text>
+              </g>
+            ))}
+          </g>
+        ))}
+
+        <rect class="human" x={v.dutt.x} y={v.dutt.y} width={v.dutt.w} height={v.dutt.h} rx="8" />
+        <text class="n-title" x={v.dutt.x + v.dutt.w / 2} y={v.dutt.y + 21} text-anchor="middle">Dutt</text>
+        <text class="n-sub" x={v.dutt.x + v.dutt.w / 2} y={v.dutt.y + 39} text-anchor="middle">phone</text>
+
+        {v.auth.map((d) => (
+          <path d={d} class="l-auth" marker-end={`url(#f13${v.id}-a)`} />
+        ))}
+        <path d={v.copy} class="l-copy" marker-end={`url(#f13${v.id}-b)`} />
+        <path d={v.nudge} class="l-nudge" marker-start={`url(#f13${v.id}-c)`} marker-end={`url(#f13${v.id}-c)`} />
+
+        {[...v.authLabels.map((l) => ({ ...l, cls: 'lab lab-auth' })),
+          { ...v.copyLabel, cls: 'lab' },
+          { ...v.nudgeLabel, cls: 'lab' }].map((l) => (
+          <text class={l.cls} x={l.x} y={l.y} text-anchor={l.anchor}>
+            {l.t.map((t, i) => <tspan x={l.x} dy={i === 0 ? 0 : 17}>{t}</tspan>)}
+          </text>
+        ))}
+
+        <g class="legend">
+          {legendRows.map((r, i) => {
+            const x = v.legend.x + i * v.legend.dx;
+            const y = v.legend.y + i * v.legend.dy;
+            return (
+              <g>
+                <path
+                  d={r.both ? `M${x + 6} ${y} H${x + 42}` : `M${x} ${y} H${x + 42}`}
+                  class={r.cls}
+                  marker-start={r.both ? `url(#f13${v.id}-${r.head})` : undefined}
+                  marker-end={`url(#f13${v.id}-${r.head})`}
+                />
+                <text class={r.cls === 'l-auth' ? 'lab lab-auth' : 'lab'} x={x + 58} y={y + 4.5}>{r.t}</text>
+              </g>
+            );
+          })}
+        </g>
+      </svg>
+    ))}
+  </div>
+  <slot>
+    <ol><li>TODO</li></ol>
+  </slot>
+</Figure>
+
+<style>
+  .f13 svg {
+    max-width: 440px;
+    margin: 0 auto;
+  }
+  .f13 svg.fig-broad {
+    max-width: 840px;
+  }
+  /* 600-759px: feature.css shows the broad drawing from 600px; keep the
+     narrow one until 760px so the broad labels never render under 12px. */
+  @media (min-width: 600px) and (max-width: 759px) {
+    :global(.post-content.feature) .f13 svg.fig-narrow {
+      display: block;
+    }
+    :global(.post-content.feature) .f13 svg.fig-broad {
+      display: none;
+    }
+  }
+
+  /* Boxes: machine (grey panel), Chief of Staff (accent), Dutt (outline). */
+  .machine {
+    fill: var(--code-bg);
+    stroke: var(--border);
+    stroke-width: 1.5;
+  }
+  .cos {
+    fill: color-mix(in srgb, var(--accent) 30%, var(--bg));
+    stroke: var(--accent);
+    stroke-width: 3;
+  }
+  .human {
+    fill: var(--bg);
+    stroke: var(--text);
+    stroke-width: 2;
+  }
+  .chip {
+    fill: var(--bg);
+    stroke: var(--muted);
+    stroke-width: 1;
+  }
+
+  .m-title {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .n-title {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .n-sub,
+  .line,
+  .chip-t,
+  .lab {
+    font-size: 13px;
+  }
+
+  /* Link styles. */
+  .l-auth,
+  .l-copy,
+  .l-nudge {
+    fill: none;
+  }
+  .l-auth {
+    stroke: var(--accent);
+    stroke-width: 2;
+  }
+  .l-copy {
+    stroke: var(--text);
+    stroke-width: 1.5;
+  }
+  .l-nudge {
+    stroke: var(--muted);
+    stroke-width: 1.5;
+    stroke-dasharray: 5 4;
+  }
+  .head-a {
+    fill: var(--accent);
+  }
+  .head-b {
+    fill: var(--text);
+  }
+  .head-c {
+    fill: var(--muted);
+  }
+  /* Accent-coloured text uses --accent-text (AA in both themes). */
+  .f13 svg text.lab-auth {
+    fill: var(--accent-text);
+  }
+</style>
