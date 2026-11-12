@@ -18,7 +18,7 @@ export const F7_NAMES: Record<F7Role, string> = {
 const TODAY: Record<F7Role, [number, number, number]> = {
   worker: [0.38, 0.48, 0.56],
   conductor: [0.46, 0.58, 0.66],
-  cos: [0.54, 0.68, 0.78],
+  cos: [0.46, 0.58, 0.66],
 };
 const BUILD: [number, number, number] = [0.12, 0.17, 0.22];
 

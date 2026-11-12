@@ -1,77 +1,66 @@
 ---
 title: "Skynet HQ: a crew of Claude Code agents that learns from its own files"
 date: 2026-10-26
-description: "How I run my projects through a crew of Claude Code sessions from my phone, and how the crew keeps its memory in files and learns from them at the end of each day."
+description: "How I run my projects from my phone through two crews of Claude Code sessions, on a MacBook Pro and a small Linux box. The crews keep their memory in files and learn from them at the end of each day."
 draft: false
 kind: feature
 ---
 
 import Fig01Hero from '../../components/feature/skynet/Fig01Hero.astro';
 import Fig02OrgChart from '../../components/feature/skynet/Fig02OrgChart.astro';
-import Fig02bArc from '../../components/feature/skynet/Fig02bArc.astro';
 import Fig03Feature from '../../components/feature/skynet/Fig03Feature.astro';
 import Fig04Handshake from '../../components/feature/skynet/Fig04Handshake.astro';
-import Fig05FilePair from '../../components/feature/skynet/Fig05FilePair.astro';
 import Fig06Memories from '../../components/feature/skynet/Fig06Memories.astro';
 import Fig06xLoop from '../../components/feature/skynet/Fig06xLoop.astro';
 import Fig07Context from '../../components/feature/skynet/Fig07Context.astro';
-import Fig08ModBand from '../../components/feature/skynet/Fig08ModBand.astro';
 import Fig09Dream from '../../components/feature/skynet/Fig09Dream.astro';
 import Fig10Safety from '../../components/feature/skynet/Fig10Safety.astro';
-import Fig11Timeline from '../../components/feature/skynet/Fig11Timeline.astro';
-import Fig12Dirs from '../../components/feature/skynet/Fig12Dirs.astro';
+import Fig13TwoHQ from '../../components/feature/skynet/Fig13TwoHQ.astro';
 
-## One person, many projects, a phone
+## One person, two machines, a phone
 
-<Fig01Hero caption="A message from my phone goes to cos, cos passes it to a conductor, and the conductor starts the workers.">
+<Fig01Hero caption="A message from my phone goes to the Chief of Staff on one of two machines. That Chief of Staff passes it to a conductor, and the conductor starts the workers.">
   <ol>
-    <li>I send a message from my phone through Claude Code Remote Control.</li>
-    <li>cos, the Chief of Staff, receives the message and routes it.</li>
-    <li>cos sends the work to the conductor of that project.</li>
+    <li>I send a message from my phone.</li>
+    <li>cos, the Chief of Staff on my MacBook Pro, routes the work for Apple apps and websites.</li>
+    <li>A second Chief of Staff, on a small Linux box at home, routes the work for Linux services and local AI models.</li>
+    <li>Each Chief of Staff sends the work to the conductor of that project.</li>
     <li>The conductor starts short-lived workers, such as recon, architect, dev and verify.</li>
     <li>Each worker reports back to the session that started it.</li>
+    <li>The two Chiefs of Staff can send each other short messages.</li>
   </ol>
 </Fig01Hero>
 
+*Updated in November 2026. The crew now runs on two machines.* {/* framing: update note; Dutt to confirm wording */}
+
 I work on several projects in my own time. I wanted to move them forward when I am away from my desk. In the design conversation, I put the goal this way: "I should be able to talk to my chief of staff from my mobile, from my laptop, anywhere."
 
-Skynet HQ is the result. It is a crew of Claude Code sessions on my MacBook Pro, which I call Skynet. I talk to one session, the Chief of Staff, called cos, and to the conductor of a project when I need its details. cos starts one conductor for each project, and each conductor starts workers for single tasks.
+Skynet HQ is the result. It is a crew of Claude Code sessions. It started on my MacBook Pro, which I call Skynet. In November 2026, I added a second crew on a small Linux box at home, which I call Gaia Prime.
 
-Under the crew is a harness around Claude Code. Scripts start, relay and retire sessions. Hooks watch how much context each session uses. Files hold the contracts: timestamped prompts and reports, handoffs and ledgers. A linter checks the crew's own files.
+Each machine has one Chief of Staff. On Skynet, its name is cos. I talk to a Chief of Staff, and to the conductor of a project when I need its details. A Chief of Staff starts one conductor for each project, and each conductor starts workers for single tasks.
 
-This post shows how the crew is built and how work moves through it. Most of the post is about memory: how each session keeps its context sharp, and how the crew learns from its own records. {/* framing: the one-line outline of the post */}
+Under the crew is a harness around Claude Code. Scripts start, relay and retire sessions. Hooks watch how much context each session uses. Files hold the contracts: timestamped prompts and reports, handoffs and ledgers.
 
 Skynet HQ is private. I explain the design at a high level here. I do not publish the system.
 
-## How the idea took shape with Claude
+## Where the idea came from
 
-<Fig02bArc caption="Each idea from the design conversation, what the build made of it, and what the first day of use taught.">
-  <ol>
-    <li>Permissions. Designed: an allow list. Built: auto mode with deny rules, and the safety classifier as a second guard. Learned: the classifier blocked releases that came through another session, so conductors prepare, Dutt clicks.</li>
-    <li>Relays. Designed: relay when context reaches a fixed share. Built: a percent or a token count, whichever comes first. Learned: the first dream found relays at about a fifth of the window, so the levels were raised per role.</li>
-    <li>The dream. Designed: a nightly dream. Built: the crew's own dream worker and a scheduled job, because Claude Code has no documented dream feature. Learned: cos runs the dream at the end of the day.</li>
-    <li>Viewing. Designed: terminal viewer windows. Built: Ghostty, plus a mode without tmux. Learned: four short commands, because tmux keys tripped me up on day 1.</li>
-    <li>Worktrees. Designed: worktrees beside each repo. Built: one worktree root and no branch switching in my own checkout. Learned: worktrees are snapshotted and locked while in use.</li>
-    <li>Reports. Designed: workers report to the conductor. Built: the same, plus a message log from a Claude Code mod. Learned: my words must be forwarded verbatim, because one decision was lost on day 1.</li>
-  </ol>
-</Fig02bArc>
-
-I designed Skynet HQ with Claude in the Claude desktop app, on a Saturday evening in October 2026. The plan was to design for an hour and then build on the Mac.
+I designed Skynet HQ with Claude in the Claude desktop app, on a Saturday evening in October 2026.
 
 Two problems started it. I used a large third-party skill pack, and I wanted a small set of skills made for my own work. I also coordinated agents by hand. I started an agent, and then I told another agent its name so that the two could exchange messages.
 
-The design grew in steps. It began as one Chief of Staff with a few agents. Then it grew to one conductor per project, with workers under each conductor. Then I named the part that mattered most: "The most important aspect of the entire harness and orchestration process here is memory, context management."
+The design began as one Chief of Staff with a few agents. Then it grew to one conductor per project, with workers under each conductor. Then I named the part that mattered most: "The most important aspect of the entire harness and orchestration process here is memory, context management."
 
-The core ideas were inspired by [Kyle Eberle](https://www.linkedin.com/in/kyle-eberle), the chief architect at my day job. His work showed me how to write handoffs with timestamps. It also showed me how to spawn agents, so that the work is spread out and each context is saved. He also gave me a pep talk on how memory works. It covered the four memory types, and what a dream cycle does and how to use it. I brought these ideas into the design conversation. Claude and I then built the crew around them, with the conductors, the handshake, the relays and the crew's own dream. {/* framing: the last sentence; Dutt to confirm */}
+The core ideas were inspired by [Kyle Eberle](https://www.linkedin.com/in/kyle-eberle), the chief architect at my day job. His work showed me how to write handoffs with timestamps. It also showed me how to spawn agents, so that the work is spread out and each context is saved. He also gave me a pep talk on how memory works. It covered the four memory types, and what a dream cycle does and how to use it.
 
-Claude wrote a starter pack of docs, templates and scripts, and tested it in a sandbox. A Claude Code session on the Mac then built the real system from it in one night.
+Claude wrote a starter pack of docs, templates and scripts. A Claude Code session on the Mac then built the real system from it in one night.
 
 ## The crew
 
-<Fig02OrgChart caption="The crew has four levels at most, and a script checks who may start whom.">
+<Fig02OrgChart caption="Each crew has four levels at most, and a script checks who may start whom.">
   <ol>
-    <li>Dutt: talks to cos, and to each conductor as needed, from a phone, a laptop or a browser.</li>
-    <li>cos, the Chief of Staff: talks to Dutt, keeps the HQ ledgers, and starts and stops conductors. It never writes project code.</li>
+    <li>Dutt: talks to each Chief of Staff, and to each conductor as needed, from a phone, a laptop or a browser.</li>
+    <li>Chief of Staff, one on each machine: talks to Dutt, keeps that machine's ledgers, and starts and stops conductors. It never writes project code.</li>
     <li>Conductor, one per project: breaks features into tasks, starts workers, verifies, and merges task branches into the feature branch. It never writes implementation code.</li>
     <li>Workers: recon, research, architect, dev and verify. Each worker does one task and then retires.</li>
     <li>Helpers, such as an SME: answer one focused question for a worker. Helpers never start anyone.</li>
@@ -79,15 +68,15 @@ Claude wrote a starter pack of docs, templates and scripts, and tested it in a s
   </ol>
 </Fig02OrgChart>
 
-The crew is a tree, and I am at the top. I talk to cos most of the time. I also talk to each conductor directly when I need the fine details of its project or want to move it forward.
+Each crew is a tree, and I am at the top of both. I talk to a Chief of Staff most of the time. I also talk to a conductor directly when I need the fine details of its project.
 
 Each conductor owns one repository. A worker can start a helper to answer one question, so the worker does not spend its own context on it. In the design conversation, I said: "the idea is to save context."
 
 One script starts every session. It checks that the parent may start that role. Messages between sessions are short nudges. Everything that matters goes into files.
 
-Conductors send cos high-level updates only. A conductor alerts cos when it judges that something is important.
+The Chiefs of Staff, the conductors and the architects always run on Claude Opus. Other workers run on Sonnet by default.
 
-The harness can also hand work to a model from another vendor, through that model's own command-line tool. The first case was one of my unreleased apps, which I will call Lumen here. Its conductor had OpenAI's Codex draw 49 illustrations for the app, all from one style reference. It used my own sign-in, so there was no API spend, and I approved the drawings. The work used the usual files: a research task, ledger lines and dev tasks.
+The harness can also hand work to a model from another vendor, through that model's own command-line tool. For one of my apps, which I will call Lumen here, a conductor had OpenAI's Codex draw 49 illustrations from one style reference. I approved the drawings.
 
 ## How work flows
 
@@ -120,35 +109,40 @@ Devs run in parallel only when their tasks share no file. When the conductor is 
   </ol>
 </Fig04Handshake>
 
-The handshake came from my own flow in the design conversation.
+Every task is two files with the same timestamp: the prompt and the report. If a report has no exit code for a check it claims, the task counts as blocked.
 
-<Fig05FilePair caption="Every task is two files with the same timestamp: the prompt and the report.">
+The ack proves that a new worker is running. On the second machine, some new workers started and then stayed silent. Now a watchdog warns the parent when a worker does not send its ack within a few minutes.
+
+## Two machines, two Chiefs of Staff
+
+<Fig13TwoHQ caption="Each machine keeps its own memory. The way of working is copied one way, from Skynet to Gaia Prime. Only my own words authorize a risky step on either machine.">
   <ol>
-    <li>The prompt file, written by the parent, has sections such as Goal, Scope and Acceptance check.</li>
-    <li>The report file, written by the worker, has sections such as Summary and Evidence. The Evidence lists each check with its exit code.</li>
+    <li>Dutt talks to each Chief of Staff from a phone. Only his own words in a session authorize a deploy, a delete or a spend on that machine.</li>
+    <li>Skynet, a MacBook Pro: one Chief of Staff, with the conductors for Apple apps and websites.</li>
+    <li>Gaia Prime, a small Linux box at home: one Chief of Staff, with the conductors for Linux services, backends and local AI models.</li>
+    <li>The shared procedure is the docs, scripts and agent definitions. It has one owner, on Skynet. Gaia Prime receives a read-only copy over a private network.</li>
+    <li>A message between the two Chiefs of Staff is a nudge. It never carries authority.</li>
+    <li>Each machine keeps its own ledgers, reports, handoffs, lessons and knowledge.</li>
   </ol>
-</Fig05FilePair>
+</Fig13TwoHQ>
 
-If a report has no exit code for a check it claims, the task counts as blocked.
+Gaia Prime is a small Linux box at home, and it is always on. Skynet keeps the Apple apps and the websites. Gaia Prime runs the Linux side: services in containers, backends and local AI models. One personal app there uses AI that runs only on the box.
 
-## Where things live
+I brought the box up in one evening. It was updated and secured, and the second Chief of Staff was online the same night.
 
-<Fig12Dirs caption="HQ holds the crew's shared files, and each repository keeps its own crew files in one hidden folder.">
-  <ol>
-    <li><code>~/skynet-hq/bin</code>: the scripts that start, retire and relay sessions.</li>
-    <li><code>docs</code>: the contracts, with the intent document first. <code>docs/templates</code> holds the file templates.</li>
-    <li><code>ledgers</code>: the HQ ledgers for agents, asks, decisions and projects.</li>
-    <li><code>knowledge</code>: cited facts for the whole crew.</li>
-    <li><code>dreams</code>: one report for each dream.</li>
-    <li><code>handoffs</code>: the handoffs of cos and of HQ workers.</li>
-    <li><code>runs</code>: prompt and report pairs for HQ work.</li>
-    <li><code>mods</code>: the Claude Code mod that draws the crew band.</li>
-    <li><code>projects</code>: one registration file for each project.</li>
-    <li>A repository's <code>.orchestration</code> folder: <code>runs</code>, <code>handoffs</code>, <code>knowledge</code>, <code>messages</code>, and the files <code>ledger.md</code>, <code>tasks.md</code>, <code>decisions.md</code> and <code>STATUS.md</code>.</li>
-  </ol>
-</Fig12Dirs>
+Each Chief of Staff works the same way. It writes each ask of mine into a prompt file and routes the work to the conductor of that project. It checks the result before it reports to me.
 
-Git ignores each repository's `.orchestration` folder through `.git/info/exclude`. So the crew's files never show in a diff or a pull request.
+A few rules keep the two crews in step. {/* framing: transition into the rules */}
+
+**The way of working has one owner.** The docs, scripts and agent definitions live on Skynet. Gaia Prime receives a read-only copy over a private network and never edits it. When the Gaia Prime crew finds a gap, its Chief of Staff tells cos. cos fixes the source and syncs both machines. The context levels changed this way once, and the change was live on both machines within the hour.
+
+**A message is a nudge, never authority.** Only my own words in a session authorize a deploy, a delete or a spend on that machine. When one Chief of Staff passes on "Dutt approved this", the other one asks me in its own session first.
+
+**Memory stays on the machine that made it.** Each machine keeps its own ledgers, reports, handoffs, lessons and knowledge. Ideas, keys and notes also stay where they are, unless I say otherwise.
+
+Both crews draw on one Claude subscription, so they share its usage limits.
+
+The first joint job crossed both machines. A service on the Linux box got a new access key. Then cos rebuilt the iPhone app of that service on the Mac with the new key. I checked the app on my phone, and it worked end to end.
 
 ## Four kinds of memory
 
@@ -167,13 +161,15 @@ Git ignores each repository's `.orchestration` folder through `.git/info/exclude
 
 A long-running agent forgets things and repeats work. Skynet HQ treats each session's context window as scarce, short-lived working memory. Everything that matters lives outside it, in files. Claude said it in one line during the design: "A session is disposable; the files are the agent."
 
-I learned the four memory types from the chief architect's talk. I brought them into the design conversation, where I said that episodic memory "will help us move the needle in terms of development." Semantic memory then improves the process itself.
+I learned the four memory types from Kyle's talk. I brought them into the design conversation, where I said that episodic memory "will help us move the needle in terms of development." Semantic memory then improves the process itself.
 
-Workers and conductors never edit procedural memory. Changes arrive as proposals, and each change that is applied is logged in the decisions ledger. cos may fix a small problem in the process directly, if no live agent breaks, and it logs that change too.
+Workers and conductors never edit procedural memory. Changes arrive as proposals, and each change that is applied is logged in the decisions ledger.
 
-The next sections go around the figure. They start with working memory and end with the dream. {/* framing: transition into the core sections */}
+On two machines, procedural memory is the shared part. Episodic and semantic memory stay on each machine. {/* framing: maps the four memories onto the two machines */}
 
-## Context: keep each session sharp, and the relay
+The files have fixed places. Each machine has one HQ folder for the crew's own files. Each repository keeps its crew files in one hidden folder that Git ignores, so they never show in a diff or a pull request.
+
+## Context and the relay
 
 <Fig07Context caption="As a session fills its context, it gets a checkpoint instruction, then relay instructions, and a fresh session takes over under the same name.">
   <ol>
@@ -184,97 +180,36 @@ The next sections go around the figure. They start with working memory and end w
     <li>Relay now level: stop, write the relay handoff and request a relay. The instruction repeats until a new handoff exists.</li>
     <li>After compaction, an emergency instruction: rebuild a handoff from the files and relay.</li>
     <li>The parent reviews the handoff and adds notes. Generation 2 starts under the same name and reads the handoff.</li>
-    <li>The levels differ by role. Workers relay first, conductors later, and cos last.</li>
-    <li>On build day, the conductors relayed at about a fifth of the window.</li>
+    <li>The levels differ by role. Workers relay first, and conductors and the Chiefs of Staff relay later.</li>
+    <li>On build day, the conductors relayed at about a fifth of the window. The levels were raised after that.</li>
   </ol>
 </Fig07Context>
 
-Each session loads its contract first, then its prompt or its handoff. Then it loads a short knowledge index and only the files that these cite.
-
-Before a session researches anything, it searches the knowledge files and earlier reports. If someone already found the answer, it cites that report. Long command output goes into a file, and the session searches the file.
+Each session loads its contract first, then its prompt or its handoff. Then it loads a short knowledge index and only the files that these cite. Before a session researches anything, it searches the knowledge files and earlier reports.
 
 Compaction is the failure case. Claude Code can compact a long session into a summary, but the model writes that summary under pressure, and it loses specifics. A relay keeps a handoff that the session writes on purpose, while it still has room to write it well.
 
-A usage limit is not a reset. Once, requests failed until the wait passed, but the sessions and their context survived. A checkpoint before a known limit keeps the work safe.
-
-The name stays the same, so messages and ledger lines still point to the right agent. On build day, a worker relayed in a test. Generation 2 finished the task and said that the handoff alone was enough.
+The name stays the same, so messages and ledger lines still point to the right agent.
 
 A handoff passes one test. A fresh session that reads only the handoff and the files it cites can continue without a question to anyone. In the design conversation, I said handoffs exist "so that the future agents are not redoing the entire research or the same work again and again."
 
-<Fig08ModBand caption="The crew mod draws a band above the prompt with the agent, its generation, its context bar and the live crew count.">
-  <ol>
-    <li>The agent's name and role.</li>
-    <li>The relay generation, such as gen 2.</li>
-    <li>A context bar in percent. The bar darkens as the level rises, and the label names the level.</li>
-    <li>The next step, such as relay.</li>
-    <li>The number of crew sessions that are live.</li>
-  </ol>
-</Fig08ModBand>
+A Claude Code mod logs every message between sessions to a file for each agent. That log becomes episodic memory, and no model spends effort to write it.
 
-I watch the context from this band. The same mod logs every message between sessions to a file for each agent. That log becomes episodic memory, and no model spends effort to write it.
+## Ledgers, lessons and knowledge
 
-## Ledgers: the crew's diary
+A ledger is append-only. Each event is one line, and the newest line is at the bottom. Nobody edits an old line, and a correction is a new line. Each file has one writer. If a session needs a change in a file that it does not own, it sends a message to the owner.
 
-A ledger is append-only. Each event is one line, and the newest line is at the bottom. Nobody edits an old line, and a correction is a new line.
+The decisions ledger keeps my exact words. A new session reads it before it asks me again.
 
-Each file has one writer. Two writers on one file is how a ledger gets corrupted. If a session needs a change in a file that it does not own, it sends a message to the owner.
+On the first morning, one ledger went out of order, because a conductor computed its timestamps by hand. The fix was one helper script that stamps the time at the moment of writing. All ledger lines now go through it.
 
-| Ledger | What it records |
-|---|---|
-| Project ledger | Each worker's life: spawned, reported, verified, merged, retired |
-| Agents | Every conductor and HQ worker that starts or retires |
-| Inbox | Every ask from me, in my words, with its route and status |
-| Decisions | Only what I decided, in my own words |
-| Message logs | Every message a session sends or receives |
-
-The decisions ledger keeps my exact words. The HQ rules say that nobody asks Dutt twice. A new session reads the decisions ledger before it asks me again. {/* framing: how 'nobody asks twice' works in practice */}
-
-cos also keeps a private ideas store. It is my backlog of thoughts, and cos cleans it up each week.
-
-Here are three lines from the contextsmith ledger on the first morning. I cut the details column short.
-
-```text
-| 20261025T065656Z | contextsmith-recon-diff-flow | spawned  | T-001 | parent cond-contextsmith |
-| 20261025T065752Z | contextsmith-recon-diff-flow | retired  | T-001 | session closed |
-| 20261025T065746Z | contextsmith-recon-diff-flow | reported | T-001 | done, citations spot-checked |
-```
-
-A recon worker started, reported and retired in about a minute. Now look at the times on the last two lines. The report happened first, but its line is below the retire line.
-
-The conductor computed those timestamps by hand, so the ledger went out of order. The fix was one helper script that stamps the time at the moment of writing. All ledger lines now go through it. Episodic memory is useful only if the crew can trust it. {/* framing: the closing sentence of the paragraph */}
-
-The first dream found a second problem. Seven rows were logged under the wrong agent, because a flag was in the wrong place. The helper now rejects that mistake.
-
-## Lessons: catch surprises when they happen
-
-When a session is surprised, it writes one line with a source. HQ lessons go into `lessons.md`, and each repository has a knowledge inbox.
-
-These lessons are from the first two days. The Claude Code behaviour was observed on 2026-10-25 with Claude Code 2.1.310.
-
-- Allow rules match the command as it was typed. So the crew calls its scripts by their full path.
-- A decision that I made directly with a conductor never reached cos. So cos sent a later prompt that pointed to work I had rejected. Conductors now forward my exact words to cos in the same turn.
-
-The last lesson became a rule on the same day.
+When a session is surprised, it writes one line with a source. That line is a lesson. Here is one from the first days. A decision that I made directly with a conductor never reached cos. Conductors now forward my exact words to cos in the same turn.
 
 A lesson is raw. The crew does not trust it yet. The dream decides which lessons become knowledge.
 
-This post has a lesson of its own. A brief for it had nine wrong claims, and the architect found them when it checked the ledgers. The new lesson says that a brief for public writing must be checked against the ledgers first.
+In the knowledge files, each fact is one line, with a source and the date when someone last verified it. When a newer episode contradicts a fact, the fact is corrected. The crew does not keep two versions of it.
 
-## Knowledge: what the crew knows to be true
-
-Each fact is one line, with a source and the date when someone last verified it. This is a real line from the HQ index:
-
-```text
-- Call crew scripts by full path (`~/skynet-hq/bin/…`): allow rules match the command as typed. [src: lessons.md] (verified 2026-10-25)
-```
-
-That fact started as a lesson. The first dream moved it into the index.
-
-When a newer episode contradicts a fact, the fact is corrected. The crew does not keep two versions of it.
-
-HQ and each repository have a short `index.md` that every session loads at the start. Topic files load only when a task needs them.
-
-An urgent fact goes in at once, if it would make the next worker fail. Everything else waits for the dream.
+Every session loads a short index of facts at the start. Topic files load only when a task needs them. An urgent fact goes in at once, if it would make the next worker fail. Everything else waits for the dream.
 
 ## The dream cycle
 
@@ -291,17 +226,9 @@ An urgent fact goes in at once, if it would make the next worker fail. Everythin
 
 I learned about the dream cycle from the same talk. In the design conversation, I asked for "local dream cycles or else real Claude dream cycles." On build day, the build agent found no dream feature in the Claude Code 2.1.310 docs. So the crew runs its own dream.
 
-A dream is one worker on Opus. cos starts it at the end of the day, or when I ask for one. A nightly job was built, but it is off, because overnight builds compete for usage.
+A dream is one worker on Opus. A Chief of Staff starts it at the end of the day, or when I ask for one. Each machine dreams over its own files.
 
-The dream writes semantic memory directly.
-
-The dream never edits code or deletes an episode. It also never changes how the crew works on its own. Procedural changes leave the dream as proposals. Each proposal is a concrete diff, with the episodes that justify it.
-
-The proposals then need a decision. For the first dream, I gave the calls to cos: "As the chief of staff, I want you to make the decisions here." I added: "I don't want you to overkill the processes."
-
-skynet-lint feeds the dream. It was the crew's first project: a small Rust tool that checks the crew's own files.
-
-## The loop in its first days
+The dream writes semantic memory directly. It never edits code or deletes an episode. It also never changes how the crew works on its own. Procedural changes leave the dream as proposals. Each proposal is a concrete diff, with the episodes that justify it. A proposal that touches the shared procedure goes to cos on Skynet.
 
 <Fig06xLoop caption="By day the sessions write episodes and lessons, and at night the dream turns them into facts and proposals for the next morning.">
   <ol>
@@ -315,30 +242,13 @@ skynet-lint feeds the dream. It was the crew's first project: a small Rust tool 
   </ol>
 </Fig06xLoop>
 
-The first dream ran on 25 October 2026, a few hours after the crew did its first real work. It read the files of HQ and of each project that had run work.
+The first dream ran on 25 October 2026, a few hours after the crew did its first real work. It found that the conductors doing real work relayed at about a fifth of their window. That was too early for a conductor. One conductor went from generation 1 to generation 6 in about 1 hour 40 minutes.
 
-It found that the conductors doing real work relayed at about a fifth of their window. That was where the token level fired, and it was too early for a conductor. One conductor went from generation 1 to generation 6 in about 1 hour 40 minutes. Another went through three relays in about 70 minutes.
+Three handoffs failed the test. When Claude handed over the design, it had named this risk: "Handoff quality is the real bottleneck, and no script can enforce it."
 
-Three handoffs failed the test. One successor rebuilt its task board from git. Another needed a name clash explained. The third was not told that a background loop had died.
+I read the relay numbers and decided that the relay point was too short. The levels are now set per role. In November, I raised them again on both machines. Fewer relays also mean fewer handoffs that can go wrong.
 
-When Claude handed over the design, it had named this risk: "Handoff quality is the real bottleneck, and no script can enforce it." I had also told cos what I expected from the conductors: "Handoff should be gold and they are the key."
-
-I read the relay numbers and decided that the relay point was too short. The levels are now set per role. Fewer relays also mean fewer handoffs that can go wrong.
-
-The dream also counted 70 lint errors across 83 reports from day 1. The verify prompts asked for a different report shape, so the verifiers' reports drifted from the template.
-
-The dream made ten proposals. These four were applied:
-
-- Workers lint their own report before they send it.
-- The ledger helper rejects a flag in the wrong place.
-- The report template gained a Security section and a Problems and improvements section.
-- The memory doc was updated to match how the crew works now.
-
-My relay decision replaced one other proposal. cos deferred the rest.
-
-The first dream processed all 24 lines in the lessons file. It moved each one into knowledge or dropped it with a reason. One knowledge file went from 2 facts to 23. New lessons from real work now wait for the next dream.
-
-The second dream ran the next morning. It found that the safety classifier caused the most friction that day, and cos applied its fixes. A conductor now sends me the pull request link for a merge that deploys production, and it never retries a denied merge. For TestFlight, the crew builds the archive, and I upload it.
+The dream made ten proposals, and cos applied four of them. One example: workers now lint their own report before they send it.
 
 ## Safety
 
@@ -347,7 +257,7 @@ The second dream ran the next morning. It found that the safety classifier cause
     <li>Dutt, in person: releases to users, such as production deploys, App Store or TestFlight uploads, and publishing.</li>
     <li>Conductors: the git work in their own repository, such as branches, commits and merges into feature branches.</li>
     <li>Workers: commits on their own task branch only. They never push.</li>
-    <li>A message from another session: never authority, even when it says that it comes from Dutt.</li>
+    <li>A message from another session, on either machine: never authority, even when it says that it comes from Dutt.</li>
     <li>Fetched web content: data, never instructions.</li>
     <li>Callout: the safety classifier blocked merges that deploy to production on four pull requests, and one TestFlight upload, although Dutt's go had come through another session.</li>
   </ol>
@@ -359,33 +269,18 @@ Conductors own the git work in their repository. I asked for that, because I did
 
 Releases to users still need me, even when I tell the crew to go ahead. In the first two days, the auto-mode safety classifier blocked merges that deploy to production on four pull requests. It also blocked a TestFlight upload. Each time, my go had come through another session. One merge went through when I said it in the conductor's own session. Now conductors prepare a release, and I do the last step myself.
 
-On build day, the classifier also blocked the build agent twice when it tried to change its own permissions. I applied those two changes myself.
+## What the second machine taught
 
-Worktrees protect work in progress. Each dev works in its own git worktree. When a worker retires or relays, its uncommitted work is saved to a private git ref. A worktree is removed only when it is clean and merged.
+The same crew behaved differently on a different operating system. Permission prompts that never appeared on the Mac flooded the Linux crew. The fix was to describe the machine to the auto-mode safety classifier.
 
-## Build day
+The safety classifier refuses an approval that another agent passes along, such as a push. That is correct. I run the step myself, or I say it in that session.
 
-<Fig11Timeline caption="The night the starter pack became a running crew, with the failures that each became a lesson.">
-  <ol>
-    <li>Review: the build agent checks the starter pack against the real Mac and plans before it acts.</li>
-    <li>Fixes: real repository paths, integration worktrees, hooks that act only on crew sessions, levels with a token count, and auto mode with a deny list.</li>
-    <li>Build: the spawn script, the context hook and status line, five skills, seven agent definitions and the crew mod.</li>
-    <li>Tests on a small Rust repository: the handshake, the context hook, a worker relay and a conductor relay.</li>
-    <li>Good failures: ledger lines out of order, a deny rule that never matched, a Ctrl-C in the wrong tmux window, a keep-awake check that was fooled, two classifier refusals and a folder-trust prompt.</li>
-    <li>Handover: the first real project, skynet-lint, runs through the full flow from my phone.</li>
-  </ol>
-</Fig11Timeline>
+An always-on box is only as on as its network. Once, the box lost its connection and stayed offline for 11 hours. Now a watchdog reconnects it within 2 minutes.
 
-The build took one night, from 24 to 25 October 2026, Pacific time. I opened a plain Claude Code session, the build agent, and gave it the starter pack as the spec.
-
-My first tmux attach landed on the system window. A Ctrl-C there stopped the keep-awake process and the Remote Control server. Now I type one of four short commands, and I never use tmux keys.
-
-The first real project was skynet-lint. I sent the ask from my phone to cos, and the full flow ran, from recon to merges into a feature branch. Verifiers failed three tasks, and each was fixed in one round.
+Local models and the crew share the memory of the box. A limit on the filesystem cache lets both fit.
 
 ## What's next
 
-In its first days, the crew helped me release Doorframe on the App Store, with its site. Meontor's accessibility and Apple Watch work landed. The crew also revived Lumen, an old app of mine.
+With the crew, I released Doorframe on the App Store, with its site. The first version of Meontor is on TestFlight. The crew also revived Lumen, an old app of mine.
 
-Skynet HQ is private for now. {/* framing: wording for Dutt to confirm; no release date or promise */}
-
-The crew is a few days old. After the first dream measured the crew, I raised its relay levels per role. For the first week or two, I want to keep the process light. The dream proposes changes, and cos and I decide which ones to apply. {/* framing: summary of decisions.md 20261025T221645Z ("improve it in the first 1 or 2 weeks"); Dutt to confirm wording */}
+The crew is a few weeks old, and I still change it often. The dream proposes changes, and cos and I decide which ones to apply. {/* framing: closing; Dutt to confirm wording */}
