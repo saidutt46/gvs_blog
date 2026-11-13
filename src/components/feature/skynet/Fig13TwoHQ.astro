@@ -6,14 +6,14 @@
  * Default slot: the text alternative (`<ol>`) written in the MDX.
  *
  * Drawing: two inline SVGs. `.fig-narrow` (under 760px) stacks Dutt, the
- * Skynet box and the Gaia Prime box; `.fig-broad` (760px and up) puts the
+ * Skynet box and the Gaya Prime box; `.fig-broad` (760px and up) puts the
  * two machine boxes side by side under Dutt. The broad drawing waits until
  * 760px (not feature.css's 600px) so its labels stay 12px or more.
  * Link styles (line style and arrowheads differ, so colour is never the
  * only cue):
  *   (a) solid accent, one head: Dutt to each Chief of Staff. Only his words
  *       authorize.
- *   (b) solid text, one head: the procedure copy, Skynet to Gaia Prime only.
+ *   (b) solid text, one head: the procedure copy, Skynet to Gaya Prime only.
  *   (c) dashed muted, a head at each end: a nudge between the two Chiefs of
  *       Staff. It carries no authority.
  * A legend under each drawing repeats the three styles.
@@ -76,7 +76,7 @@ const narrow: Variant = {
     },
     {
       box: { x: 8, y: 332, w: 288, h: 152 },
-      title: { t: 'Gaia Prime · Linux box at home', x: 20, y: 352, anchor: 'start' },
+      title: { t: 'Gaya Prime · Linux box at home', x: 20, y: 352, anchor: 'start' },
       cos: { t: 'Chief of Staff', x: 20, y: 364, w: 264, h: 40 },
       conductors: { t: 'conductors: Linux services, local AI', x: 22, y: 426 },
       chips: [
@@ -85,7 +85,7 @@ const narrow: Variant = {
       ],
     },
   ],
-  // To the Skynet Chief of Staff straight down; to Gaia Prime down a rail
+  // To the Skynet Chief of Staff straight down; to Gaya Prime down a rail
   // at the right edge, outside both machine boxes.
   auth: ['M210 56 V122', 'M270 32 H308 V384 H290'],
   authLabels: [{ t: [AUTH], x: 202, y: 82, anchor: 'end' }],
@@ -114,7 +114,7 @@ const broad: Variant = {
     },
     {
       box: { x: 420, y: 100, w: 280, h: 160 },
-      title: { t: 'Gaia Prime · Linux box at home', x: 432, y: 120, anchor: 'start' },
+      title: { t: 'Gaya Prime · Linux box at home', x: 432, y: 120, anchor: 'start' },
       cos: { t: 'Chief of Staff', x: 432, y: 132, w: 256, h: 40 },
       conductors: { t: 'conductors: Linux services, local AI', x: 434, y: 196 },
       chips: [

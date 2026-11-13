@@ -5,7 +5,7 @@
  * Default slot: the text alternative (`<ol>`) written in the MDX.
  *
  * Drawing: two inline SVGs of the same tree (Dutt on top, then two Chiefs of
- * Staff, one on Skynet and one on Gaia Prime, each over its own conductor, then
+ * Staff, one on Skynet and one on Gaya Prime, each over its own conductor, then
  * the workers). The dashed "nudges" line between the two Chiefs of Staff is NOT
  * a route for work: it has no data-step, so no dot travels it, and nothing is
  * assigned along it. They only nudge each other. `.fig-narrow` (under 600px) is tall and tight;
@@ -32,7 +32,7 @@ interface Node { key: string; kind: Kind; title: string; sub?: string; x: number
 const ROLES: Record<string, string> = {
   dutt: 'Dutt: talks to each Chief of Staff, and to each conductor as needed, from a phone, a laptop or a browser.',
   cosS: 'cos, the Chief of Staff on Skynet: routes the work for Apple apps and websites.',
-  cosG: 'The Chief of Staff on Gaia Prime: routes the work for Linux services and local AI models.',
+  cosG: 'The Chief of Staff on Gaya Prime: routes the work for Linux services and local AI models.',
   condA: 'Conductor: one per project. Breaks features into tasks and starts workers.',
   condB: 'Conductor: one per project. Breaks features into tasks and starts workers.',
   recon: 'Recon: maps the code a feature touches. Read-only.',
@@ -46,7 +46,7 @@ const narrow = {
   nodes: [
     { key: 'dutt', kind: 'human', title: 'Dutt', sub: 'phone, laptop, browser', x: 60, y: 8, w: 200, h: 52 },
     { key: 'cosS', kind: 'cos', title: 'cos', sub: 'Skynet · MacBook Pro', x: 4, y: 100, w: 140, h: 52 },
-    { key: 'cosG', kind: 'cos', title: 'Chief of Staff', sub: 'Gaia Prime · Linux box', x: 176, y: 100, w: 140, h: 52 },
+    { key: 'cosG', kind: 'cos', title: 'Chief of Staff', sub: 'Gaya Prime · Linux box', x: 176, y: 100, w: 140, h: 52 },
     { key: 'condA', kind: 'cond', title: 'conductor', sub: 'apps, websites', x: 4, y: 196, w: 140, h: 52 },
     { key: 'condB', kind: 'cond', title: 'conductor', sub: 'services, local AI', x: 176, y: 196, w: 140, h: 52 },
     { key: 'recon', kind: 'worker', title: 'recon', x: 20, y: 326, w: 136, h: 44 },
@@ -71,7 +71,7 @@ const broad = {
   nodes: [
     { key: 'dutt', kind: 'human', title: 'Dutt', sub: 'phone, laptop, browser', x: 260, y: 8, w: 200, h: 52 },
     { key: 'cosS', kind: 'cos', title: 'cos', sub: 'Skynet · MacBook Pro', x: 150, y: 88, w: 180, h: 52 },
-    { key: 'cosG', kind: 'cos', title: 'Chief of Staff', sub: 'Gaia Prime · Linux box', x: 390, y: 88, w: 180, h: 52 },
+    { key: 'cosG', kind: 'cos', title: 'Chief of Staff', sub: 'Gaya Prime · Linux box', x: 390, y: 88, w: 180, h: 52 },
     { key: 'condA', kind: 'cond', title: 'conductor', sub: 'apps, websites', x: 150, y: 168, w: 180, h: 52 },
     { key: 'condB', kind: 'cond', title: 'conductor', sub: 'services, local AI', x: 390, y: 168, w: 180, h: 52 },
     { key: 'recon', kind: 'worker', title: 'recon', x: 20, y: 274, w: 160, h: 44 },
